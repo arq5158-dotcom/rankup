@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, Navigate, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, AtSign, Crown, Lock, Mail } from "lucide-react";
+import { ArrowRight, AtSign, Crown, Loader2, Lock, Mail } from "lucide-react";
 import { GROK_PROVIDERS, authClient, authEnabled, signIn } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { SiteFooter } from "@/components/rank/SiteFooter";
@@ -37,11 +37,34 @@ function Login() {
   const [userOk, setUserOk] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [oauth, setOauth] = useState<string | null>(null);
   const [ageOk, setAgeOk] = useState(false);
 
   useEffect(() => {
     if (modeParam === "up" || modeParam === "in") setMode(modeParam);
   }, [modeParam]);
+
+  useEffect(() => {
+    const reset = () => {
+      setLoading(false);
+      setOauth(null);
+    };
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) reset();
+      else reset();
+    };
+    window.addEventListener("pageshow", onPageShow);
+    window.addEventListener("focus", reset);
+    const onVis = () => {
+      if (document.visibilityState === "visible") reset();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      window.removeEventListener("pageshow", onPageShow);
+      window.removeEventListener("focus", reset);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, []);
 
   useEffect(() => {
     if (mode !== "up") return;
@@ -142,14 +165,24 @@ function Login() {
                   disabled={loading}
                   onClick={() => {
                     setError(null);
+                    setOauth(p.providerId);
                     setLoading(true);
-                    void signIn(p.providerId, { callbackURL: "/", errorCallbackURL: "/login" }).catch((err) => {
-                      setError(publicErrorMessage(err, "Sign-in failed. Try email or try again."));
+                    const watchdog = window.setTimeout(() => {
                       setLoading(false);
-                    });
+                      setOauth(null);
+                      setError("Sign-in didn’t finish. Try Google, X, or email again.");
+                    }, 15_000);
+                    void signIn(p.providerId, { callbackURL: "/", errorCallbackURL: "/login" })
+                      .catch((err) => {
+                        setError(publicErrorMessage(err, "Sign-in failed. Try email or try again."));
+                        setLoading(false);
+                        setOauth(null);
+                      })
+                      .finally(() => window.clearTimeout(watchdog));
                   }}
-                  className="btn-outline tap w-full rounded-xl px-4 text-sm font-semibold"
+                  className="btn-outline tap flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold"
                 >
+                  {loading && oauth === p.providerId ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                   Continue with {p.label}
                 </button>
               ))}

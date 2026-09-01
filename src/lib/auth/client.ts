@@ -129,7 +129,8 @@ export async function signIn(
       errorCallbackURL,
     });
     if (error) throw new Error(error.message ?? "Sign-in failed");
-    if (data?.url) window.location.href = data.url;
+    if (!data?.url) throw new Error("Sign-in did not start. Try again.");
+    window.location.assign(data.url);
     return;
   }
 
@@ -162,7 +163,8 @@ export async function signIn(
     errorCallbackURL,
   });
   if (error) throw new Error(error.message ?? "Sign-in failed");
-  if (data?.url) window.location.href = data.url;
+  if (!data?.url) throw new Error("Sign-in did not start. Try again.");
+  window.location.assign(data.url);
 }
 
 /**
