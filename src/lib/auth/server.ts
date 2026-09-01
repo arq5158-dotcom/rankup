@@ -105,6 +105,7 @@ const LOCAL_DEV_ORIGINS: string[] = [
 ];
 const VERCEL_HOSTS: string[] = ["*.vercel.app"];
 const VERCEL_ORIGINS: string[] = ["https://*.vercel.app"];
+const CUSTOM_ORIGINS: string[] = ["https://pay4rank.com", "https://www.pay4rank.com"];
 
 function vercelPublicOrigin(): string | undefined {
   const raw = env("VERCEL_PROJECT_PRODUCTION_URL") ?? env("VERCEL_URL");
@@ -134,10 +135,11 @@ const baseURL = explicitBaseURL ?? {
 // Origins Better Auth accepts on credentialed POSTs (sign-up/sign-in, etc.).
 // Missing entries here surface as FORBIDDEN "Invalid origin".
 const trustedOrigins: string[] = explicitBaseURL
-  ? [explicitBaseURL, ...VERCEL_ORIGINS, ...LOCAL_DEV_ORIGINS]
+  ? [explicitBaseURL, ...CUSTOM_ORIGINS, ...VERCEL_ORIGINS, ...LOCAL_DEV_ORIGINS]
   : [
       ...previewAllowedHosts,
       ...previewAllowedHosts.flatMap((host) => [`https://${host}`, `http://${host}`]),
+      ...CUSTOM_ORIGINS,
       ...VERCEL_ORIGINS,
       ...LOCAL_DEV_ORIGINS,
     ];
