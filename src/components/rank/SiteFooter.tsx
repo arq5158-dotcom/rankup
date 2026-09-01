@@ -44,19 +44,21 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <footer className="relative z-10 mt-6 border-t border-gold/10 bg-black/40 pb-[max(1rem,env(safe-area-inset-bottom))]">
-      <div className="mx-auto grid max-w-[1280px] gap-7 px-4 py-7 sm:grid-cols-2 sm:px-5 lg:grid-cols-4 lg:gap-10 lg:py-8">
-        <div className="sm:col-span-2 lg:col-span-1">
+    <footer className="relative z-10 mt-4 border-t border-gold/10 bg-black/40 pb-4">
+      <div className="mx-auto grid max-w-[1640px] grid-cols-2 gap-6 px-4 py-5 sm:px-6 lg:grid-cols-4 lg:gap-8 lg:py-6">
+        <div className="col-span-2 lg:col-span-1">
           <Link to="/" className="inline-flex items-center gap-2">
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold/15 ring-1 ring-gold/35">
               <Crown className="h-3.5 w-3.5 fill-gold text-gold" />
             </span>
             <span className="text-[13px] font-extrabold tracking-[0.08em] text-fg">RANK UP</span>
           </Link>
-          <p className="mt-2.5 max-w-xs text-[12px] leading-relaxed text-pretty text-white/38">
+          <p className="mt-2.5 max-w-xs text-[12px] leading-relaxed text-pretty text-white/48">
             A live prize leaderboard. Contribute, climb, and win — rankings update only after payment confirms.
           </p>
-          <p className="mt-2.5 text-[10px] font-bold tracking-wider text-white/28 uppercase">18+ · Void where prohibited</p>
+          <p className="mt-2.5 text-[10px] font-bold tracking-wider text-white/28 uppercase">
+            18+ · Not a lottery · Void where prohibited
+          </p>
         </div>
         <div>
           <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Compete</p>
@@ -64,13 +66,13 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
             {COMPETE.map((l) =>
               "hash" in l && l.hash ? (
                 <li key={l.label}>
-                  <a href={l.hash} className="text-[12px] text-white/48 hover:text-fg">
+                  <a href={l.hash} className="text-[12px] text-white/58 hover:text-fg">
                     {l.label}
                   </a>
                 </li>
               ) : (
                 <li key={l.to}>
-                  <Link to={l.to} className="text-[12px] text-white/48 hover:text-fg">
+                  <Link to={l.to} className="text-[12px] text-white/58 hover:text-fg">
                     {l.label}
                   </Link>
                 </li>
@@ -83,16 +85,16 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
           <ul className="mt-2.5 space-y-1.5">
             {LEGAL.map((l) => (
               <li key={l.to}>
-                <Link to={l.to} className="text-[12px] text-white/48 hover:text-fg">
+                <Link to={l.to} className="text-[12px] text-white/58 hover:text-fg">
                   {l.label}
                 </Link>
               </li>
             ))}
           </ul>
         </div>
-        <div>
+        <div className="col-span-2 lg:col-span-1">
           <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Payments</p>
-          <p className="mt-2.5 text-[12px] leading-relaxed text-white/42">
+          <p className="mt-2.5 text-[12px] leading-relaxed text-white/52">
             Card payments are processed by Stripe. Rank Up never stores full card numbers.
           </p>
           <Link to="/contact" className="mt-2.5 inline-block text-[12px] text-gold hover:text-gold-light">
@@ -100,9 +102,9 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
           </Link>
         </div>
       </div>
-      <div className="border-t border-white/[0.04] py-3.5">
-        <p className="text-center text-[11px] tracking-wide text-white/28">
-          © {new Date().getFullYear()} Rank Up. Compete. Contribute. Win.
+      <div className="border-t border-white/[0.04] py-3">
+        <p className="text-center text-[11px] tracking-wide text-white/38">
+          © {new Date().getFullYear()} Rank Up. Not a game of chance. Play responsibly.
         </p>
       </div>
     </footer>

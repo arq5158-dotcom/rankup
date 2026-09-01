@@ -83,11 +83,11 @@ export function ParticipatePanel({
   if (!open) return <div id="rank-up" className="scroll-mt-24" />;
 
   const field =
-    "h-11 w-full rounded-xl border border-white/[0.08] bg-[#0c0c12] px-3 text-sm text-fg outline-none placeholder:text-white/22 focus:border-gold/45";
+    "h-11 w-full rounded-[14px] border border-white/[0.12] bg-[#0c0c12] px-3.5 text-sm text-fg outline-none placeholder:text-white/22 focus:border-gold/45";
 
   return (
     <div id="rank-up" className="scroll-mt-24">
-      <div className="glass-card panel-gold relative w-full rounded-[22px] p-4 sm:p-5">
+      <div className="glass-card panel-gold relative w-full rounded-[20px] p-5">
         <button
           type="button"
           onClick={onClose}
@@ -98,7 +98,7 @@ export function ParticipatePanel({
         </button>
         <h3 className="pr-10 text-[16px] font-bold tracking-tight text-fg">Participate & Rank Up</h3>
 
-        <div className="mt-4 space-y-3.5">
+        <div className="mt-3.5 space-y-3">
           <Segmented
             value={cycle}
             onChange={setCycle}
@@ -117,11 +117,12 @@ export function ParticipatePanel({
                 type="text"
                 inputMode="decimal"
                 value={amount.toFixed(2)}
+                suppressHydrationWarning
                 onChange={(e) => {
                   const n = Number(e.target.value.replace(/[^0-9.]/g, ""));
                   if (!Number.isNaN(n)) setAmount(Math.min(MAX_CONTRIBUTION, Math.max(0, n)));
                 }}
-                className="h-[52px] w-full rounded-xl border border-white/[0.08] bg-[#0c0c12] py-2.5 pr-3 pl-10 text-[26px] font-bold text-fg tabular-nums outline-none focus:border-gold/45"
+                className="h-[54px] w-full rounded-[14px] border border-white/[0.12] bg-[#0c0c12] py-2.5 pr-3 pl-10 text-[28px] font-bold text-fg tabular-nums outline-none focus:border-gold/45"
               />
             </div>
           </div>
@@ -131,7 +132,7 @@ export function ParticipatePanel({
                 key={p}
                 type="button"
                 onClick={() => setAmount(p)}
-                className={`chip tap rounded-lg text-xs font-bold ${amount === p ? "is-on" : ""}`}
+                className={`chip tap rounded-[12px] text-xs font-bold ${amount === p ? "is-on" : ""}`}
               >
                 ${p}
               </button>
@@ -144,6 +145,7 @@ export function ParticipatePanel({
             <input
               value={name}
               maxLength={24}
+              suppressHydrationWarning
               onChange={(e) => setName(e.target.value.slice(0, 24))}
               placeholder="Your leaderboard name"
               className={field}
@@ -159,6 +161,7 @@ export function ParticipatePanel({
             <input
               value={note}
               maxLength={NOTE_MAX_CHARS}
+              suppressHydrationWarning
               onChange={(e) => setNote(e.target.value.slice(0, NOTE_MAX_CHARS))}
               placeholder="Here to compete and win!"
               className={field}
@@ -173,6 +176,7 @@ export function ParticipatePanel({
                 type="url"
                 value={link}
                 maxLength={300}
+                suppressHydrationWarning
                 onChange={(e) => setLink(e.target.value.slice(0, 300))}
                 placeholder="https://yoursite.com"
                 className={`${field} pr-8`}
@@ -180,7 +184,7 @@ export function ParticipatePanel({
               {link && <Check className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-success" />}
             </div>
             <p className="mt-0.5 flex items-center gap-1 text-[10px] text-white/30">
-              <Lock className="h-2.5 w-2.5 text-white/25" /> Website links are automatically reviewed for safety.
+              <Lock className="h-2.5 w-2.5 text-white/25" /> Public https links only. Adult, malware, and shortened URLs are blocked.
             </p>
           </div>
           {isOwner && !stripeReady && (
@@ -192,11 +196,12 @@ export function ParticipatePanel({
             <input
               type="checkbox"
               checked={agreed}
+              suppressHydrationWarning
               onChange={(e) => setAgreed(e.target.checked)}
               className="check mt-0.5 shrink-0"
             />
             <span>
-              I agree to the{" "}
+              I confirm I am 18 or older and agree to the{" "}
               <Link to="/terms" className="text-gold hover:underline">
                 Terms
               </Link>
@@ -208,14 +213,14 @@ export function ParticipatePanel({
               <Link to="/privacy" className="text-gold hover:underline">
                 Privacy Policy
               </Link>
-              .
+              . This is not a lottery. Contributions are generally non-refundable. Void where prohibited.
             </span>
           </label>
           <button
             type="button"
             onClick={() => void submit()}
             disabled={loading || amount < 1 || amount > MAX_CONTRIBUTION || !name.trim() || !agreed}
-            className="btn-gold relative z-10 tap flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl text-sm font-extrabold"
+            className="btn-gold relative z-10 tap flex min-h-[50px] w-full items-center justify-center gap-2 rounded-[14px] text-sm font-extrabold"
           >
             <Lock className="h-3.5 w-3.5" />
             {loading ? "Opening checkout…" : signedIn ? "Pay Securely & Rank Up" : "Sign in to Rank Up"}

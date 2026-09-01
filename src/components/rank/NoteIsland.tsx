@@ -12,6 +12,7 @@ import {
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { AvatarImg, Verified } from "./Avatar";
+import { SafeWebLink } from "./SafeWebLink";
 import { cn, formatUsd } from "@/lib/utils";
 
 export type NoteOpenArgs = {
@@ -21,6 +22,7 @@ export type NoteOpenArgs = {
   image?: string | null;
   amount?: number;
   rank?: number;
+  webLink?: string | null;
   origin: DOMRect;
   restoreFocus?: HTMLElement | null;
 };
@@ -61,8 +63,10 @@ export function NoteTrigger({
   image,
   amount,
   rank,
+  webLink,
   className,
   lines = 2,
+  children,
 }: {
   note?: string | null;
   name: string;
@@ -70,8 +74,10 @@ export function NoteTrigger({
   image?: string | null;
   amount?: number;
   rank?: number;
+  webLink?: string | null;
   className?: string;
   lines?: 1 | 2;
+  children?: ReactNode;
 }) {
   const open = useOpenNote();
   if (!note) return <span className={cn("text-white/15", className)}>—</span>;
@@ -88,13 +94,14 @@ export function NoteTrigger({
           image,
           amount,
           rank,
+          webLink,
           origin: e.currentTarget.getBoundingClientRect(),
           restoreFocus: e.currentTarget,
         });
       }}
       className={cn("note-chip", lines === 2 ? "line-clamp-2" : "truncate", className)}
     >
-      {note}
+      {children ?? note}
     </button>
   );
 }
@@ -544,9 +551,14 @@ function NoteIsland({ payload, onClose }: { payload: NoteOpenArgs; onClose: () =
             ) : null}
           </header>
           <blockquote className="liquid-quote">{payload.note}</blockquote>
-          {payload.amount != null ? (
-            <p className="mt-3 text-[12px] font-bold text-success tabular-nums">${formatUsd(payload.amount)}</p>
-          ) : null}
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+            {payload.amount != null ? (
+              <p className="text-[12px] font-bold text-success tabular-nums">${formatUsd(payload.amount)}</p>
+            ) : (
+              <span />
+            )}
+            <SafeWebLink href={payload.webLink} compact className="text-[12px] font-semibold" />
+          </div>
         </div>
       </div>
     </div>,

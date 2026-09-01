@@ -36,11 +36,15 @@ export const FAQ_ITEMS = [
   },
   {
     q: "Is Rank Up a game of chance?",
-    a: "No. Placement is determined solely by confirmed contribution amounts during a cycle, not by a random draw or odds.",
+    a: "No. Rank Up is not a lottery, raffle, casino, or game of chance. Placement is determined solely by confirmed contribution amounts during a cycle, not by a random draw or odds. Rank Up is void where prohibited.",
   },
   {
     q: "Who can participate?",
-    a: "You must be at least 18 years old and able to enter a payment agreement. Rank Up is void where prohibited by law.",
+    a: "You must be at least 18 years old and able to enter a payment agreement. Rank Up is void where prohibited by law. Employees who administer the contest may be barred from winning.",
+  },
+  {
+    q: "Are player website links safe?",
+    a: "Optional player websites are public. Rank Up only publishes https links that pass an automated safety review (no adult sites, shorteners, or private/local addresses). Links are third-party pages we do not control — open them at your own judgment.",
   },
 ];
 

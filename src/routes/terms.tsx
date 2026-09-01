@@ -27,7 +27,8 @@ function Page() {
       <p>
         Rank Up is a ranked contribution contest. Players pay a chosen amount through Stripe to enter
         a weekly or monthly cycle. Live rank is determined by confirmed contribution totals, not by
-        chance. Prizes are awarded to top finishers as published on the Prizes page for that cycle.
+        chance. Rank Up is not a lottery, raffle, casino, or game of chance. Prizes are awarded to top
+        finishers as published on the Prizes page for that cycle. The service is void where prohibited.
       </p>
 
       <h2>2. Eligibility</h2>
@@ -41,7 +42,8 @@ function Page() {
       <p>
         You are responsible for your login credentials and for activity on your account. Display names,
         notes, and profile images must not impersonate others, infringe rights, or include unlawful or
-        abusive content. Website links are reviewed and may be removed.
+        abusive content. Website links must be https destinations you are authorized to share; they are
+        reviewed automatically and may be refused or removed. Rank Up does not endorse third-party sites.
       </p>
 
       <h2>4. Contributions and payments</h2>
@@ -120,6 +122,13 @@ function Page() {
       <h2>13. Contact</h2>
       <p>
         Questions about these Terms: <Link to="/contact">Contact</Link>.
+      </p>
+
+      <h2>14. Governing law</h2>
+      <p>
+        These Terms are governed by the laws applicable to the operator of Rank Up, without regard to
+        conflict-of-law rules. If a provision is unenforceable, the rest remain in effect. You may have
+        additional rights that these Terms cannot waive.
       </p>
     </LegalDoc>
   );

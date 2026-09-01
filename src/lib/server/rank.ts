@@ -213,8 +213,14 @@ function requireSafeLink(raw?: string | null) {
   const t = raw?.trim();
   if (!t) return null;
   if (t.length > 300) throw new Error("That website is too long.");
-  const withProto = /^https?:\/\//i.test(t) ? t : `https://${t}`;
-  if (!isUrlSafe(withProto)) throw new Error("That website did not pass safety review.");
+  const withProto = /^https:\/\//i.test(t)
+    ? t
+    : /^http:\/\//i.test(t)
+      ? `https://${t.slice(7)}`
+      : `https://${t}`;
+  if (!isUrlSafe(withProto)) {
+    throw new Error("That website did not pass safety review. Use a full https:// link — shorteners and adult sites are blocked.");
+  }
   return withProto;
 }
 
@@ -286,12 +292,37 @@ async function ensureRicherNotes(sql: Sql) {
   }
 }
 
+async function ensureUniqueBoard(sql: Sql) {
+  const done = await getCfg(sql, "dedupeBoard0009");
+  if (done === "1") return;
+  try {
+    await sql.query(`
+      delete from leaderboard a
+      using leaderboard b
+      where a.id > b.id
+        and a.cycle_type = b.cycle_type
+        and a.cycle_start = b.cycle_start
+        and (
+          (a.user_id is not null and a.user_id = b.user_id)
+          or (a.is_seed = true and b.is_seed = true and a.display_name = b.display_name)
+        )
+    `);
+    await sql.query(
+      "create unique index if not exists leaderboard_seed_cycle_uniq on leaderboard (display_name, cycle_type, cycle_start) where is_seed = true",
+    );
+    await setCfg(sql, "dedupeBoard0009", "1");
+  } catch (err) {
+    console.error("[rank] dedupe skipped", err instanceof Error ? err.message : err);
+  }
+}
+
 async function ensureSeed(sql: Sql) {
   await ensureUsernameSchema(sql);
   await ensureHardening(sql);
   const { ensureTwoFactorSchema } = await import("./two-factor");
   await ensureTwoFactorSchema(sql);
   await ensureRicherNotes(sql);
+  await ensureUniqueBoard(sql);
   const prizes = await sql<{ c: number }>`select count(*)::int as c from prizes`;
   if ((prizes[0]?.c ?? 0) === 0) {
     for (const p of DEFAULT_PRIZES) {
@@ -527,7 +558,13 @@ export const getLeaderboard = createServerFn({ method: "GET" })
         order by rank asc
         limit 120
       `;
-      return rows.map(publicEntry);
+      const seen = new Set<string>();
+      return rows.map(publicEntry).filter((e) => {
+        const key = e.userId || `${e.displayName}:${e.cycleType}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
     } catch (err) {
       console.error("[leaderboard]", err instanceof Error ? err.message : err);
       return [];

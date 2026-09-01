@@ -91,10 +91,35 @@ function Page() {
         prize fulfillment, to the fullest extent allowed by law.
       </p>
 
-      <h2>10. Winner list</h2>
+      <h2>11. Not a lottery or game of chance</h2>
       <p>
-        Top finishers remain visible on the live board and in <Link to="/archive">Past seasons</Link>{" "}
-        after a cycle is archived.
+        Rank Up is a paid ranking contest. Winners are determined solely by confirmed contribution totals
+        during a cycle. There is no random draw, no odds, no spinning wheel, and no element of chance in
+        placement. Rank Up is not a lottery, raffle, sweepstakes, casino, or sportsbook. If the law in
+        your location treats paid contests as prohibited gambling, you may not enter — Rank Up is void
+        where prohibited.
+      </p>
+
+      <h2>12. Public website links</h2>
+      <p>
+        Players may optionally publish an https website on the leaderboard. Links are scanned and may be
+        refused or removed (adult content, malware, shorteners, private or local addresses, and other
+        unsafe destinations). Rank Up does not endorse third-party sites. Clicking a player link leaves
+        Rank Up. You are responsible for the destination of any link you submit.
+      </p>
+
+      <h2>13. Taxes and winner verification</h2>
+      <p>
+        Prize winners are responsible for any taxes. We may require government identification, tax forms
+        (such as a W-9 or equivalent), and proof of eligibility before paying a prize. Failure to complete
+        a reasonable claim process within the stated window may forfeit the prize.
+      </p>
+
+      <h2>14. Responsible participation</h2>
+      <p>
+        Contribute only what you can afford. Rank Up is entertainment, not an investment, and there is no
+        guarantee you will finish in a prize place. If gambling-like spending is a problem for you, do not
+        enter and seek help from a local support service.
       </p>
     </LegalDoc>
   );

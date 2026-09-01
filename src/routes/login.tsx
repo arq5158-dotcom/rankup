@@ -116,13 +116,13 @@ function Login() {
               RANK <span className="text-gold">UP</span>
             </span>
           </Link>
-          <Link to="/" className="text-sm text-white/40 hover:text-fg">
+          <Link to="/" className="tap inline-flex min-h-11 items-center text-sm font-semibold text-white/50 hover:text-fg">
             Back to Rankings
           </Link>
         </div>
       </header>
       <main id="main" className="relative z-10 flex min-h-[80vh] items-center justify-center px-4 py-12">
-        <div className="glass-card w-full max-w-md rounded-2xl p-6 fade-switch">
+        <div className="glass-card card-3d w-full max-w-md rounded-2xl p-6 fade-switch">
           <div className="mb-5 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gold/15">
               <Crown className="h-6 w-6 text-gold" />
@@ -155,7 +155,7 @@ function Login() {
               <span className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center text-[10px] tracking-wider text-white/35 uppercase">
-              <span className="bg-[#0f0f14] px-2">or email</span>
+              <span className="bg-surface/80 px-2">or email</span>
             </div>
           </div>
 
@@ -246,7 +246,7 @@ function Login() {
             </button>
             {mode === "up" && (
               <p className="text-center text-[10px] leading-relaxed text-white/35">
-                By creating an account you agree to the{" "}
+                By creating an account you confirm you are 18 or older and agree to the{" "}
                 <Link to="/terms" className="text-gold">
                   Terms
                 </Link>
@@ -258,7 +258,7 @@ function Login() {
                 <Link to="/privacy" className="text-gold">
                   Privacy Policy
                 </Link>
-                .
+                . Not a lottery. Void where prohibited.
               </p>
             )}
           </form>

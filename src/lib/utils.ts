@@ -67,7 +67,30 @@ const BLOCKED_HOST_BITS = [
   "youporn",
   "brazzers",
   "onlyfans",
+  "xnxx",
+  "chaturbate",
+  "stripchat",
 ];
+
+const BLOCKED_HOSTS = new Set([
+  "bit.ly",
+  "tinyurl.com",
+  "t.co",
+  "goo.gl",
+  "ow.ly",
+  "is.gd",
+  "buff.ly",
+  "cutt.ly",
+  "rebrand.ly",
+  "tiny.cc",
+  "rb.gy",
+  "shorturl.at",
+  "tiny.one",
+  "b.link",
+  "lnkd.in",
+]);
+
+const BLOCKED_TLDS = [".onion", ".zip", ".mov", ".tk", ".gq", ".ml", ".cf", ".ga", ".click", ".country"];
 
 function isPrivateHost(host: string) {
   const h = host.toLowerCase().replace(/^\[|\]$/g, "");
@@ -79,14 +102,16 @@ function isPrivateHost(host: string) {
     h.endsWith(".internal") ||
     h.endsWith(".localhost") ||
     h.endsWith(".arpa") ||
-    h.endsWith(".lan")
+    h.endsWith(".lan") ||
+    h.endsWith(".home") ||
+    h.endsWith(".corp")
   ) {
     return true;
   }
   if (h.includes(":")) {
     if (h.startsWith("fe80") || h.startsWith("fc") || h.startsWith("fd") || h.startsWith("ff")) return true;
     if (h.includes("::ffff:")) return isPrivateHost(h.split("::ffff:")[1] || h);
-    return false;
+    return true;
   }
   if (/^\d+$/.test(h) && Number(h) <= 0xffffffff) return true;
   if (/^0x[0-9a-f]+$/i.test(h)) return true;
@@ -99,15 +124,28 @@ function isPrivateHost(host: string) {
 }
 
 export function isUrlSafe(url: string): boolean {
-  if (typeof url !== "string" || url.length > 300) return false;
-  if (/[\u0000-\u001f\u007f\s]/.test(url)) return false;
+  if (typeof url !== "string" || url.length < 11 || url.length > 300) return false;
+  if (/[\u0000-\u001f\u007f\s<>"'`]/.test(url)) return false;
+  if (/%00|%0[ad]|%0d|%0a|javascript:|data:|vbscript:|file:/i.test(url)) return false;
   try {
     const parsed = new URL(url);
-    if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return false;
+    if (parsed.protocol !== "https:") return false;
     if (parsed.username || parsed.password) return false;
+    if (parsed.port && parsed.port !== "443") return false;
     const host = parsed.hostname.toLowerCase();
+    if (!host || host.length > 253) return false;
+    if (host.startsWith("xn--") || host.includes(".xn--")) return false;
+    if (!host.includes(".")) return false;
+    if (/^\d/.test(host.split(".").pop() || "")) return false;
+    if (!/^[a-z0-9.-]+$/.test(host)) return false;
     if (isPrivateHost(host)) return false;
-    return !BLOCKED_HOST_BITS.some((d) => host.includes(d));
+    if (BLOCKED_HOSTS.has(host) || BLOCKED_HOSTS.has(host.replace(/^www\./, ""))) return false;
+    if (BLOCKED_TLDS.some((t) => host.endsWith(t))) return false;
+    if (BLOCKED_HOST_BITS.some((d) => host.includes(d))) return false;
+    if (parsed.pathname.includes("\\") || parsed.href.includes("@") && parsed.href.indexOf("@") < parsed.href.indexOf(host)) {
+      return false;
+    }
+    return true;
   } catch {
     return false;
   }
@@ -116,8 +154,9 @@ export function isUrlSafe(url: string): boolean {
 export function normalizeHttpUrl(raw: string): string | null {
   const t = raw.trim();
   if (!t) return null;
-  const withProto = /^https?:\/\//i.test(t) ? t : `https://${t}`;
-  return isUrlSafe(withProto) ? withProto : null;
+  const withProto = /^https:\/\//i.test(t) ? t : t.replace(/^http:\/\//i, "https://");
+  const next = /^https:\/\//i.test(withProto) ? withProto : `https://${withProto}`;
+  return isUrlSafe(next) ? next : null;
 }
 
 export function isImageSafe(url: string): boolean {
@@ -136,7 +175,7 @@ export function isImageSafe(url: string): boolean {
   if (!isUrlSafe(t)) return false;
   try {
     const u = new URL(t);
-    return u.protocol === "https:" || u.protocol === "http:";
+    return u.protocol === "https:";
   } catch {
     return false;
   }

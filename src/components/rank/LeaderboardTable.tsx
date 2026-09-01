@@ -1,7 +1,8 @@
-import { ArrowDown, ArrowUp, ChevronRight, ExternalLink } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronRight } from "lucide-react";
 import { AvatarImg, Verified } from "./Avatar";
 import { NoteTrigger } from "./NoteIsland";
-import { formatUsd, hostFromUrl, isUrlSafe } from "@/lib/utils";
+import { SafeWebLink } from "./SafeWebLink";
+import { formatUsd } from "@/lib/utils";
 import type { BoardEntry } from "@/lib/server/rank";
 
 function Move({ n }: { n: number }) {
@@ -24,16 +25,16 @@ function Move({ n }: { n: number }) {
 
 function RankMark({ rank, move }: { rank: number; move: number }) {
   return (
-    <span className="inline-flex items-center justify-center gap-1 text-[13px] font-bold tabular-nums text-white/75">
+    <span className="inline-flex items-center justify-center gap-1 text-[13px] font-bold tabular-nums text-white/80">
       {rank}
       {move > 0 ? (
-        <span className="inline-flex items-center text-success">
+        <span className="inline-flex items-center text-success sm:hidden">
           <ArrowUp className="h-3 w-3" strokeWidth={2.6} />
           <span className="text-[10px] font-extrabold">{move}</span>
         </span>
       ) : null}
       {move < 0 ? (
-        <span className="inline-flex items-center text-danger">
+        <span className="inline-flex items-center text-danger sm:hidden">
           <ArrowDown className="h-3 w-3" strokeWidth={2.6} />
           <span className="text-[10px] font-extrabold">{Math.abs(move)}</span>
         </span>
@@ -53,14 +54,17 @@ export function LeaderboardTable({
 }) {
   const rows = showAll ? entries : entries.filter((e) => e.rank >= 4).slice(0, 10);
   return (
-    <div id="leaderboard" className="glass-card overflow-hidden rounded-[22px]">
-      <div className="flex items-center justify-between gap-3 border-b border-white/[0.05] px-4 py-3.5 sm:px-5">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <h3 className="text-[12px] font-extrabold tracking-[0.18em] text-fg uppercase sm:text-[13px]">
+    <div id="leaderboard" className="glass-card overflow-hidden rounded-[20px]">
+      <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-4 sm:px-6">
+        <div className="flex min-w-0 items-center gap-3">
+          <h3 className="text-[13px] font-extrabold tracking-[0.18em] text-fg uppercase sm:text-[14px]">
             Live leaderboard
           </h3>
-          <span className="flex items-center gap-1.5 text-[10px] font-bold text-success">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
+          <span className="flex items-center gap-1.5 text-[11px] font-bold text-success">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
+            </span>
             Top {Math.min(70, entries.length)} Players
           </span>
         </div>
@@ -83,16 +87,21 @@ export function LeaderboardTable({
 
       <div className="sm:hidden">
         {rows.map((e) => (
-          <div key={e.id} className="lb-row flex items-center gap-3 px-4 py-2.5">
-            <span className="w-7 shrink-0 text-center">
+          <div key={e.id} className="lb-row flex items-start gap-3 px-4 py-3">
+            <span className="mt-1 w-7 shrink-0 text-center">
               <RankMark rank={e.rank} move={e.movement} />
             </span>
-            <AvatarImg src={e.profileImage} name={e.displayName} size={32} />
+            <AvatarImg src={e.profileImage} name={e.displayName} size={36} />
             <div className="min-w-0 flex-1">
-              <p className="flex min-w-0 items-center text-[13px] font-semibold text-fg">
-                <span className="truncate">{e.displayName}</span>
-                <Verified />
-              </p>
+              <div className="flex items-start justify-between gap-2">
+                <p className="flex min-w-0 items-center text-[13px] font-semibold text-fg">
+                  <span className="truncate">{e.displayName}</span>
+                  <Verified />
+                </p>
+                <span className="shrink-0 pt-0.5 text-[13px] font-bold text-success tabular-nums">
+                  ${formatUsd(e.amountPaid)}
+                </span>
+              </div>
               {e.shortNote ? (
                 <NoteTrigger
                   note={e.shortNote}
@@ -101,20 +110,19 @@ export function LeaderboardTable({
                   image={e.profileImage}
                   amount={e.amountPaid}
                   rank={e.rank}
+                  webLink={e.webLink}
                   lines={1}
                   className="mt-0.5 min-w-0 text-[11px] text-white/35"
                 />
               ) : null}
+              <SafeWebLink href={e.webLink} className="mt-0.5 text-[11px] font-semibold" />
             </div>
-            <span className="shrink-0 text-[13px] font-bold text-success tabular-nums">
-              ${formatUsd(e.amountPaid)}
-            </span>
           </div>
         ))}
       </div>
 
       <div className="hidden sm:block">
-        <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold tracking-[0.14em] text-white/28 uppercase">
+        <div className="grid grid-cols-12 gap-2 px-6 py-3 text-[11px] font-bold tracking-[0.14em] text-white/42 uppercase">
           <div className="col-span-1 text-center">Rank</div>
           <div className="col-span-3">Player</div>
           <div className="col-span-2 text-right">Contribution</div>
@@ -122,16 +130,16 @@ export function LeaderboardTable({
           <div className="col-span-3">Message</div>
           <div className="col-span-2 text-right">Website</div>
         </div>
-        <div className="max-h-[440px] overflow-y-auto">
+        <div className="max-h-[520px] overflow-y-auto">
           {rows.map((e) => (
-            <div key={e.id} className="lb-row grid grid-cols-12 items-center gap-2 px-5 py-3">
+            <div key={e.id} className="lb-row grid grid-cols-12 items-center gap-2 px-6 py-3.5">
               <div className="col-span-1 text-center">
                 <RankMark rank={e.rank} move={e.movement} />
               </div>
-              <div className="col-span-3 flex min-w-0 items-center gap-2.5">
-                <AvatarImg src={e.profileImage} name={e.displayName} size={34} />
+              <div className="col-span-3 flex min-w-0 items-center gap-3">
+                <AvatarImg src={e.profileImage} name={e.displayName} size={32} />
                 <div className="min-w-0">
-                  <span className="flex min-w-0 items-center truncate text-[13px] font-semibold text-fg">
+                  <span className="flex min-w-0 items-center truncate text-[14px] font-semibold text-fg">
                     <span className="truncate">{e.displayName}</span>
                     <Verified />
                   </span>
@@ -151,20 +159,13 @@ export function LeaderboardTable({
                   image={e.profileImage}
                   amount={e.amountPaid}
                   rank={e.rank}
-                  className="w-full text-[11px] leading-snug text-white/45"
+                  webLink={e.webLink}
+                  className="w-full text-[12px] leading-snug text-white/50"
                 />
               </div>
               <div className="col-span-2 text-right">
-                {e.webLink && isUrlSafe(e.webLink) ? (
-                  <a
-                    href={e.webLink}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    className="inline-flex items-center gap-1 text-[11px] text-white/45 hover:text-gold"
-                  >
-                    {hostFromUrl(e.webLink)}
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
+                {e.webLink ? (
+                  <SafeWebLink href={e.webLink} compact className="justify-end text-[11px] text-white/55 hover:text-gold" />
                 ) : (
                   <span className="text-[9px] text-white/10">—</span>
                 )}

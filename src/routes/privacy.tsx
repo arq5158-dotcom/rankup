@@ -64,8 +64,10 @@ function Page() {
       <h2>4. Sharing</h2>
       <p>
         Leaderboard display names, notes, ranks, contribution totals, and optional website links are
-        public by design — that is the product. We share other personal data only with processors
-        listed above, if required by law, or to protect the service and other players.
+        public by design — that is the product. Website links are filtered for safety but remain
+        third-party pages. We share other personal data only with processors listed above, if required
+        by law, or to protect the service and other players. We do not sell or share personal
+        information for cross-context behavioral advertising.
       </p>
 
       <h2>5. Retention</h2>
@@ -79,9 +81,10 @@ function Page() {
       <h2>6. Your rights</h2>
       <p>
         Depending on where you live, you may have rights to access, correct, delete, or export personal
-        data, and to object to or restrict certain processing. Send requests through{" "}
+        data, and to object to or restrict certain processing (including GDPR and CCPA/CPRA rights such
+        as know, delete, and opt-out of sale/share — we do not sell). Send requests through{" "}
         <Link to="/contact">Contact</Link>. We will not discriminate against you for exercising these
-        rights.
+        rights. We may need to verify your identity before fulfilling a request.
       </p>
 
       <h2>7. Children</h2>

@@ -155,7 +155,7 @@ function Dashboard() {
                   max: USERNAME_MAX,
                 },
                 { label: "Short note", value: note, set: setNote, max: NOTE_MAX_CHARS },
-                { label: "Website", value: link, set: setLink, max: 300 },
+                { label: "Website", value: link, set: setLink, max: 300, hint: "Public https:// link. Adult, malware, and shortened URLs are blocked." },
                 { label: "Profile image URL", value: image, set: setImage, max: 500 },
               ].map((f) => (
                 <div key={f.label} className="field">
