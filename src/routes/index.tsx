@@ -4,12 +4,12 @@ import { ChevronRight, Lock, Trophy, Zap } from "lucide-react";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import {
   getLeaderboard,
-  getMyAccount,
   getPrizes,
   getStripeStatus,
   type BoardEntry,
   type PrizeRow,
 } from "@/lib/server/rank";
+import { loadAccount, peekAccount, type MyAccount } from "@/lib/account-cache";
 import { Navbar } from "@/components/rank/Navbar";
 import { Podium } from "@/components/rank/Podium";
 import { PrizePools } from "@/components/rank/PrizePools";
@@ -17,6 +17,7 @@ import { LeaderboardTable } from "@/components/rank/LeaderboardTable";
 import { ParticipatePanel } from "@/components/rank/ParticipatePanel";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { FluidFold } from "@/components/rank/motion";
+import { RoutePending } from "@/components/rank/RoutePending";
 import { seoHead, SITE_DESCRIPTION } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
@@ -35,6 +36,7 @@ export const Route = createFileRoute("/")({
     return { monthly, prizes, stripe };
   },
   staleTime: 20_000,
+  pendingComponent: RoutePending,
   component: Home,
 });
 
@@ -63,7 +65,7 @@ function Home() {
   const { user, isPending } = useCurrentUserState();
   const [showAll, setShowAll] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
-  const [account, setAccount] = useState<Awaited<ReturnType<typeof getMyAccount>> | null>(null);
+  const [account, setAccount] = useState<MyAccount | null>(() => peekAccount());
   const [board, setBoard] = useState<BoardEntry[]>(monthly);
   const [prizeRows, setPrizeRows] = useState<PrizeRow[]>(prizes);
 
@@ -77,7 +79,7 @@ function Home() {
       setAccount(null);
       return;
     }
-    void getMyAccount()
+    void loadAccount()
       .then(setAccount)
       .catch(() => setAccount(null));
   }, [user?.id]);

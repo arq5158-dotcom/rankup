@@ -5,6 +5,7 @@ import { PageShell } from "@/components/rank/PageShell";
 import { Podium } from "@/components/rank/Podium";
 import { PrizePools } from "@/components/rank/PrizePools";
 import { LeaderboardTable } from "@/components/rank/LeaderboardTable";
+import { RoutePending } from "@/components/rank/RoutePending";
 import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/monthly")({
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/monthly")({
     return { monthly, prizes };
   },
   staleTime: 20_000,
+  pendingComponent: RoutePending,
   component: Monthly,
 });
 

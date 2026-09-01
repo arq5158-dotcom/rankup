@@ -3,7 +3,7 @@ import { Crown, History, Lock, LogOut, Menu, Settings, Shield, X } from "lucide-
 import { Link, useNavigate } from "@tanstack/react-router";
 import { signOut } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { getMyAccount } from "@/lib/server/rank";
+import { loadAccount, peekAccount } from "@/lib/account-cache";
 import { AvatarImg } from "./Avatar";
 import { usePresence } from "./motion";
 
@@ -28,6 +28,23 @@ export type AccountInfo = {
   isOwner: boolean;
 };
 
+function toInfo(
+  a: NonNullable<ReturnType<typeof peekAccount>>,
+  user: { displayName: string | null; primaryEmail: string | null; profileImageUrl: string | null },
+): AccountInfo {
+  return {
+    name: a.profile.displayName || user.displayName || "Competitor",
+    email: a.profile.email || user.primaryEmail || "",
+    image: a.profile.profileImage || user.profileImageUrl,
+    completeness: a.completeness,
+    monthlyRank: a.monthlyRank,
+    weeklyRank: a.weeklyRank,
+    twoFactor: a.profile.twoFactorEnabled,
+    isAdmin: a.profile.isAdmin,
+    isOwner: a.profile.isOwner,
+  };
+}
+
 export function Navbar({
   active = "Leaderboard",
   account: accountProp,
@@ -38,7 +55,10 @@ export function Navbar({
   const navigate = useNavigate();
   const { user } = useCurrentUserState();
   const [mobile, setMobile] = useState(false);
-  const [fetched, setFetched] = useState<AccountInfo | null>(null);
+  const [fetched, setFetched] = useState<AccountInfo | null>(() => {
+    const hit = peekAccount();
+    return hit ? toInfo(hit, { displayName: null, primaryEmail: null, profileImageUrl: null }) : null;
+  });
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -51,20 +71,10 @@ export function Navbar({
       return;
     }
     if (accountProp) return;
-    void getMyAccount()
-      .then((a) => {
-        setFetched({
-          name: a.profile.displayName || user.displayName || "Competitor",
-          email: a.profile.email || user.primaryEmail || "",
-          image: a.profile.profileImage || user.profileImageUrl,
-          completeness: a.completeness,
-          monthlyRank: a.monthlyRank,
-          weeklyRank: a.weeklyRank,
-          twoFactor: a.profile.twoFactorEnabled,
-          isAdmin: a.profile.isAdmin,
-          isOwner: a.profile.isOwner,
-        });
-      })
+    const hit = peekAccount();
+    if (hit) setFetched(toInfo(hit, user));
+    void loadAccount()
+      .then((a) => setFetched(toInfo(a, user)))
       .catch(() => setFetched(null));
   }, [user?.id, accountProp]);
 

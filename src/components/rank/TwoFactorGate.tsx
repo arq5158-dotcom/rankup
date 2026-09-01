@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Loader2, Shield } from "lucide-react";
 import { useRouterState } from "@tanstack/react-router";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { getMyAccount } from "@/lib/server/rank";
+import { loadAccount } from "@/lib/account-cache";
 import { unlockTwoFactor } from "@/lib/server/two-factor";
 import { publicErrorMessage } from "@/lib/utils";
 import { usePresence } from "./motion";
@@ -21,7 +21,7 @@ export function TwoFactorGate() {
       setNeeded(false);
       return;
     }
-    void getMyAccount()
+    void loadAccount()
       .then((a) => setNeeded(Boolean(a.profile.username && a.profile.twoFactorEnabled && !a.twoFactorUnlocked)))
       .catch(() => setNeeded(false));
   }, [user?.id, pathname]);

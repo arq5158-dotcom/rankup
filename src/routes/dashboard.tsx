@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Camera, Crown, Loader2, Save } from "lucide-react";
+import { Camera, Crown, Save } from "lucide-react";
 import { RedirectToSignIn } from "@/lib/auth/gates";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { getMyAccount, updateMyProfile } from "@/lib/server/rank";
+import { updateMyProfile } from "@/lib/server/rank";
+import { loadAccount, setAccountCache, type MyAccount } from "@/lib/account-cache";
 import { Navbar } from "@/components/rank/Navbar";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { SecurityPanel } from "@/components/rank/SecurityPanel";
 import { PhotoCropper } from "@/components/rank/PhotoCropper";
 import { AvatarImg } from "@/components/rank/Avatar";
+import { RoutePending } from "@/components/rank/RoutePending";
 import { toast } from "sonner";
 import { formatUsd, NOTE_MAX_CHARS, publicErrorMessage } from "@/lib/utils";
 import { seoHead } from "@/lib/seo";
@@ -28,19 +30,29 @@ export const Route = createFileRoute("/dashboard")({
       path: "/dashboard",
       noindex: true,
     }),
+  loader: async () => {
+    try {
+      return { account: await loadAccount() };
+    } catch {
+      return { account: null as MyAccount | null };
+    }
+  },
+  staleTime: 15_000,
+  pendingComponent: RoutePending,
   component: Dashboard,
 });
 
 function Dashboard() {
+  const { account: loaded } = Route.useLoaderData();
   const { user, isPending } = useCurrentUserState();
   const { tab: tabParam } = Route.useSearch();
   const [tab, setTab] = useState<DashTab>(tabParam ?? "profile");
-  const [account, setAccount] = useState<Awaited<ReturnType<typeof getMyAccount>> | null>(null);
-  const [name, setName] = useState("");
-  const [handle, setHandle] = useState("");
-  const [note, setNote] = useState("");
-  const [link, setLink] = useState("");
-  const [image, setImage] = useState("");
+  const [account, setAccount] = useState<MyAccount | null>(loaded);
+  const [name, setName] = useState(loaded?.profile.displayName ?? "");
+  const [handle, setHandle] = useState(loaded?.profile.username ?? "");
+  const [note, setNote] = useState(loaded?.profile.shortNote ?? "");
+  const [link, setLink] = useState(loaded?.profile.webLink ?? "");
+  const [image, setImage] = useState(loaded?.profile.profileImage ?? "");
   const [saving, setSaving] = useState(false);
   const [cropFile, setCropFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -49,30 +61,30 @@ function Dashboard() {
     if (tabParam) setTab(tabParam);
   }, [tabParam]);
 
+  useEffect(() => {
+    if (!loaded) return;
+    setAccount(loaded);
+    setName(loaded.profile.displayName ?? "");
+    setHandle(loaded.profile.username ?? "");
+    setNote(loaded.profile.shortNote ?? "");
+    setLink(loaded.profile.webLink ?? "");
+    setImage(loaded.profile.profileImage ?? "");
+  }, [loaded]);
+
   const load = async () => {
-    const a = await getMyAccount();
+    const a = await loadAccount(true);
+    setAccountCache(a);
     setAccount(a);
-    setName(a.profile.displayName ?? user?.displayName ?? "");
+    setName(a.profile.displayName ?? "");
     setHandle(a.profile.username ?? "");
     setNote(a.profile.shortNote ?? "");
     setLink(a.profile.webLink ?? "");
-    setImage(a.profile.profileImage ?? user?.profileImageUrl ?? "");
+    setImage(a.profile.profileImage ?? "");
   };
 
-  useEffect(() => {
-    if (!user) return;
-    void load().catch(() => setAccount(null));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
-
-  if (isPending) {
-    return (
-      <div className="grid min-h-screen place-items-center bg-bg">
-        <Loader2 className="h-6 w-6 animate-spin text-gold" />
-      </div>
-    );
-  }
-  if (!user) return <RedirectToSignIn />;
+  if (isPending && !loaded) return <RoutePending />;
+  if (!user && !loaded) return <RedirectToSignIn />;
+  if (!account) return <RoutePending />;
 
   const save = async () => {
     setSaving(true);
@@ -95,44 +107,41 @@ function Dashboard() {
     }
   };
 
+  const display = name || account.profile.displayName || user?.displayName || "Competitor";
+  const email = account.profile.email || user?.primaryEmail || "";
+
   return (
     <div className="relative min-h-screen">
       <Navbar
         active="Profile"
-        account={
-          account
-            ? {
-                name: name || "Competitor",
-                email: user.primaryEmail || "",
-                image,
-                completeness: account.completeness,
-                monthlyRank: account.monthlyRank,
-                weeklyRank: account.weeklyRank,
-                twoFactor: account.profile.twoFactorEnabled,
-                isAdmin: account.profile.isAdmin,
-                isOwner: account.profile.isOwner,
-              }
-            : null
-        }
+        account={{
+          name: display,
+          email,
+          image,
+          completeness: account.completeness,
+          monthlyRank: account.monthlyRank,
+          weeklyRank: account.weeklyRank,
+          twoFactor: account.profile.twoFactorEnabled,
+          isAdmin: account.profile.isAdmin,
+          isOwner: account.profile.isOwner,
+        }}
       />
       <main className="page-enter relative z-10 mx-auto max-w-3xl px-4 py-8 sm:py-10">
-        <h1 className="font-display text-2xl font-black text-fg">Welcome{name ? `, ${name}` : ""}</h1>
+        <h1 className="font-display text-2xl font-black text-fg">Welcome{display ? `, ${display}` : ""}</h1>
         <p className="mt-1 text-sm text-white/40">Manage your profile, security, and contribution history.</p>
 
-        {account && (
-          <div className="glass-card mt-6 mb-6 rounded-2xl border border-gold/15 p-5 sm:p-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gold/10 sm:h-16 sm:w-16">
-                <Crown className="h-7 w-7 text-gold sm:h-8 sm:w-8" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[10px] tracking-wider text-white/40 uppercase">Your current rank</p>
-                <p className="text-3xl font-black text-fg">#{account.monthlyRank ?? "—"}</p>
-                <p className="text-sm font-bold text-gold">${formatUsd(account.monthlyPaid)} contributed</p>
-              </div>
+        <div className="glass-card mt-6 mb-6 rounded-2xl border border-gold/15 p-5 sm:p-6">
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gold/10 sm:h-16 sm:w-16">
+              <Crown className="h-7 w-7 text-gold sm:h-8 sm:w-8" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[10px] tracking-wider text-white/40 uppercase">Your current rank</p>
+              <p className="text-3xl font-black text-fg">#{account.monthlyRank ?? "—"}</p>
+              <p className="text-sm font-bold text-gold">${formatUsd(account.monthlyPaid)} contributed</p>
             </div>
           </div>
-        )}
+        </div>
 
         <Segmented
           value={tab}
@@ -155,7 +164,7 @@ function Dashboard() {
                   className="tap relative shrink-0"
                   aria-label="Change profile photo"
                 >
-                  <AvatarImg src={image} name={name || "You"} size={84} ring="gold" />
+                  <AvatarImg src={image} name={display} size={84} ring="gold" />
                   <span className="absolute right-0 bottom-0 grid h-8 w-8 place-items-center rounded-full border border-gold/40 bg-[#12121a] text-gold">
                     <Camera className="h-3.5 w-3.5" />
                   </span>
@@ -226,16 +235,16 @@ function Dashboard() {
 
           {tab === "security" && (
             <SecurityPanel
-              email={account?.profile.email || user.primaryEmail || ""}
-              methods={account?.signInMethods ?? []}
-              twoFactorEnabled={account?.profile.twoFactorEnabled ?? false}
+              email={email}
+              methods={account.signInMethods ?? []}
+              twoFactorEnabled={account.profile.twoFactorEnabled ?? false}
               onRefresh={load}
             />
           )}
 
           {tab === "history" && (
             <div className="glass-card rounded-2xl p-5 sm:p-6">
-              {!account || account.payments.length === 0 ? (
+              {account.payments.length === 0 ? (
                 <p className="py-8 text-center text-sm text-white/40">No payments yet. Enter a season from the home page.</p>
               ) : (
                 <div className="space-y-3">
@@ -263,7 +272,7 @@ function Dashboard() {
           <Link to="/" className="btn-outline rounded-xl px-4 py-2 text-sm">
             ← Leaderboard
           </Link>
-          {account?.profile.isAdmin && (
+          {account.profile.isAdmin && (
             <Link to="/admin" className="rounded-xl border border-gold/30 px-4 py-2 text-sm text-gold">
               Admin
             </Link>

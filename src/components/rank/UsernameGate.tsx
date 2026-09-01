@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { AtSign, Loader2 } from "lucide-react";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { checkUsername, getMyAccount, setUsername } from "@/lib/server/rank";
+import { checkUsername, setUsername } from "@/lib/server/rank";
+import { loadAccount } from "@/lib/account-cache";
 import { validateUsername } from "@/lib/username";
 import { usePresence } from "./motion";
 
@@ -21,7 +22,7 @@ export function UsernameGate() {
       setNeeded(false);
       return;
     }
-    void getMyAccount()
+    void loadAccount()
       .then((a) => setNeeded(!a.profile.username))
       .catch(() => setNeeded(false));
   }, [user?.id, pathname]);

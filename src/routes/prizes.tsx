@@ -3,6 +3,7 @@ import { getPrizes } from "@/lib/server/rank";
 import { PageShell } from "@/components/rank/PageShell";
 import { PrizePools } from "@/components/rank/PrizePools";
 import { seoHead } from "@/lib/seo";
+import { RoutePending } from "@/components/rank/RoutePending";
 
 export const Route = createFileRoute("/prizes")({
   head: () =>
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/prizes")({
     }),
   loader: async () => ({ prizes: await getPrizes() }),
   staleTime: 20_000,
+  pendingComponent: RoutePending,
   component: Page,
 });
 

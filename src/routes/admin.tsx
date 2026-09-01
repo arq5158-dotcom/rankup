@@ -22,6 +22,7 @@ import { Navbar } from "@/components/rank/Navbar";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { toast } from "sonner";
 import { formatUsd, publicErrorMessage } from "@/lib/utils";
+import { loadAccount } from "@/lib/account-cache";
 import { matchesQuery } from "@/lib/username";
 import { seoHead } from "@/lib/seo";
 import { FadeSwitch, Segmented } from "@/components/rank/motion";
@@ -63,7 +64,7 @@ function AdminPage() {
     if (!user) return;
     void (async () => {
       try {
-        const acc = await getMyAccount();
+        const acc = await loadAccount();
         setAccount(acc);
         setIsAdmin(acc.profile.isAdmin);
         setIsOwner(acc.profile.isOwner);
