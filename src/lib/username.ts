@@ -11,9 +11,9 @@ const RESERVED = new Set([
   "support",
   "help",
   "official",
-  "rankup",
-  "rank_up",
-  "rankupapp",
+  "pay4rank",
+  "pay_4_rank",
+  "pay2peak",
   "system",
   "root",
   "null",
@@ -84,9 +84,11 @@ export function normalizeUsername(raw: string): string {
 }
 
 export function handleFromDisplayName(name: string): string {
-  const s = name.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, USERNAME_MAX);
-  if (!s) return "player";
-  return /^[a-z]/.test(s) ? s : `p${s}`.slice(0, USERNAME_MAX);
+  let s = name.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, USERNAME_MAX);
+  if (!s) s = "user";
+  if (!/^[a-z]/.test(s)) s = `p${s}`;
+  if (s.length < USERNAME_MIN) s = `${s}xxx`.slice(0, USERNAME_MIN);
+  return s.slice(0, USERNAME_MAX);
 }
 
 export function validateUsername(

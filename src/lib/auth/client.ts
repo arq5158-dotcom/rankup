@@ -120,6 +120,19 @@ export async function signIn(
     clearToken: () => setBearerToken(null),
   });
 
+  const native =
+    providerId === "grok-google" ? "google" : providerId === "grok-x" ? "twitter" : null;
+  if (native && !inLivePreview()) {
+    const { data, error } = await authClient.signIn.social({
+      provider: native,
+      callbackURL,
+      errorCallbackURL,
+    });
+    if (error) throw new Error(error.message ?? "Sign-in failed");
+    if (data?.url) window.location.href = data.url;
+    return;
+  }
+
   if (inLivePreview()) {
     if (!popup) throw new Error("Pop-up blocked — allow pop-ups for sign-in");
     const token = await waitForPopupToken(popup);

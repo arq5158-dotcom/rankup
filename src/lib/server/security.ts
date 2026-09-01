@@ -76,7 +76,7 @@ export function isAllowedHost(hostHeader: string) {
   if (!hostname || hostname.length > 253) return false;
   if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1") return true;
   if (!/^[a-z0-9.-]+$/.test(hostname)) return false;
-  if (hostname.endsWith(".grok-sandbox.com") || hostname.endsWith(".grok.me")) return true;
+  if (hostname.endsWith(".grok-sandbox.com") || hostname.endsWith(".grok.me") || hostname.endsWith(".vercel.app")) return true;
   const allowed = [
     process.env.BETTER_AUTH_URL,
     process.env.VITE_PUBLIC_HOSTNAME,

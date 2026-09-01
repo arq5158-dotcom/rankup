@@ -115,7 +115,7 @@ function Login() {
           <Link to="/" className="flex items-center gap-2">
             <Crown className="h-5 w-5 text-gold" />
             <span className="text-lg font-black text-fg">
-              RANK <span className="text-gold">UP</span>
+              PAY<span className="text-gold">4RANK</span>
             </span>
           </Link>
           <Link to="/" className="tap inline-flex min-h-11 items-center text-sm font-semibold text-white/50 hover:text-fg">
