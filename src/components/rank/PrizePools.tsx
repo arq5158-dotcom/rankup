@@ -54,7 +54,7 @@ export function PrizePools({
   weeklyChampion?: BoardEntry | null;
 }) {
   void _prizes;
-  const champ = weeklyChampion && weeklyChampion.rank === 1 ? weeklyChampion : weeklyChampion || null;
+  const champ = weeklyChampion?.rank === 1 ? weeklyChampion : null;
 
   return (
     <section id="prizes" className="grid grid-cols-1 items-start gap-3 md:grid-cols-2 md:gap-3">

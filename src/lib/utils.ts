@@ -212,7 +212,7 @@ export function nextMonthEnd() {
 
 export function nextSundayEnd() {
   const n = new Date();
-  const d = (7 - n.getDay()) % 7 || 7;
+  const d = (7 - n.getDay()) % 7;
   const e = new Date(n);
   e.setDate(n.getDate() + d);
   e.setHours(23, 59, 59, 999);

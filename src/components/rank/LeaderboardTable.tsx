@@ -81,9 +81,13 @@ export function LeaderboardTable({
     setLoadingPage(true);
     try {
       const nextRows = await getLeaderboard({ data: { cycleType: cycle, offset: next * 300, limit: 300 } });
+      if (nextRows.length === 0) {
+        setHasNext(false);
+        return;
+      }
       setPageRows(nextRows);
       setPage(next);
-      setHasNext(nextRows.length >= 300);
+      setHasNext(nextRows.length === 300);
       setSpan(300);
     } finally {
       setLoadingPage(false);

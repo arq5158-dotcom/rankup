@@ -247,7 +247,11 @@ function Home() {
         board={monthlyBoard}
         weeklyBoard={weeklyBoard}
         onDone={() => {
-          void loadAccount(true).then(setAccount).catch(() => null);
+          void Promise.all([
+            loadAccount(true).then(setAccount),
+            getLeaderboard({ data: { cycleType: "monthly" } }).then(setMonthlyBoard),
+            getLeaderboard({ data: { cycleType: "weekly" } }).then(setWeeklyBoard),
+          ]).catch(() => null);
         }}
       />
       <BuyCreditsModal

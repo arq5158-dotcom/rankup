@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Camera, Crown, Save } from "lucide-react";
 import { RedirectToSignIn } from "@/lib/auth/gates";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { updateMyProfile } from "@/lib/server/rank";
+import { updateMyProfile, getLeaderboard, type BoardEntry } from "@/lib/server/rank";
 import { loadAccount, setAccountCache, type MyAccount } from "@/lib/account-cache";
 import { Navbar } from "@/components/rank/Navbar";
 import { SiteFooter } from "@/components/rank/SiteFooter";
@@ -34,9 +34,14 @@ export const Route = createFileRoute("/dashboard")({
     }),
   loader: async () => {
     try {
-      return { account: await loadAccount() };
+      const [account, monthly, weekly] = await Promise.all([
+        loadAccount(),
+        getLeaderboard({ data: { cycleType: "monthly" } }),
+        getLeaderboard({ data: { cycleType: "weekly" } }),
+      ]);
+      return { account, monthly, weekly };
     } catch {
-      return { account: null as MyAccount | null };
+      return { account: null as MyAccount | null, monthly: [] as BoardEntry[], weekly: [] as BoardEntry[] };
     }
   },
   staleTime: 15_000,
@@ -45,7 +50,7 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 function Dashboard() {
-  const { account: loaded } = Route.useLoaderData();
+  const { account: loaded, monthly, weekly } = Route.useLoaderData();
   const { user, isPending } = useCurrentUserState();
   const { tab: tabParam } = Route.useSearch();
   const [tab, setTab] = useState<DashTab>(tabParam ?? "profile");
@@ -328,7 +333,8 @@ function Dashboard() {
         monthlyRank={account.monthlyRank}
         weeklyScore={account.weeklyPaid ?? 0}
         weeklyRank={account.weeklyRank}
-        board={[]}
+        board={monthly}
+        weeklyBoard={weekly}
         onDone={() => void load()}
       />
     </div>

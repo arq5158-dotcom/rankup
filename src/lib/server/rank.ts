@@ -682,11 +682,10 @@ export const getLeaderboard = createServerFn({ method: "GET" })
         offset ${data.offset}
         limit ${data.limit}
       `;
-      const seen = new Set<string>();
+      const seen = new Set<number>();
       return rows.map(publicEntry).filter((e) => {
-        const key = e.userId || `${e.displayName}:${e.cycleType}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
+        if (seen.has(e.id)) return false;
+        seen.add(e.id);
         return true;
       });
     } catch (err) {
@@ -1012,9 +1011,21 @@ export async function addScore(
     limit 1
   `;
   const prevRank = existing[0]?.rank ?? null;
-  const prevScore = existing[0] ? num(existing[0].amount_paid) : 0;
-  const next = prevScore + delta;
-  await upsertLeaderboard(sql, { ...opts, amount: next });
+  if (existing[0]) {
+    await sql`
+      update leaderboard set
+        amount_paid = amount_paid + ${delta},
+        display_name = ${opts.displayName},
+        username = coalesce(${opts.username}, username),
+        short_note = coalesce(${opts.shortNote}, short_note),
+        web_link = coalesce(${opts.webLink}, web_link),
+        profile_image = coalesce(${opts.profileImage}, profile_image)
+      where id = ${existing[0].id}
+    `;
+  } else {
+    await upsertLeaderboard(sql, { ...opts, amount: delta });
+  }
+  if (existing[0]) await rerank(sql, opts.cycleType, start);
   const mine = await sql<{ rank: number; amount_paid: number | string }>`
     select rank, amount_paid from leaderboard
     where user_id = ${opts.userId} and cycle_type = ${opts.cycleType} and cycle_start = ${start}
@@ -1023,7 +1034,7 @@ export async function addScore(
   return {
     prevRank,
     rank: mine[0]?.rank ?? null,
-    score: mine[0] ? num(mine[0].amount_paid) : next,
+    score: mine[0] ? num(mine[0].amount_paid) : delta,
   };
 }
 
@@ -1131,6 +1142,27 @@ export async function fulfillPaidSession(session: {
     storedCredits > 0 ? Math.round(storedCredits) : creditsFromUsd(amount, { ...eco, creditsPerUsd: rateAtBuy });
 
   if (!claimed[0]) {
+    const led = await sql<{ id: number }>`
+      select id from credit_ledger where stripe_session_id = ${session.id} limit 1
+    `;
+    if (!led[0] && creditsDelta > 0) {
+      const updated = await sql<{ credits: number | string }>`
+        update profiles
+        set credits = coalesce(credits, 0) + ${creditsDelta}
+        where user_id = ${row.user_id}
+        returning credits
+      `;
+      const newBal = num(updated[0]?.credits);
+      try {
+        await sql`
+          insert into credit_ledger (user_id, kind, credits_delta, score_delta, stripe_session_id, resulting_credits, usd_amount, note)
+          values (${row.user_id}, ${"purchase"}, ${creditsDelta}, ${0}, ${session.id}, ${newBal}, ${amount}, ${`$${amount.toFixed(2)} @ ${rateAtBuy}/USD`})
+        `;
+      } catch {
+        /* unique session */
+      }
+      return { ok: true as const, rank: null, already: true, credits: newBal, creditsAdded: creditsDelta };
+    }
     const bal = await sql<{ credits: number | string }>`select credits from profiles where user_id = ${row.user_id} limit 1`;
     return {
       ok: true as const,

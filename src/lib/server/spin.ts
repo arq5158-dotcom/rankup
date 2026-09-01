@@ -191,19 +191,27 @@ export const claimSpin = createServerFn({ method: "POST" })
       username: p.username,
     };
     const cycleType = data.cycleType;
-    const moved = await addScore(sql, { ...base, cycleType });
     const marked = await sql<{ id: string }>`
-      update spins set
-        claimed = true,
-        claimed_at = now(),
-        monthly_score = ${cycleType === "monthly" ? moved.score : null},
-        monthly_rank = ${cycleType === "monthly" ? moved.rank : null},
-        weekly_score = ${cycleType === "weekly" ? moved.score : null},
-        weekly_rank = ${cycleType === "weekly" ? moved.rank : null}
+      update spins set claimed = true, claimed_at = now()
       where id = ${spin.id} and claimed = false
       returning id
     `;
     if (!marked[0]) throw new Error("Already claimed.");
+    let moved: { prevRank: number | null; rank: number | null; score: number };
+    try {
+      moved = await addScore(sql, { ...base, cycleType });
+    } catch (err) {
+      await sql`update spins set claimed = false, claimed_at = null where id = ${spin.id}`;
+      throw err;
+    }
+    await sql`
+      update spins set
+        monthly_score = ${cycleType === "monthly" ? moved.score : null},
+        monthly_rank = ${cycleType === "monthly" ? moved.rank : null},
+        weekly_score = ${cycleType === "weekly" ? moved.score : null},
+        weekly_rank = ${cycleType === "weekly" ? moved.rank : null}
+      where id = ${spin.id}
+    `;
     await sql`
       insert into credit_ledger (user_id, kind, credits_delta, score_delta, spin_id, resulting_credits, note)
       values (${context.userId}, ${"spin"}, ${0}, ${score}, ${spin.id}, ${null}, ${`Free spin +${score} ${cycleType} score`})

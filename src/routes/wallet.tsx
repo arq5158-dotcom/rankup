@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { Wallet } from "lucide-react";
 import { RedirectToSignIn } from "@/lib/auth/gates";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
@@ -49,6 +49,7 @@ function kindLabel(row: LedgerRow) {
 
 function WalletPage() {
   const loaded = Route.useLoaderData();
+  const router = useRouter();
   const { user, isPending } = useCurrentUserState();
   const [buyOpen, setBuyOpen] = useState(false);
   const [rankOpen, setRankOpen] = useState(false);
@@ -89,9 +90,10 @@ function WalletPage() {
             ledger.map((row) => (
               <div key={row.id} className="glass-card flex items-center justify-between gap-3 rounded-2xl px-4 py-3">
                 <div className="min-w-0">
-                  <p className={`text-sm font-extrabold tabular-nums ${row.creditsDelta >= 0 ? "text-success" : "text-danger"}`}>
-                    {row.creditsDelta >= 0 ? "+" : ""}
-                    {formatScore(row.creditsDelta)} Credits
+                  <p className={`text-sm font-extrabold tabular-nums ${row.kind === "spin" || row.scoreDelta > 0 ? "text-gold" : row.creditsDelta >= 0 ? "text-success" : "text-danger"}`}>
+                    {row.kind === "spin" || (row.creditsDelta === 0 && row.scoreDelta)
+                      ? `+${formatScore(row.scoreDelta)} Score`
+                      : `${row.creditsDelta >= 0 ? "+" : ""}${formatScore(row.creditsDelta)} Credits`}
                   </p>
                   <p className="text-xs text-white/40">{kindLabel(row)}</p>
                   <p className="text-[11px] text-white/30">{row.createdAt.replace("T", " ").slice(0, 19)}</p>
@@ -131,6 +133,7 @@ function WalletPage() {
         weeklyRank={account.weeklyRank}
         board={loaded.monthly}
         weeklyBoard={loaded.weekly}
+        onDone={() => void router.invalidate()}
       />
     </div>
   );

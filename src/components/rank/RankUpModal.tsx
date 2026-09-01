@@ -100,14 +100,18 @@ export function RankUpModal({
   if (!shown) return null;
 
   const go = async () => {
-    if (spend < 1) return;
-    if (!enough) return;
+    if (loading || spend < 1 || !enough) return;
     setLoading(true);
     try {
       const res = await spendCredits({ data: { credits: spend, cycleType: cycle } });
-      await loadAccount(true);
+      try {
+        await loadAccount(true);
+      } catch {
+        /* spend already succeeded */
+      }
       if (res.prevRank && res.rank && res.rank < res.prevRank) {
         setMoved({ spent: res.spent, from: res.prevRank, to: res.rank, cycle: res.cycleType });
+        onDone?.();
       } else {
         toast.success(`+${formatScore(res.spent)} SCORE on the ${res.cycleType} board`);
         onDone?.();
@@ -127,7 +131,7 @@ export function RankUpModal({
       <div className="rank-modal modal-card glass-card max-h-[min(90dvh,640px)] w-full max-w-[360px] overflow-y-auto rounded-2xl p-4">
         <div className="mb-2 flex items-center justify-between">
           <p className="text-[10px] font-bold tracking-[0.16em] text-gold uppercase">Rank up</p>
-          <button type="button" onClick={onClose} className="tap grid h-8 w-8 place-items-center rounded-full text-white/45" aria-label="Close">
+          <button type="button" onClick={() => { if (moved) onDone?.(); onClose(); }} className="tap grid h-8 w-8 place-items-center rounded-full text-white/45" aria-label="Close">
             <X className="h-3.5 w-3.5" />
           </button>
         </div>

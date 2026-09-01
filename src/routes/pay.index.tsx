@@ -51,7 +51,7 @@ function PayPage() {
     void getCreditEconomy().then(setEco).catch(() => setEco(DEFAULT_ECONOMY));
   }, []);
 
-  const packages = useMemo(() => (eco.packages.length ? eco.packages : DEFAULT_ECONOMY.packages).slice(0, 5), [eco.packages]);
+  const packages = useMemo(() => (eco.packages.length ? eco.packages : DEFAULT_ECONOMY.packages), [eco.packages]);
   const usd = draft?.amount ?? 10;
   const credits = creditsFromUsd(usd, eco);
   const inPackages = packages.includes(usd);
@@ -164,7 +164,7 @@ function PayPage() {
           </li>
         </ol>
 
-        <div id="amount-packs" className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
+        <div id="amount-packs" className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-7">
           {packages.map((p) => {
             const on = !custom && usd === p;
             return (

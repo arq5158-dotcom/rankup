@@ -158,8 +158,7 @@ function Login() {
                     const watchdog = window.setTimeout(() => {
                       setLoading(false);
                       setOauth(null);
-                      setError("Sign-in didn’t finish. Try Google, X, or email again.");
-                    }, 15_000);
+                    }, 90_000);
                     void signIn(p.providerId, { callbackURL: "/", errorCallbackURL: "/login" })
                       .catch((err) => {
                         setError(publicErrorMessage(err, "Sign-in failed. Try email or try again."));

@@ -123,14 +123,23 @@ export async function signIn(
   const native =
     providerId === "grok-google" ? "google" : providerId === "grok-x" ? "twitter" : null;
   if (native && !inLivePreview()) {
-    const { data, error } = await authClient.signIn.social({
+    const social = await authClient.signIn.social({
       provider: native,
       callbackURL,
       errorCallbackURL,
     });
-    if (error) throw new Error(error.message ?? "Sign-in failed");
-    if (!data?.url) throw new Error("Sign-in did not start. Try again.");
-    window.location.assign(data.url);
+    if (!social.error && social.data?.url) {
+      window.location.assign(social.data.url);
+      return;
+    }
+    const oauth = await authClient.signIn.oauth2({
+      providerId,
+      callbackURL,
+      errorCallbackURL,
+    });
+    if (oauth.error) throw new Error(oauth.error.message ?? social.error?.message ?? "Sign-in failed");
+    if (!oauth.data?.url) throw new Error("Sign-in did not start. Try again.");
+    window.location.assign(oauth.data.url);
     return;
   }
 
