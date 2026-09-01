@@ -147,7 +147,7 @@ function SpinPage() {
 
   return (
     <PageShell active="Free Spin">
-      <main className="relative z-10 mx-auto max-w-3xl space-y-6 px-4 py-8 text-center">
+      <div className="mx-auto max-w-xl space-y-6 text-center">
         <p className="text-[10px] font-bold tracking-[0.2em] text-gold uppercase">Free score spin</p>
         <h1 className="font-hero text-4xl tracking-[0.06em] text-fg sm:text-5xl">SPIN. SCORE. CLIMB.</h1>
         <p className="mx-auto max-w-md text-sm text-white/50">
@@ -177,7 +177,7 @@ function SpinPage() {
           <p className="text-xs text-white/40">Next free spin unlocks in 24 hours.</p>
         ) : null}
         <Link to="/" className="block text-xs text-gold">Back to leaderboard</Link>
-      </main>
+      </div>
       {pending && !spinning ? (
         <div className="modal-layer is-open fixed inset-0 z-[96] grid place-items-center bg-black/75 p-4">
           <div className="modal-card glass-card w-full max-w-sm rounded-2xl p-6 text-center">

@@ -19,8 +19,9 @@ function Page() {
   const { archives } = Route.useLoaderData();
   return (
     <PageShell>
-      <main className="relative z-10 mx-auto max-w-3xl px-4 py-6 sm:py-10">
-        <h1 className="font-display text-3xl font-black text-gold-grad">Past seasons</h1>
+      <div className="mx-auto max-w-3xl">
+        <p className="page-kicker">History</p>
+        <h1 className="page-title mt-1">Past seasons</h1>
         <div className="mt-6 space-y-3">
           {archives.length === 0 && (
             <p className="glass-card rounded-2xl p-8 text-center text-sm text-white/40">
@@ -40,7 +41,7 @@ function Page() {
         <Link to="/" className="mt-8 inline-block text-sm text-gold">
           ← Back
         </Link>
-      </main>
+      </div>
     </PageShell>
   );
 }

@@ -30,9 +30,9 @@ function Page() {
 
   return (
     <PageShell>
-      <main className="relative z-10 mx-auto max-w-xl px-4 py-12 sm:px-6">
-        <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Support</p>
-        <h1 className="mt-2 font-display text-3xl font-black text-gold-grad">Contact</h1>
+      <div className="mx-auto max-w-xl">
+        <p className="page-kicker">Support</p>
+        <h1 className="page-title mt-1">Contact</h1>
         <p className="mt-3 text-sm leading-relaxed text-white/50">
           For ranking, payment, listing, or privacy questions. Use “Report a link” to flag an unsafe
           player website. Include your display name and the Stripe receipt email if the issue is a
@@ -115,7 +115,7 @@ function Page() {
           </Link>
           .
         </p>
-      </main>
+      </div>
     </PageShell>
   );
 }

@@ -52,8 +52,6 @@ export function LeaderboardTable({
   onCycleChange,
 }: {
   entries: BoardEntry[];
-  showAll?: boolean;
-  onToggle?: () => void;
   cycle?: CycleType;
   onCycleChange?: (v: CycleType) => void;
 }) {

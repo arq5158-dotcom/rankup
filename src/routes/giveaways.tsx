@@ -17,13 +17,14 @@ export const Route = createFileRoute("/giveaways")({
 function Page() {
   return (
     <PageShell active="Giveaways">
-      <main className="relative z-10 mx-auto max-w-3xl space-y-5 px-4 py-6 sm:px-6 sm:py-10">
+      <div className="mx-auto max-w-3xl space-y-5">
         <div className="flex items-end gap-3">
-          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/10 ring-1 ring-gold/25">
-            <Gift className="h-7 w-7 text-gold" />
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gold/10 ring-1 ring-gold/25">
+            <Gift className="h-6 w-6 text-gold" />
           </span>
           <div>
-            <h1 className="font-display text-3xl font-black text-gold-grad">Giveaways</h1>
+            <p className="page-kicker">Community</p>
+            <h1 className="page-title">Giveaways</h1>
             <p className="mt-1 max-w-xl text-sm text-white/45">
               Optional community promotions. Separate from ranking credits. Never a pay-to-win drawing.
             </p>
@@ -60,7 +61,7 @@ function Page() {
             <Link to="/terms" className="text-gold hover:underline">Terms</Link>
           </p>
         </div>
-      </main>
+      </div>
     </PageShell>
   );
 }

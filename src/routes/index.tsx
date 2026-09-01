@@ -65,7 +65,6 @@ function TrustRow({ className = "" }: { className?: string }) {
 function Home() {
   const { monthly, weekly, prizes, stripe } = Route.useLoaderData();
   const { user, isPending } = useCurrentUserState();
-  const [showAll, setShowAll] = useState(false);
   const [cycle, setCycle] = useState<CycleType>("monthly");
   const [payOpen, setPayOpen] = useState(false);
   const [rankOpen, setRankOpen] = useState(false);
@@ -226,8 +225,6 @@ function Home() {
           <div className="order-4 lg:col-span-2">
             <LeaderboardTable
               entries={board}
-              showAll={showAll}
-              onToggle={() => setShowAll((v) => !v)}
               cycle={cycle}
               onCycleChange={setCycle}
             />

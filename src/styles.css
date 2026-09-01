@@ -85,6 +85,32 @@
     0 24px 60px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
+.page-wrap {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding: 24px 20px 56px;
+}
+@media (min-width: 640px) {
+  .page-wrap {
+    padding: 32px 24px 64px;
+  }
+}
+.page-kicker {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+.page-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 2vw + 1.2rem, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--color-fg);
+}
 .glass-card {
   background: linear-gradient(180deg, rgba(20, 18, 26, 0.9) 0%, rgba(10, 10, 16, 0.88) 100%);
   backdrop-filter: blur(28px) saturate(1.12);

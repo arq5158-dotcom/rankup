@@ -62,7 +62,7 @@ function WalletPage() {
   return (
     <div className="relative min-h-screen">
       <Navbar active="Wallet" />
-      <main className="page-enter relative z-10 mx-auto max-w-3xl px-4 py-8 sm:py-10">
+      <main className="page-enter relative z-10 mx-auto max-w-3xl px-5 py-8 sm:px-6 sm:py-10">
         <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Credits wallet</p>
         <h1 className="mt-1 flex items-center gap-2 font-display text-3xl font-black text-fg">
           <Wallet className="h-7 w-7 text-gold" /> Available credits

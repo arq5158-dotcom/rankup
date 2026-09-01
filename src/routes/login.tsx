@@ -49,21 +49,9 @@ function Login() {
       setLoading(false);
       setOauth(null);
     };
-    const onPageShow = (e: PageTransitionEvent) => {
-      if (e.persisted) reset();
-      else reset();
-    };
+    const onPageShow = () => reset();
     window.addEventListener("pageshow", onPageShow);
-    window.addEventListener("focus", reset);
-    const onVis = () => {
-      if (document.visibilityState === "visible") reset();
-    };
-    document.addEventListener("visibilitychange", onVis);
-    return () => {
-      window.removeEventListener("pageshow", onPageShow);
-      window.removeEventListener("focus", reset);
-      document.removeEventListener("visibilitychange", onVis);
-    };
+    return () => window.removeEventListener("pageshow", onPageShow);
   }, []);
 
   useEffect(() => {
