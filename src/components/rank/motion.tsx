@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 export function usePresence(open: boolean, ms = 180) {
@@ -21,6 +22,13 @@ export function usePresence(open: boolean, ms = 180) {
     return () => window.clearTimeout(t);
   }, [open, ms]);
   return { shown, on };
+}
+
+export function NavProgress() {
+  const pending = useRouterState({ select: (s) => s.status === "pending" });
+  const { shown, on } = usePresence(pending, 220);
+  if (!shown) return null;
+  return <div className={`nav-progress ${on ? "is-on" : ""}`} aria-hidden />;
 }
 
 export function FluidFold({

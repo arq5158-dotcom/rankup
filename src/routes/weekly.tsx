@@ -22,6 +22,7 @@ export const Route = createFileRoute("/weekly")({
     ]);
     return { weekly, prizes };
   },
+  staleTime: 20_000,
   component: Weekly,
 });
 

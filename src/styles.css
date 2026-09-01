@@ -1622,6 +1622,36 @@
   }
 }
 
+.nav-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  height: 2px;
+  width: 100%;
+  pointer-events: none;
+  transform-origin: left center;
+  background: linear-gradient(90deg, transparent 0%, #f0d78c 18%, #c4a24a 52%, #f0d78c 100%);
+  box-shadow: 0 0 12px rgba(212, 180, 69, 0.55);
+  opacity: 0;
+  transform: scaleX(0.08);
+}
+.nav-progress.is-on {
+  opacity: 1;
+  animation: nav-progress-run 0.9s ease-in-out infinite;
+}
+@keyframes nav-progress-run {
+  0% {
+    transform: scaleX(0.08) translateX(0);
+  }
+  50% {
+    transform: scaleX(0.55) translateX(30%);
+  }
+  100% {
+    transform: scaleX(1) translateX(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .trophy-3d,
   .god-rays,

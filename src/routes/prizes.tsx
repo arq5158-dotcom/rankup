@@ -13,6 +13,7 @@ export const Route = createFileRoute("/prizes")({
       path: "/prizes",
     }),
   loader: async () => ({ prizes: await getPrizes() }),
+  staleTime: 20_000,
   component: Page,
 });
 

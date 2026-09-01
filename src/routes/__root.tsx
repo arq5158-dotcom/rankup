@@ -7,6 +7,7 @@ import { TwoFactorGate } from "@/components/rank/TwoFactorGate";
 import { NoteIslandRoot } from "@/components/rank/NoteIsland";
 import { SiteJsonLd } from "@/components/rank/JsonLd";
 import { MobileDock } from "@/components/rank/MobileDock";
+import { NavProgress } from "@/components/rank/motion";
 import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from "@/lib/seo";
@@ -46,6 +47,7 @@ export const Route = createRootRoute({
         <PreviewHostBridge />
         <AuthProvider>
           <NoteIslandRoot>
+          <NavProgress />
           <SiteJsonLd />
           <Outlet />
           <UsernameGate />

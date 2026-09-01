@@ -35,6 +35,7 @@ export const Route = createFileRoute("/")({
     ]);
     return { monthly, prizes, stripe };
   },
+  staleTime: 20_000,
   component: Home,
 });
 

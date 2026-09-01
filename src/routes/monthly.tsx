@@ -22,6 +22,7 @@ export const Route = createFileRoute("/monthly")({
     ]);
     return { monthly, prizes };
   },
+  staleTime: 20_000,
   component: Monthly,
 });
 

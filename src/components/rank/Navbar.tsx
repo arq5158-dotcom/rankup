@@ -8,12 +8,12 @@ import { ProfileMenu } from "./ProfileMenu";
 import { usePresence } from "./motion";
 
 const LINKS = [
-  { label: "Leaderboard", href: "/#leaderboard" },
-  { label: "Weekly", href: "/weekly" },
-  { label: "Monthly", href: "/monthly" },
-  { label: "How It Works", href: "/how-it-works" },
-  { label: "Positions", href: "/prizes" },
-  { label: "Giveaways", href: "/giveaways" },
+  { label: "Leaderboard", to: "/" as const, hash: "leaderboard" },
+  { label: "Weekly", to: "/weekly" as const },
+  { label: "Monthly", to: "/monthly" as const },
+  { label: "How It Works", to: "/how-it-works" as const },
+  { label: "Positions", to: "/prizes" as const },
+  { label: "Giveaways", to: "/giveaways" as const },
 ];
 
 export type AccountInfo = {
@@ -91,7 +91,7 @@ export function Navbar({
           aria-label="Primary"
           className="glass-nav mx-auto grid h-14 max-w-[1640px] grid-cols-[1fr_auto] items-center rounded-full px-2 sm:h-[66px] sm:px-4 lg:grid-cols-[1fr_auto_1fr]"
         >
-          <Link to="/" className="flex min-w-0 items-center gap-2.5 justify-self-start pl-1.5 sm:gap-3 sm:pl-2">
+          <Link to="/" preload="intent" className="flex min-w-0 items-center gap-2.5 justify-self-start pl-1.5 sm:gap-3 sm:pl-2">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,rgba(255,244,196,0.42),rgba(196,162,74,0.14)_58%,transparent)] ring-1 ring-gold/40 shadow-[0_0_14px_rgba(196,162,74,0.22)]">
               <Crown className="h-[18px] w-[18px] fill-gold text-gold" />
             </span>
@@ -107,9 +107,11 @@ export function Navbar({
 
           <div className="hidden items-center gap-1 lg:flex">
             {LINKS.map((item) => (
-              <a
+              <Link
                 key={item.label}
-                href={item.href}
+                to={item.to}
+                hash={item.hash}
+                preload="intent"
                 aria-current={item.label === active ? "page" : undefined}
                 className={`relative rounded-full px-4 py-2 text-[13px] font-medium transition-colors duration-150 ${
                   item.label === active
@@ -118,7 +120,7 @@ export function Navbar({
                 }`}
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
             {isAdmin && (
               <Link
@@ -199,16 +201,18 @@ export function Navbar({
           />
           <div className="sheet-surface glass-card absolute inset-x-3 top-[80px] max-h-[min(78dvh,640px)] overflow-y-auto rounded-2xl p-2">
             {LINKS.map((item) => (
-              <a
+              <Link
                 key={item.label}
-                href={item.href}
+                to={item.to}
+                hash={item.hash}
+                preload="intent"
                 onClick={() => setMobile(false)}
                 className={`link-row tap flex min-h-12 items-center rounded-xl px-4 text-[15px] font-semibold transition-colors ${
                   item.label === active ? "bg-white/[0.05] text-fg" : "text-white/70 hover:bg-white/[0.04] hover:text-fg"
                 }`}
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
             {isAdmin && (
               <Link
@@ -239,13 +243,15 @@ export function Navbar({
                 </Link>
               </div>
             )}
-            <a
-              href="/#rank-up"
+            <Link
+              to="/"
+              hash="rank-up"
+              preload="intent"
               onClick={() => setMobile(false)}
               className="btn-gold tap mt-2 flex min-h-12 items-center justify-center rounded-xl text-sm font-extrabold"
             >
               Promote Now
-            </a>
+            </Link>
           </div>
         </div>
       )}

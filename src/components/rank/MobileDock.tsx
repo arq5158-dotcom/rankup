@@ -80,6 +80,7 @@ export function MobileDock() {
           <Link
             key={item.id}
             to={item.to}
+            preload="intent"
             data-dock={item.id}
             className={`dock-item tap ${item.match ? "is-on" : ""}`}
           >
@@ -88,18 +89,19 @@ export function MobileDock() {
           </Link>
         );
       })}
-      <a href="/#rank-up" className="dock-enter tap">
+      <Link to="/" hash="rank-up" preload="intent" className="dock-enter tap">
         <span className="dock-enter-orb">
           <Trophy className="h-5 w-5" strokeWidth={2.4} />
         </span>
         <span className="dock-label">Enter</span>
-      </a>
+      </Link>
       {items.slice(2).map((item) => {
         const Icon = item.icon;
         return (
           <Link
             key={item.id}
             to={item.to}
+            preload="intent"
             data-dock={item.id}
             className={`dock-item tap ${item.match ? "is-on" : ""}`}
           >
