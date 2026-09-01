@@ -1347,8 +1347,9 @@ export const completeCheckout = createServerFn({ method: "POST" })
 
 export const spendCredits = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((data: { credits?: number } | null | undefined) => ({
+  .validator((data: { credits?: number; cycleType?: CycleType } | null | undefined) => ({
     credits: Number(data?.credits),
+    cycleType: asCycle(data?.cycleType),
   }))
   .handler(async ({ context, data }) => {
     rateLimit(`spend:${context.userId}`, 20, 60_000);
@@ -1374,31 +1375,28 @@ export const spendCredits = createServerFn({ method: "POST" })
 
     await sql`
       insert into credit_ledger (user_id, kind, credits_delta, score_delta, cycle_type, resulting_credits, note)
-      values (${context.userId}, ${"spend"}, ${-spend}, ${spend}, ${"both"}, ${num(deducted[0].credits)}, ${"Rank up weekly + monthly"})
+      values (${context.userId}, ${"spend"}, ${-spend}, ${spend}, ${data.cycleType}, ${num(deducted[0].credits)}, ${`Rank up ${data.cycleType}`})
     `;
 
     const parsedName = validateDisplayName(profile.display_name || "Competitor");
-    const base = {
+    const moved = await addScore(sql, {
       userId: context.userId,
       scoreDelta: spend,
+      cycleType: data.cycleType,
       displayName: parsedName.ok ? parsedName.name : "Competitor",
       shortNote: profile.short_note,
       webLink: profile.web_link,
       profileImage: profile.profile_image,
       username: profile.username,
-    };
-    const monthly = await addScore(sql, { ...base, cycleType: "monthly" });
-    const weekly = await addScore(sql, { ...base, cycleType: "weekly" });
+    });
 
     return {
       credits: num(deducted[0].credits),
       spent: spend,
-      monthlyScore: monthly.score,
-      monthlyRank: monthly.rank,
-      monthlyPrev: monthly.prevRank,
-      weeklyScore: weekly.score,
-      weeklyRank: weekly.rank,
-      weeklyPrev: weekly.prevRank,
+      cycleType: data.cycleType,
+      score: moved.score,
+      rank: moved.rank,
+      prevRank: moved.prevRank,
     };
   });
 

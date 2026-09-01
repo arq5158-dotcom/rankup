@@ -8,6 +8,8 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { claimSpin, getMySpinState, getSpinConfig, startFreeSpin, type SpinSegment } from "@/lib/server/spin";
 import { loadAccount } from "@/lib/account-cache";
 import { formatScore, publicErrorMessage, safeImageSrc } from "@/lib/utils";
+import type { CycleType } from "@/lib/players";
+import { Segmented } from "@/components/rank/motion";
 import { seoHead } from "@/lib/seo";
 import { toast } from "sonner";
 
@@ -78,11 +80,13 @@ function SpinPage() {
   const [spinning, setSpinning] = useState(false);
   const [pending, setPending] = useState<{ id: string; slot: number; score: number } | null>(null);
   const [canSpin, setCanSpin] = useState(true);
+  const [cycle, setCycle] = useState<CycleType>("monthly");
   const [result, setResult] = useState<{
     score: number;
-    monthlyScore: number;
-    monthlyRank: number | null;
-    monthlyPrev: number | null;
+    cycleType: CycleType;
+    boardScore: number;
+    rank: number | null;
+    prevRank: number | null;
   } | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -124,12 +128,13 @@ function SpinPage() {
     if (!pending) return;
     setBusy(true);
     try {
-      const res = await claimSpin({ data: { spinId: pending.id } });
+      const res = await claimSpin({ data: { spinId: pending.id, cycleType: cycle } });
       setResult({
         score: res.score,
-        monthlyScore: res.monthlyScore,
-        monthlyRank: res.monthlyRank,
-        monthlyPrev: res.monthlyPrev,
+        cycleType: res.cycleType,
+        boardScore: res.boardScore,
+        rank: res.rank,
+        prevRank: res.prevRank,
       });
       setPending(null);
       await loadAccount(true);
@@ -146,8 +151,18 @@ function SpinPage() {
         <p className="text-[10px] font-bold tracking-[0.2em] text-gold uppercase">Free score spin</p>
         <h1 className="font-hero text-4xl tracking-[0.06em] text-fg sm:text-5xl">SPIN. SCORE. CLIMB.</h1>
         <p className="mx-auto max-w-md text-sm text-white/50">
-          Spin for free and win bonus Score that can move you higher on the leaderboard. Never credits — only Score.
+          Spin for free bonus Score on the weekly or monthly board — you pick which. Never credits, only Score.
         </p>
+        <div className="mx-auto max-w-xs">
+          <Segmented
+            value={cycle}
+            onChange={setCycle}
+            options={[
+              { id: "monthly", label: "Monthly" },
+              { id: "weekly", label: "Weekly" },
+            ]}
+          />
+        </div>
         <Wheel segments={segments} rotation={rotation} spinning={spinning} />
         <button
           type="button"
@@ -168,6 +183,17 @@ function SpinPage() {
           <div className="modal-card glass-card w-full max-w-sm rounded-2xl p-6 text-center">
             <p className="text-[10px] font-bold tracking-[0.16em] text-gold uppercase">You won</p>
             <p className="mt-2 font-display text-4xl font-black text-gold-grad">+{formatScore(pending.score)} SCORE</p>
+            <p className="mt-2 text-xs text-white/40">Claim onto the {cycle} board.</p>
+            <div className="mx-auto mt-3 max-w-xs">
+              <Segmented
+                value={cycle}
+                onChange={setCycle}
+                options={[
+                  { id: "monthly", label: "Monthly" },
+                  { id: "weekly", label: "Weekly" },
+                ]}
+              />
+            </div>
             <button
               type="button"
               disabled={busy}
@@ -184,12 +210,12 @@ function SpinPage() {
           <div className="modal-card glass-card w-full max-w-sm rounded-2xl p-6 text-center">
             <p className="text-[10px] font-bold tracking-[0.16em] text-gold uppercase">Score claimed</p>
             <p className="mt-2 font-display text-3xl font-black text-fg">+{formatScore(result.score)}</p>
-            <p className="mt-3 text-sm text-white/50">
-              New monthly score {formatScore(result.monthlyScore)}
+            <p className="mt-3 text-sm text-white/50 capitalize">
+              New {result.cycleType} score {formatScore(result.boardScore)}
             </p>
-            {result.monthlyPrev && result.monthlyRank && result.monthlyRank < result.monthlyPrev ? (
+            {result.prevRank && result.rank && result.rank < result.prevRank ? (
               <p className="mt-2 text-sm font-bold text-success">
-                YOU MOVED UP! #{result.monthlyPrev} → #{result.monthlyRank}
+                YOU MOVED UP! #{result.prevRank} → #{result.rank}
               </p>
             ) : null}
             <button type="button" onClick={() => setResult(null)} className="btn-gold tap mt-5 min-h-12 w-full rounded-xl text-sm font-extrabold">

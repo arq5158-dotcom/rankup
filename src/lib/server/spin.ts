@@ -4,6 +4,7 @@ import { getSql, type Sql } from "@/lib/db";
 import { authMiddleware } from "@/lib/auth/middleware";
 import { addScore } from "@/lib/server/rank";
 import { isImageSafe } from "@/lib/utils";
+import type { CycleType } from "@/lib/players";
 import { clientIp, clampText, rateLimit } from "@/lib/server/security";
 
 export type SpinSegment = {
@@ -110,8 +111,9 @@ export const startFreeSpin = createServerFn({ method: "POST" })
 
 export const claimSpin = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((data: { spinId?: string } | null | undefined) => ({
+  .validator((data: { spinId?: string; cycleType?: CycleType } | null | undefined) => ({
     spinId: clampText(data?.spinId, 80),
+    cycleType: data?.cycleType === "weekly" ? ("weekly" as const) : ("monthly" as const),
   }))
   .handler(async ({ context, data }) => {
     rateLimit(`spinclaim:${context.userId}`, 12, 60_000);
@@ -152,32 +154,30 @@ export const claimSpin = createServerFn({ method: "POST" })
       profileImage: p.profile_image,
       username: p.username,
     };
-    const monthly = await addScore(sql, { ...base, cycleType: "monthly" });
-    const weekly = await addScore(sql, { ...base, cycleType: "weekly" });
+    const cycleType = data.cycleType;
+    const moved = await addScore(sql, { ...base, cycleType });
     const marked = await sql<{ id: string }>`
       update spins set
         claimed = true,
         claimed_at = now(),
-        monthly_score = ${monthly.score},
-        monthly_rank = ${monthly.rank},
-        weekly_score = ${weekly.score},
-        weekly_rank = ${weekly.rank}
+        monthly_score = ${cycleType === "monthly" ? moved.score : null},
+        monthly_rank = ${cycleType === "monthly" ? moved.rank : null},
+        weekly_score = ${cycleType === "weekly" ? moved.score : null},
+        weekly_rank = ${cycleType === "weekly" ? moved.rank : null}
       where id = ${spin.id} and claimed = false
       returning id
     `;
     if (!marked[0]) throw new Error("Already claimed.");
     await sql`
       insert into credit_ledger (user_id, kind, credits_delta, score_delta, spin_id, resulting_credits, note)
-      values (${context.userId}, ${"spin"}, ${0}, ${score}, ${spin.id}, ${null}, ${`Free spin +${score} score`})
+      values (${context.userId}, ${"spin"}, ${0}, ${score}, ${spin.id}, ${null}, ${`Free spin +${score} ${cycleType} score`})
     `;
     return {
       score,
-      monthlyScore: monthly.score,
-      monthlyRank: monthly.rank,
-      monthlyPrev: monthly.prevRank,
-      weeklyScore: weekly.score,
-      weeklyRank: weekly.rank,
-      weeklyPrev: weekly.prevRank,
+      cycleType,
+      boardScore: moved.score,
+      rank: moved.rank,
+      prevRank: moved.prevRank,
     };
   });
 

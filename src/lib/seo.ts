@@ -22,7 +22,7 @@ export const PUBLIC_PATHS = [
 export const FAQ_ITEMS = [
   {
     q: "How do rankings work?",
-    a: "Rankings are ordered by Score on the active weekly and monthly boards. You buy credits with Stripe, then spend credits 1:1 into Score. The same Score is added to both boards. Credits sitting in a wallet do not affect rank. Free Spin can also award Score. If two profiles tie, the earlier Score gain holds the slot.",
+    a: "Weekly and monthly are separate leaderboards. You buy credits with Stripe, then spend credits 1:1 into Score on the board you choose. Credits in a wallet do not affect rank. Free Spin can also award Score to one board. If two profiles tie, the earlier Score gain holds the slot.",
   },
   {
     q: "What am I paying for?",

@@ -63,8 +63,8 @@ function Page() {
 
       <h2>5. Rankings</h2>
       <p>
-        Rank is ordered by Score on the active weekly and monthly boards. Spending credits adds the same
-        Score to both. Ties are broken by the earlier Score gain. We may correct rankings if a payment is
+        Rank is ordered by Score on the board you chose. Weekly and monthly scores are separate. Spending
+        credits adds Score only to that cycle. Ties are broken by the earlier Score gain. We may correct rankings if a payment is
         reversed, flagged as fraud, or recorded in error. Other players can overtake you at any time.
       </p>
 

@@ -6,8 +6,9 @@ import { getCreditEconomy } from "@/lib/server/economy";
 import { DEFAULT_ECONOMY } from "@/lib/economy";
 import { loadAccount } from "@/lib/account-cache";
 import { formatScore, formatUsd, publicErrorMessage } from "@/lib/utils";
+import type { CycleType } from "@/lib/players";
 import type { BoardEntry } from "@/lib/server/rank";
-import { usePresence } from "./motion";
+import { usePresence, Segmented } from "./motion";
 
 const PRESETS = [1000, 5000, 10_000, 25_000];
 
@@ -48,28 +49,26 @@ export function RankUpModal({
 }) {
   const { shown, on } = usePresence(open, 220);
   const [rate, setRate] = useState(DEFAULT_ECONOMY.creditsPerUsd);
+  const [cycle, setCycle] = useState<CycleType>("monthly");
   const [spend, setSpend] = useState(1000);
   const [usdText, setUsdText] = useState("1");
   const [custom, setCustom] = useState(false);
   const [loading, setLoading] = useState(false);
   const [moved, setMoved] = useState<{
     spent: number;
-    monthlyFrom: number | null;
-    monthlyTo: number | null;
-    weeklyFrom: number | null;
-    weeklyTo: number | null;
+    from: number | null;
+    to: number | null;
+    cycle: CycleType;
   } | null>(null);
 
   const cap = Math.max(1, Math.min(1_000_000, Math.floor(credits) || 1));
   const add = Math.min(spend, Math.max(0, credits));
   const usdValue = rate > 0 ? add / rate : 0;
-  const monthlyAfter = monthlyScore + add;
-  const weeklyAfter = weeklyScore + add;
-  const estMonthly = useMemo(() => estimateRank(board, monthlyAfter), [board, monthlyAfter]);
-  const estWeekly = useMemo(
-    () => estimateRank(weeklyBoard && weeklyBoard.length ? weeklyBoard : board, weeklyAfter),
-    [weeklyBoard, board, weeklyAfter],
-  );
+  const current = cycle === "monthly" ? monthlyScore : weeklyScore;
+  const currentRank = cycle === "monthly" ? monthlyRank : weeklyRank;
+  const after = current + add;
+  const estBoard = cycle === "weekly" && weeklyBoard?.length ? weeklyBoard : board;
+  const est = useMemo(() => estimateRank(estBoard, after), [estBoard, after]);
   const enough = credits >= spend;
 
   useEffect(() => {
@@ -105,21 +104,12 @@ export function RankUpModal({
     if (!enough) return;
     setLoading(true);
     try {
-      const res = await spendCredits({ data: { credits: spend } });
+      const res = await spendCredits({ data: { credits: spend, cycleType: cycle } });
       await loadAccount(true);
-      const climbed =
-        (res.monthlyPrev && res.monthlyRank && res.monthlyRank < res.monthlyPrev) ||
-        (res.weeklyPrev && res.weeklyRank && res.weeklyRank < res.weeklyPrev);
-      if (climbed) {
-        setMoved({
-          spent: res.spent,
-          monthlyFrom: res.monthlyPrev,
-          monthlyTo: res.monthlyRank,
-          weeklyFrom: res.weeklyPrev,
-          weeklyTo: res.weeklyRank,
-        });
+      if (res.prevRank && res.rank && res.rank < res.prevRank) {
+        setMoved({ spent: res.spent, from: res.prevRank, to: res.rank, cycle: res.cycleType });
       } else {
-        toast.success(`+${formatScore(res.spent)} SCORE on weekly and monthly`);
+        toast.success(`+${formatScore(res.spent)} SCORE on the ${res.cycleType} board`);
         onDone?.();
         onClose();
       }
@@ -130,12 +120,7 @@ export function RankUpModal({
     }
   };
 
-  const monthlyGain =
-    moved?.monthlyFrom && moved.monthlyTo && moved.monthlyTo < moved.monthlyFrom
-      ? moved.monthlyFrom - moved.monthlyTo
-      : 0;
-  const weeklyGain =
-    moved?.weeklyFrom && moved.weeklyTo && moved.weeklyTo < moved.weeklyFrom ? moved.weeklyFrom - moved.weeklyTo : 0;
+  const gain = moved?.from && moved.to && moved.to < moved.from ? moved.from - moved.to : 0;
 
   return (
     <div className={`modal-layer fixed inset-0 z-[96] grid place-items-center bg-black/75 p-4 ${on ? "is-open" : ""}`}>
@@ -150,15 +135,12 @@ export function RankUpModal({
         {moved ? (
           <div className="text-center">
             <p className="font-display text-2xl font-black text-gold-grad">
-              YOU MOVED UP {Math.max(monthlyGain, weeklyGain)} POSITIONS
+              YOU MOVED UP {gain} POSITIONS
             </p>
-            <p className="mt-3 text-sm font-bold text-fg">
-              Monthly {moved.monthlyFrom ? `#${moved.monthlyFrom}` : "—"} → {moved.monthlyTo ? `#${moved.monthlyTo}` : "—"}
+            <p className="mt-3 text-sm font-bold text-fg capitalize">
+              {moved.cycle} {moved.from ? `#${moved.from}` : "—"} → {moved.to ? `#${moved.to}` : "—"}
             </p>
-            <p className="mt-1 text-sm font-bold text-fg">
-              Weekly {moved.weeklyFrom ? `#${moved.weeklyFrom}` : "—"} → {moved.weeklyTo ? `#${moved.weeklyTo}` : "—"}
-            </p>
-            <p className="mt-2 text-sm text-white/45">+{formatScore(moved.spent)} Score on both boards.</p>
+            <p className="mt-2 text-sm text-white/45">+{formatScore(moved.spent)} Score on the {moved.cycle} board.</p>
             <button
               type="button"
               onClick={() => {
@@ -198,8 +180,18 @@ export function RankUpModal({
           <>
             <h2 className="font-display text-2xl font-black text-fg">Spend credits. Earn score.</h2>
             <p className="mt-1 text-xs text-white/40">
-              $1 = {formatScore(rate)} Credits = {formatScore(rate)} Score
+              $1 = {formatScore(rate)} Credits = {formatScore(rate)} Score · Pick one board
             </p>
+            <div className="mt-3">
+              <Segmented
+                value={cycle}
+                onChange={setCycle}
+                options={[
+                  { id: "monthly", label: "Monthly" },
+                  { id: "weekly", label: "Weekly" },
+                ]}
+              />
+            </div>
             <p className="mt-3 rounded-xl border border-gold/20 bg-gold/10 px-4 py-3 text-center">
               <span className="block text-[10px] tracking-wider text-white/45 uppercase">Your balance</span>
               <span className="font-display text-3xl font-black text-gold-grad tabular-nums">{formatScore(credits)}</span>
@@ -271,27 +263,23 @@ export function RankUpModal({
             <div className="mt-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-3 text-center">
               <p className="text-[10px] font-semibold tracking-wider text-white/40 uppercase">Live conversion</p>
               <p className="mt-1.5 text-sm font-bold text-fg">
-                ${formatUsd(usdValue)} → {formatScore(add)} Credits → +{formatScore(add)} Score
+                ${formatUsd(usdValue)} → {formatScore(add)} Credits → +{formatScore(add)} {cycle} Score
               </p>
-              <p className="mt-1 text-[11px] text-white/40">Same Score added to weekly and monthly.</p>
+              <p className="mt-1 text-[11px] text-white/40">Only the {cycle} leaderboard changes.</p>
             </div>
-            <div className="mt-3 grid grid-cols-2 gap-2 text-center">
+            <div className="mt-3 grid grid-cols-3 gap-2 text-center">
               <div className="rounded-xl bg-white/[0.03] px-2 py-3">
-                <p className="text-[9px] tracking-wider text-white/40 uppercase">Monthly</p>
-                <p className="mt-1 text-sm font-extrabold text-fg tabular-nums">
-                  {formatScore(monthlyScore)} → {formatScore(monthlyAfter)}
-                </p>
-                <p className="mt-1 text-[11px] text-white/45">
-                  {monthlyRank ? `#${monthlyRank}` : "—"} → #{estMonthly}
-                </p>
+                <p className="text-[9px] tracking-wider text-white/40 uppercase">Current</p>
+                <p className="mt-1 text-sm font-extrabold text-fg tabular-nums">{formatScore(current)}</p>
               </div>
               <div className="rounded-xl bg-white/[0.03] px-2 py-3">
-                <p className="text-[9px] tracking-wider text-white/40 uppercase">Weekly</p>
-                <p className="mt-1 text-sm font-extrabold text-fg tabular-nums">
-                  {formatScore(weeklyScore)} → {formatScore(weeklyAfter)}
-                </p>
-                <p className="mt-1 text-[11px] text-white/45">
-                  {weeklyRank ? `#${weeklyRank}` : "—"} → #{estWeekly}
+                <p className="text-[9px] tracking-wider text-white/40 uppercase">After</p>
+                <p className="mt-1 text-sm font-extrabold text-gold tabular-nums">{formatScore(after)}</p>
+              </div>
+              <div className="rounded-xl bg-white/[0.03] px-2 py-3">
+                <p className="text-[9px] tracking-wider text-white/40 uppercase">Est. rank</p>
+                <p className="mt-1 text-sm font-extrabold text-fg">
+                  {currentRank ? `#${currentRank}` : "—"} → #{est}
                 </p>
               </div>
             </div>

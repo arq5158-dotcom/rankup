@@ -22,7 +22,7 @@ function Page() {
         <h1 className="font-display text-3xl font-black text-gold-grad">How Pay4Rank works</h1>
         <p className="max-w-2xl text-sm leading-relaxed text-pretty text-white/50">
           Pay4Rank is a promotional leaderboard. You buy credits with Stripe, spend them 1:1 for Score,
-          and take your place on both weekly and monthly boards. Top listings get seen — there is no cash prize.
+          and take your place on the weekly or monthly board you choose. Top listings get seen — there is no cash prize.
         </p>
         <HowItWorks />
         <Faq withSchema />

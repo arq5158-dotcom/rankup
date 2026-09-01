@@ -123,7 +123,7 @@ function PayPage() {
             <div className="mx-5 mb-5 rounded-xl border border-white/[0.06] bg-[#12121a] px-4 py-3 sm:mx-6">
               <p className="flex items-start gap-2 text-[12px] leading-relaxed text-white/45">
                 <Trophy className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                Credits go to your wallet after Stripe confirms. Spend them 1:1 for Score on weekly and monthly
+                Credits go to your wallet after Stripe confirms. Spend them 1:1 for Score on weekly or monthly.
                 boards. Credits are non-refundable after Stripe confirms. This is visibility, not a cash prize.
               </p>
             </div>

@@ -26,8 +26,8 @@ function Page() {
       <h2>1. The product</h2>
       <p>
         Pay4Rank sells credits. Stripe payments add credits to your private wallet. Rank is determined
-        by Score. You earn Score by spending credits (1 credit = 1 Score on both the weekly and monthly
-        boards) or by claiming a Free Spin Score reward. Credits in a wallet do not affect rank until
+        by Score. You earn Score by spending credits (1 credit = 1 Score) on the weekly board or the monthly
+        board you choose, or by claiming a Free Spin Score reward onto one board. Credits in a wallet do not affect rank until
         spent. Other players can overtake you at any time. You are buying visibility, not a chance to
         win money.
       </p>
@@ -61,10 +61,10 @@ function Page() {
 
       <h2>5. How position is decided</h2>
       <p>
-        Position is the highest Score in that cycle. Score is not drawn at random and does not use odds.
-        Spending credits adds the same Score to the current weekly board and the current monthly board.
-        Free Spin Score uses the same rule. Credits never reset. Weekly Score returns to 0 at the weekly
-        reset; Monthly Score returns to 0 at the monthly reset. Ties are broken by the earlier Score gain.
+        Position is the highest Score in that cycle. Weekly and monthly are separate. Score is not drawn at
+        random and does not use odds. Spending credits adds Score only to the board you select. Free Spin
+        Score uses the same rule. Credits never reset. Weekly Score returns to 0 at the weekly reset;
+        Monthly Score returns to 0 at the monthly reset. Ties are broken by the earlier Score gain.
         Reversed, charged-back, or fraudulent payments are removed from the wallet and ranks are recomputed.
       </p>
 

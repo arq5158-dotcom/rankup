@@ -10,7 +10,7 @@ const STEPS = [
   {
     icon: Zap,
     title: "Climb",
-    body: "Spend credits 1:1 into Score on both the weekly and monthly boards. Others can overtake you at any time.",
+    body: "Spend credits 1:1 into Score on the weekly board or the monthly board — you choose. Each leaderboard is separate. Others can overtake you at any time.",
     cup: "/rank/cup-silver.webp?v=3d4",
   },
   {
