@@ -2,7 +2,7 @@ import { Crown } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 const COMPETE = [
-  { to: "/", label: "Leaderboard", hash: "/#leaderboard" },
+  { to: "/", label: "Leaderboard" },
   { to: "/weekly", label: "Weekly" },
   { to: "/monthly", label: "Monthly" },
   { to: "/prizes", label: "Positions" },
@@ -14,7 +14,7 @@ const COMPETE = [
 ] as const;
 
 const LEGAL = [
-  { to: "/rules", label: "Platform rules" },
+  { to: "/rules", label: "Rules" },
   { to: "/terms", label: "Terms" },
   { to: "/privacy", label: "Privacy" },
   { to: "/cookies", label: "Cookies" },
@@ -22,24 +22,19 @@ const LEGAL = [
 ] as const;
 
 export function SiteFooter({ compact = false }: { compact?: boolean }) {
+  const year = new Date().getFullYear();
+
   if (compact) {
     return (
-      <footer className="relative z-10 mt-auto border-t border-white/[0.06] bg-bg/90">
-        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-3 px-5 py-4">
-          <p className="text-[11px] text-white/35">© {new Date().getFullYear()} Pay4Rank · Payments in USD</p>
-          <nav className="flex flex-wrap gap-4 text-[11px] text-white/40">
-            <Link to="/terms" className="hover:text-fg">
-              Terms
-            </Link>
-            <Link to="/rules" className="hover:text-fg">
-              Rules
-            </Link>
-            <Link to="/privacy" className="hover:text-fg">
-              Privacy
-            </Link>
-            <Link to="/contact" className="hover:text-fg">
-              Support
-            </Link>
+      <footer className="relative z-10 mt-auto border-t border-white/[0.06]">
+        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-3">
+          <p className="text-[11px] text-white/35">© {year} Pay4Rank</p>
+          <nav className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-white/40">
+            {LEGAL.map((l) => (
+              <Link key={l.to} to={l.to} className="transition-colors hover:text-fg">
+                {l.label}
+              </Link>
+            ))}
           </nav>
         </div>
       </footer>
@@ -47,68 +42,55 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <footer className="relative z-10 mt-4 border-t border-gold/10 bg-black/40 pb-4">
-      <div className="mx-auto grid max-w-[1640px] grid-cols-2 gap-x-8 gap-y-8 px-4 py-6 sm:px-6 md:grid-cols-4 md:gap-8">
-        <div className="col-span-2 md:col-span-1">
-          <Link to="/" className="inline-flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold/15 ring-1 ring-gold/35">
+    <footer className="relative z-10 mt-8 border-t border-white/[0.07] bg-black/25">
+      <div className="mx-auto flex max-w-[1280px] flex-col gap-5 px-5 py-6 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <Link to="/" className="inline-flex shrink-0 items-center gap-2">
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-gold/12 ring-1 ring-gold/30">
               <Crown className="h-3.5 w-3.5 fill-gold text-gold" />
             </span>
-            <span className="text-[13px] font-extrabold tracking-[0.08em] text-fg">PAY4RANK</span>
+            <span className="text-[12px] font-extrabold tracking-[0.14em] text-fg">PAY4RANK</span>
           </Link>
-          <p className="mt-2.5 max-w-xs text-[12px] leading-relaxed text-pretty text-white/48">
-            A promotional leaderboard. Buy credits, spend them for Score, climb, and get seen — rank updates when Score changes.
-          </p>
-          <p className="mt-2.5 text-[10px] font-bold tracking-wider text-white/28 uppercase">
+
+          <nav aria-label="Compete" className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1.5 lg:justify-center">
+            {COMPETE.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className="text-[12px] text-white/48 transition-colors hover:text-fg"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+
+          <nav aria-label="Legal" className="flex flex-wrap items-center gap-x-4 gap-y-1.5 lg:justify-end">
+            {LEGAL.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className="text-[12px] text-white/48 transition-colors hover:text-fg"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex flex-col gap-2 border-t border-white/[0.05] pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[10px] font-semibold tracking-[0.12em] text-white/28 uppercase">
             18+ · Promotional listing · Not a prize contest
           </p>
-        </div>
-        <nav aria-label="Compete">
-          <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Compete</p>
-          <ul className="mt-2.5 space-y-1.5">
-            {COMPETE.map((l) =>
-              "hash" in l && l.hash ? (
-                <li key={l.label}>
-                  <a href={l.hash} className="text-[12px] text-white/58 hover:text-fg">
-                    {l.label}
-                  </a>
-                </li>
-              ) : (
-                <li key={l.to}>
-                  <Link to={l.to} className="text-[12px] text-white/58 hover:text-fg">
-                    {l.label}
-                  </Link>
-                </li>
-              ),
-            )}
-          </ul>
-        </nav>
-        <nav aria-label="Legal" className="text-right md:text-left">
-          <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Legal</p>
-          <ul className="mt-2.5 space-y-1.5">
-            {LEGAL.map((l) => (
-              <li key={l.to}>
-                <Link to={l.to} className="text-[12px] text-white/58 hover:text-fg">
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="col-span-2 md:col-span-1">
-          <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Payments</p>
-          <p className="mt-2.5 max-w-xs text-[12px] leading-relaxed text-white/52">
-            Card payments are processed by Stripe. Pay4Rank never stores full card numbers.
+          <p className="text-[11px] text-white/32">
+            © {year} Pay4Rank · Credits buy Score. Score buys visibility.
           </p>
-          <Link to="/contact" className="mt-2.5 inline-block text-[12px] text-gold hover:text-gold-light">
-            Contact support
-          </Link>
+          <p className="text-[11px] text-white/32">
+            Payments by Stripe ·{" "}
+            <Link to="/contact" className="text-gold/80 hover:text-gold">
+              Support
+            </Link>
+          </p>
         </div>
-      </div>
-      <div className="border-t border-white/[0.04] py-3">
-        <p className="text-center text-[11px] tracking-wide text-white/38">
-          © {new Date().getFullYear()} Pay4Rank. Credits buy Score. Score buys visibility, not a cash prize.
-        </p>
       </div>
     </footer>
   );
