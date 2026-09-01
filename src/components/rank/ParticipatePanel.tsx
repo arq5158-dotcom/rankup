@@ -89,13 +89,13 @@ export function ParticipatePanel({
     }
   };
 
-  if (!open) return <div id="rank-up" className="scroll-mt-24" />;
+  if (!open) return null;
 
   const field =
     "h-11 w-full rounded-[14px] border border-white/[0.12] bg-[#0c0c12] px-3.5 text-sm text-fg outline-none placeholder:text-white/22 focus:border-gold/45";
 
   return (
-    <div id="rank-up" className="scroll-mt-24">
+    <div>
       <div className="glass-card panel-gold relative w-full rounded-[20px] p-5">
         <button
           type="button"

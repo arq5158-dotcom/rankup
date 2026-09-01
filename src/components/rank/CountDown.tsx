@@ -4,17 +4,6 @@ function pad(n: number) {
   return String(n).padStart(2, "0");
 }
 
-function Unit({ value, label }: { value: number; label: string }) {
-  return (
-    <span className="inline-flex items-baseline">
-      <span className="font-mono text-[11px] font-bold leading-none text-gold-light tabular-nums">
-        {pad(value)}
-      </span>
-      <span className="ml-px text-[8px] font-semibold tracking-wide text-white/38">{label}</span>
-    </span>
-  );
-}
-
 export function CountDown({ target }: { target: number }) {
   const [t, setT] = useState({ d: 0, h: 0, m: 0, s: 0 });
   useEffect(() => {
@@ -32,25 +21,33 @@ export function CountDown({ target }: { target: number }) {
     return () => clearInterval(id);
   }, [target]);
 
+  const units = [
+    { value: t.d, label: "d" },
+    { value: t.h, label: "h" },
+    { value: t.m, label: "m" },
+    { value: t.s, label: "s" },
+  ];
+
   return (
     <div
-      className="inline-flex max-w-full flex-nowrap items-center gap-1.5 rounded-lg px-1 py-0.5"
+      className="cd"
       aria-label={`Resets in ${t.d} days, ${t.h} hours, ${t.m} minutes, ${t.s} seconds`}
     >
-      <span className="text-[10px] font-medium tracking-wide text-white/38">Resets in</span>
-      <span className="inline-flex items-center gap-1">
-        <Unit value={t.d} label="d" />
-        <span className="text-[10px] text-white/18">:</span>
-        <Unit value={t.h} label="h" />
-        <span className="text-[10px] text-white/18">:</span>
-        <Unit value={t.m} label="m" />
-        <span className="text-[10px] text-white/18">:</span>
-        <span key={t.s} className="tick inline-flex items-baseline">
-          <span className="font-mono text-[11px] font-bold leading-none text-gold-light tabular-nums">
-            {pad(t.s)}
+      <span className="cd-prefix">Resets in</span>
+      <span className="cd-track">
+        {units.map((u, i) => (
+          <span key={u.label} className="cd-cell">
+            {i > 0 ? (
+              <span className="cd-sep" aria-hidden>
+                :
+              </span>
+            ) : null}
+            <span className="cd-unit">
+              <span className="cd-num">{pad(u.value)}</span>
+              <span className="cd-lab">{u.label}</span>
+            </span>
           </span>
-          <span className="ml-px text-[8px] font-semibold tracking-wide text-white/38">s</span>
-        </span>
+        ))}
       </span>
     </div>
   );

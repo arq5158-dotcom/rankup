@@ -23,6 +23,24 @@ export function usePresence(open: boolean, ms = 180) {
   return { shown, on };
 }
 
+export function FluidFold({
+  open,
+  children,
+  className,
+}: {
+  open: boolean;
+  children: ReactNode;
+  className?: string;
+}) {
+  const { shown, on } = usePresence(open, 300);
+  if (!shown) return null;
+  return (
+    <div className={cn("panel-fold", on && "is-open", className)}>
+      <div className="panel-fold-inner">{children}</div>
+    </div>
+  );
+}
+
 export function FadeSwitch({ id, children, className }: { id: string; children: ReactNode; className?: string }) {
   return (
     <div key={id} className={cn("fade-switch", className)}>

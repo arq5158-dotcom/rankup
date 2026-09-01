@@ -45,8 +45,8 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
 
   return (
     <footer className="relative z-10 mt-4 border-t border-gold/10 bg-black/40 pb-4">
-      <div className="mx-auto grid max-w-[1640px] grid-cols-2 gap-6 px-4 py-5 sm:px-6 lg:grid-cols-4 lg:gap-8 lg:py-6">
-        <div className="col-span-2 lg:col-span-1">
+      <div className="mx-auto grid max-w-[1640px] grid-cols-2 gap-x-8 gap-y-8 px-4 py-6 sm:px-6 md:grid-cols-4 md:gap-8">
+        <div className="col-span-2 md:col-span-1">
           <Link to="/" className="inline-flex items-center gap-2">
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold/15 ring-1 ring-gold/35">
               <Crown className="h-3.5 w-3.5 fill-gold text-gold" />
@@ -60,7 +60,7 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
             18+ · Not a lottery · Void where prohibited
           </p>
         </div>
-        <div>
+        <nav aria-label="Compete">
           <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Compete</p>
           <ul className="mt-2.5 space-y-1.5">
             {COMPETE.map((l) =>
@@ -79,8 +79,8 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
               ),
             )}
           </ul>
-        </div>
-        <div>
+        </nav>
+        <nav aria-label="Legal" className="text-right md:text-left">
           <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Legal</p>
           <ul className="mt-2.5 space-y-1.5">
             {LEGAL.map((l) => (
@@ -91,10 +91,10 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
               </li>
             ))}
           </ul>
-        </div>
-        <div className="col-span-2 lg:col-span-1">
+        </nav>
+        <div className="col-span-2 md:col-span-1">
           <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Payments</p>
-          <p className="mt-2.5 text-[12px] leading-relaxed text-white/52">
+          <p className="mt-2.5 max-w-xs text-[12px] leading-relaxed text-white/52">
             Card payments are processed by Stripe. Rank Up never stores full card numbers.
           </p>
           <Link to="/contact" className="mt-2.5 inline-block text-[12px] text-gold hover:text-gold-light">

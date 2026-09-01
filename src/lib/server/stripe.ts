@@ -146,7 +146,7 @@ export async function createRankCheckoutSession(
     adaptive_pricing: { enabled: false as const },
     branding_settings: {
       background_color: "#08080c",
-      button_color: "#c9a84c",
+      button_color: "#d4b445",
       border_style: "rounded" as const,
       display_name: "Rank Up",
       font_family: "inter" as const,

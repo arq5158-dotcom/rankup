@@ -21,15 +21,13 @@ export function SafeWebLink({
       title={`Opens ${host} — third-party site, not affiliated with Rank Up`}
       aria-label={`Visit ${host} (opens in a new tab, third-party site)`}
       className={cn(
-        "inline-flex max-w-full min-w-0 items-center gap-1 text-gold hover:text-gold-light",
-        compact
-          ? "min-h-0 rounded-full border border-gold/45 bg-black/60 px-1.5 py-0.5 text-[9px] font-bold sm:text-[10px]"
-          : "min-h-11 rounded-full border border-gold/40 bg-gold/10 px-2.5 text-[12px] font-semibold",
+        "inline-flex max-w-full min-w-0 items-center gap-1 text-gold/70 hover:text-gold",
+        compact ? "min-h-0 max-w-full flex-nowrap text-[9px] leading-none font-medium" : "py-0.5 text-[11px] font-medium",
         className,
       )}
     >
-      <ExternalLink className={cn("shrink-0", compact ? "h-2.5 w-2.5" : "h-3.5 w-3.5")} />
-      <span className="truncate">{host}</span>
+      <ExternalLink className={cn("shrink-0 opacity-70", compact ? "h-2.5 w-2.5" : "h-3 w-3")} />
+      <span className="min-w-0 truncate">{host}</span>
     </a>
   );
 }

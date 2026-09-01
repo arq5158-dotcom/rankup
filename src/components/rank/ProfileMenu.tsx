@@ -2,10 +2,10 @@ import {
   Crown,
   Flame,
   History,
-  KeyRound,
+  Lock,
   LogOut,
-  Settings,
   Shield,
+  UserRound,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { signOut } from "@/lib/auth/client";
@@ -58,15 +58,15 @@ export function ProfileCard({
             className="bar-fill"
             style={{
               width: `${completeness}%`,
-              background: "linear-gradient(90deg, #c9a84c, #e2c97e)",
+              background: "linear-gradient(90deg, #d4b445, #f3e08c)",
             }}
           />
         </div>
       </div>
       <div className="space-y-0.5">
         {[
-          { icon: Settings, label: "Profile Settings", to: "/dashboard" as const, search: { tab: "profile" as const }, badge: undefined as string | undefined, on: false },
-          { icon: KeyRound, label: "Change Password", to: "/dashboard" as const, search: { tab: "security" as const }, badge: undefined as string | undefined, on: false },
+          { icon: UserRound, label: "Profile Settings", to: "/dashboard" as const, search: { tab: "profile" as const }, badge: undefined as string | undefined, on: false },
+          { icon: Lock, label: "Change Password", to: "/dashboard" as const, search: { tab: "security" as const }, badge: undefined as string | undefined, on: false },
           { icon: Shield, label: "Two-Factor Authentication", to: "/dashboard" as const, search: { tab: "security" as const }, badge: twoFactor ? "On" : "Off", on: twoFactor },
           { icon: History, label: "Contribution History", to: "/dashboard" as const, search: { tab: "history" as const }, badge: undefined as string | undefined, on: false },
         ].map((m) =>
@@ -124,7 +124,7 @@ export function ProfileCard({
           onClick={onNavigate}
           className="link-row flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[12px] text-white/50 hover:bg-white/[0.04] hover:text-fg"
         >
-          <Settings className="h-3.5 w-3.5" /> Security Settings
+          <Shield className="h-3.5 w-3.5" /> Security Settings
         </Link>
         <button
           type="button"
@@ -166,10 +166,14 @@ export function ProfileMenu({
   twoFactor: boolean;
   isAdmin?: boolean;
 }) {
-  const { shown, on } = usePresence(open, 180);
+  const { shown, on } = usePresence(open, 280);
   if (!shown) return null;
   return (
-    <div className={cn("menu-layer", on && "is-open")} onClick={onClose}>
+    <div
+      className={cn("menu-layer", on && "is-open")}
+      onClick={onClose}
+      aria-hidden={!on}
+    >
       <div onClick={(e) => e.stopPropagation()}>
         <ProfileCard
           name={name}

@@ -81,39 +81,39 @@ export function Navbar({
   const displayName = account?.name || user?.displayName || "Competitor";
   const email = account?.email || user?.primaryEmail || "";
   const image = account?.image || user?.profileImageUrl || null;
-  const sheet = usePresence(mobile, 200);
+  const sheet = usePresence(mobile, 280);
 
   return (
     <>
-      <header className="sticky top-0 z-50 px-3 pt-3 sm:px-5">
+      <header className="sticky top-0 z-50 px-3 pt-3 sm:px-6">
         <nav
           aria-label="Primary"
-          className="glass-nav mx-auto grid h-12 max-w-[1440px] grid-cols-[1fr_auto] items-center rounded-full px-1.5 sm:h-[60px] sm:px-3 lg:grid-cols-[1fr_auto_1fr]"
+          className="glass-nav mx-auto grid h-14 max-w-[1640px] grid-cols-[1fr_auto] items-center rounded-full px-2 sm:h-[66px] sm:px-4 lg:grid-cols-[1fr_auto_1fr]"
         >
-          <Link to="/" className="flex min-w-0 items-center gap-2 justify-self-start pl-1 sm:gap-2.5 sm:pl-1">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,rgba(240,215,138,0.42),rgba(201,168,76,0.14)_58%,transparent)] ring-1 ring-gold/50 shadow-[0_0_18px_rgba(201,168,76,0.32)]">
-              <Crown className="h-4 w-4 fill-gold text-gold" />
+          <Link to="/" className="flex min-w-0 items-center gap-2.5 justify-self-start pl-1.5 sm:gap-3 sm:pl-2">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,rgba(255,244,196,0.42),rgba(196,162,74,0.14)_58%,transparent)] ring-1 ring-gold/40 shadow-[0_0_14px_rgba(196,162,74,0.22)]">
+              <Crown className="h-[18px] w-[18px] fill-gold text-gold" />
             </span>
             <span className="leading-none">
-              <span className="block text-[13px] font-extrabold tracking-[0.1em] text-fg sm:text-[15px]">
+              <span className="block text-[14px] font-extrabold tracking-[0.12em] text-fg sm:text-[16px]">
                 RANK UP
               </span>
-              <span className="hidden text-[6.5px] tracking-[0.28em] text-gold/60 uppercase sm:block">
+              <span className="hidden text-[8px] tracking-[0.22em] text-gold/70 uppercase sm:block">
                 Compete. Contribute. Win.
               </span>
             </span>
           </Link>
 
-          <div className="hidden items-center gap-0.5 lg:flex">
+          <div className="hidden items-center gap-1 lg:flex">
             {LINKS.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
                 aria-current={item.label === active ? "page" : undefined}
-                className={`relative rounded-full px-4 py-1.5 text-[13px] font-medium transition-colors ${
+                className={`relative rounded-full px-4 py-2 text-[13px] font-medium transition-colors duration-150 ${
                   item.label === active
                     ? "nav-active text-fg"
-                    : "text-white/50 hover:bg-white/[0.04] hover:text-white/85"
+                    : "text-white/52 hover:bg-white/[0.04] hover:text-white/88"
                 }`}
               >
                 {item.label}
@@ -159,7 +159,7 @@ export function Navbar({
                   setOpen((v) => !v);
                   setMobile(false);
                 }}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/30 bg-white/[0.03] shadow-[0_0_12px_rgba(201,168,76,0.18)] sm:h-9 sm:w-auto sm:gap-1.5 sm:py-0 sm:pr-2 sm:pl-0.5"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/30 bg-white/[0.03] shadow-[0_0_12px_rgba(212,180,69,0.2)] sm:h-9 sm:w-auto sm:gap-1.5 sm:py-0 sm:pr-2 sm:pl-0.5"
                 aria-label="Account"
               >
                 <AvatarImg src={image} name={displayName} size={26} ring="gold" />
@@ -196,7 +196,7 @@ export function Navbar({
             aria-label="Close menu"
             onClick={() => setMobile(false)}
           />
-          <div className="sheet-surface glass-card absolute inset-x-3 top-[68px] max-h-[min(78dvh,640px)] overflow-y-auto rounded-2xl p-2">
+          <div className="sheet-surface glass-card absolute inset-x-3 top-[80px] max-h-[min(78dvh,640px)] overflow-y-auto rounded-2xl p-2">
             {LINKS.map((item) => (
               <a
                 key={item.label}

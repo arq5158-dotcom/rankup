@@ -10,7 +10,7 @@ const META = {
     src: "/rank/cup-gold.webp?v=3d4",
     delay: "0ms",
     ring: "gold" as const,
-    width: "w-[40%] max-w-[200px] sm:w-[44%] sm:max-w-[240px]",
+    width: "w-[38%] max-w-[168px] sm:w-[42%] sm:max-w-[210px]",
     avatar: 52,
     lift: "-mt-1",
     glow: "drop-shadow(0 18px 22px rgba(0,0,0,0.7)) drop-shadow(0 0 26px rgba(212,180,69,0.42))",
@@ -19,7 +19,7 @@ const META = {
     src: "/rank/cup-silver.webp?v=3d4",
     delay: "90ms",
     ring: "silver" as const,
-    width: "w-[28%] max-w-[142px] sm:w-[30%] sm:max-w-[168px]",
+    width: "w-[27%] max-w-[118px] sm:w-[29%] sm:max-w-[150px]",
     avatar: 40,
     lift: "mt-7",
     glow: "drop-shadow(0 14px 18px rgba(0,0,0,0.65)) drop-shadow(0 0 16px rgba(180,188,204,0.32))",
@@ -28,7 +28,7 @@ const META = {
     src: "/rank/cup-bronze.webp?v=3d4",
     delay: "160ms",
     ring: "bronze" as const,
-    width: "w-[26%] max-w-[132px] sm:w-[28%] sm:max-w-[156px]",
+    width: "w-[25%] max-w-[110px] sm:w-[27%] sm:max-w-[140px]",
     avatar: 38,
     lift: "mt-9",
     glow: "drop-shadow(0 14px 18px rgba(0,0,0,0.65)) drop-shadow(0 0 16px rgba(205,127,50,0.32))",
@@ -80,12 +80,14 @@ function Place({
             style={{ filter: m.glow, animationDelay: m.delay }}
           />
         </div>
-        <figcaption className="plaque-glass relative z-20 -mt-1 w-full overflow-visible rounded-[14px] px-1.5 py-2 text-center sm:-mt-2 sm:px-2 sm:py-2.5">
-          <p className="flex min-w-0 items-center justify-center gap-0.5 text-[11px] font-bold text-fg sm:text-[13px]">
-            <span className="truncate">{entry.displayName}</span>
-            <Verified />
+        <figcaption className="plaque-glass relative z-20 mx-auto -mt-0.5 w-[86%] overflow-hidden rounded-[10px] px-1 py-1 text-center sm:-mt-1.5 sm:w-[88%] sm:rounded-[12px] sm:px-1.5 sm:py-1.5">
+          <p className="flex min-w-0 flex-nowrap items-center justify-center gap-0.5 overflow-hidden text-[10px] leading-none font-bold text-fg sm:text-[11px]">
+            <span className="min-w-0 truncate">{entry.displayName}</span>
+            <span className="hidden sm:inline-flex">
+              <Verified />
+            </span>
           </p>
-          <p className="mt-0.5 text-[13px] font-extrabold text-gold-grad tabular-nums sm:text-[15px]">
+          <p className="mt-0.5 text-[11px] leading-none font-extrabold text-gold-grad tabular-nums sm:text-[13px]">
             ${formatUsd(entry.amountPaid)}
           </p>
           {phrase ? (
@@ -98,7 +100,7 @@ function Place({
               rank={place}
               webLink={entry.webLink}
               lines={1}
-              className="relative z-30 mt-0.5 hidden max-w-full text-[9px] leading-tight text-white/45 sm:block"
+              className="relative z-30 mt-0.5 hidden max-w-full truncate text-[8px] leading-tight text-white/45 sm:block"
             >
               {phrase}
             </NoteTrigger>
@@ -106,7 +108,7 @@ function Place({
           <SafeWebLink
             href={entry.webLink}
             compact
-            className="relative z-30 mx-auto mt-1 max-w-[96%] justify-center"
+            className="relative z-30 mx-auto mt-0.5 hidden max-w-full justify-center sm:inline-flex"
           />
         </figcaption>
       </div>
@@ -158,7 +160,7 @@ export function Podium({ entries }: { entries: BoardEntry[] }) {
   return (
     <div
       ref={stage}
-      className="stage-3d relative mx-auto w-full max-w-[400px] overflow-x-clip pb-4 sm:max-w-[520px] sm:pb-5 lg:max-w-[560px]"
+      className="stage-3d relative mx-auto w-full max-w-[360px] overflow-x-clip px-2.5 pb-3 sm:max-w-[500px] sm:px-4 sm:pb-5 lg:max-w-[540px]"
     >
       <div className="stage-rig relative">
         <div className="stage-floor" />
@@ -167,7 +169,7 @@ export function Podium({ entries }: { entries: BoardEntry[] }) {
           <div className="stage-glow-gold absolute bottom-0 left-1/2 h-24 w-[52%] -translate-x-1/2 sm:h-32" />
           <div className="stage-glow-bronze absolute bottom-0 left-[80%] h-16 w-[32%] -translate-x-1/2 sm:h-24" />
         </div>
-        <div className="relative z-10 flex w-full items-end justify-center gap-0 px-0.5 pb-1 sm:pb-2">
+        <div className="relative z-10 flex w-full items-end justify-center gap-1 px-0 pb-1 sm:gap-1.5 sm:pb-2">
           <Place place={2} entry={second} variant="silver" />
           <Place place={1} entry={first} variant="gold" />
           <Place place={3} entry={third} variant="bronze" />
