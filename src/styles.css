@@ -59,7 +59,6 @@
   select {
     font-size: 16px !important;
   }
-  }
   a {
     transition: color var(--motion-quick) var(--ease-out);
   }
