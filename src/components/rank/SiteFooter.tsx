@@ -6,6 +6,8 @@ const COMPETE = [
   { to: "/weekly", label: "Weekly" },
   { to: "/monthly", label: "Monthly" },
   { to: "/prizes", label: "Positions" },
+  { to: "/spin", label: "Free Spin" },
+  { to: "/wallet", label: "Wallet" },
   { to: "/giveaways", label: "Giveaways" },
   { to: "/how-it-works", label: "How it works" },
   { to: "/archive", label: "Past seasons" },

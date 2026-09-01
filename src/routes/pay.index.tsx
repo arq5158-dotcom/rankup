@@ -61,7 +61,7 @@ function PayPage() {
             </Link>
           </div>
         </main>
-        <SiteFooter compact />
+        <SiteFooter />
       </div>
     );
   }
@@ -169,7 +169,7 @@ function PayPage() {
           </section>
         </div>
       </main>
-      <SiteFooter compact />
+      <SiteFooter />
     </div>
   );
 }

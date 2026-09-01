@@ -1109,7 +1109,7 @@ export async function fulfillPaidSession(session: {
       : session.payment_intent?.id ?? null;
   const start = num(row.cycle_start) > 0 ? num(row.cycle_start) : await getCycleStart(sql, cycleType);
 
-  await sql`
+  const claimed = await sql<{ id: number; credits_purchased: number | string | null; exchange_rate: number | string | null }>`
     update payments set
       status = 'completed',
       amount = ${amount},
@@ -1117,22 +1117,27 @@ export async function fulfillPaidSession(session: {
       stripe_payment_intent = ${intent},
       cycle_start = coalesce(cycle_start, ${start})
     where id = ${row.id} and status <> 'completed'
+    returning id, credits_purchased, exchange_rate
   `;
-
-  const parsedName = validateDisplayName(row.display_name || meta.displayName || "Competitor");
-  const name = parsedName.ok ? parsedName.name : "Competitor";
-  const already = row.status === "completed";
-  if (already) {
-    const bal = await sql<{ credits: number | string }>`select credits from profiles where user_id = ${row.user_id} limit 1`;
-    return { ok: true as const, rank: null, already: true, credits: num(bal[0]?.credits), creditsAdded: 0 };
-  }
 
   const { loadEconomy, creditsFromUsd } = await import("./economy");
   const eco = await loadEconomy(sql);
-  const rateAtBuy = num(row.exchange_rate) || Number(meta.rate) || eco.creditsPerUsd;
-  const storedCredits = num(row.credits_purchased);
+  const rateAtBuy = num(claimed[0]?.exchange_rate ?? row.exchange_rate) || Number(meta.rate) || eco.creditsPerUsd;
+  const storedCredits = num(claimed[0]?.credits_purchased ?? row.credits_purchased);
   const creditsDelta =
     storedCredits > 0 ? Math.round(storedCredits) : creditsFromUsd(amount, { ...eco, creditsPerUsd: rateAtBuy });
+
+  if (!claimed[0]) {
+    const bal = await sql<{ credits: number | string }>`select credits from profiles where user_id = ${row.user_id} limit 1`;
+    return {
+      ok: true as const,
+      rank: null,
+      already: true,
+      credits: num(bal[0]?.credits),
+      creditsAdded: creditsDelta,
+    };
+  }
+
   const customer =
     typeof session.customer === "string"
       ? session.customer

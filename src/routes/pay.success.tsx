@@ -60,10 +60,10 @@ function PaySuccess() {
   if (!user) return <RedirectToSignIn />;
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative flex min-h-screen flex-col">
       <Navbar />
-      <main className="relative z-10 mx-auto flex max-w-lg flex-col items-center px-4 py-20 text-center">
-        <div className="glass-card w-full rounded-2xl p-8">
+      <main className="relative z-10 mx-auto flex w-full max-w-lg flex-1 flex-col items-center px-4 py-16 text-center sm:py-20">
+        <div className="glass-card w-full rounded-2xl p-6 sm:p-8">
           {state === "loading" && (
             <>
               <Loader2 className="mx-auto mb-4 h-10 w-10 animate-spin text-gold" />
@@ -77,11 +77,14 @@ function PaySuccess() {
                 <Check className="h-8 w-8 text-success" />
               </div>
               <h1 className="font-display text-2xl font-black text-fg">Payment successful</h1>
-              <p className="mt-3 font-display text-4xl font-black tabular-nums text-gold-grad">
-                +{formatScore(creditsAdded)} CREDITS
+              <p className="mt-3 font-display text-[clamp(1.75rem,7vw,2.75rem)] leading-none font-black tabular-nums text-gold-grad">
+                {creditsAdded > 0 ? `+${formatScore(creditsAdded)}` : "Credits added"}
               </p>
-              <p className="mt-2 text-sm text-white/45">New balance: {formatScore(balance)} Credits</p>
-              <div className="mt-6 grid grid-cols-2 gap-2">
+              <p className="mt-2 text-xs font-bold tracking-[0.16em] text-gold/80 uppercase">Credits</p>
+              <p className="mt-3 text-sm text-white/45">
+                New balance: <span className="font-bold text-fg tabular-nums">{formatScore(balance)}</span>
+              </p>
+              <div className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <Link to="/" hash="rank-up" className="btn-gold inline-flex min-h-12 items-center justify-center rounded-xl px-3 text-xs font-extrabold">
                   RANK UP NOW
                 </Link>
@@ -105,7 +108,7 @@ function PaySuccess() {
           ) : null}
         </div>
       </main>
-      <SiteFooter compact />
+      <SiteFooter />
     </div>
   );
 }
