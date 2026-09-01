@@ -10,9 +10,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/monthly")({
   head: () =>
     seoHead({
-      title: "Monthly Prize Pool",
+      title: "Monthly Board",
       description:
-        "Rank Up monthly prize pool — top three split the cash. Live rankings after Stripe confirms your contribution.",
+        "Pay4Rank monthly board — top three get Gold, Silver, and Bronze featured placement. Live rankings after Stripe confirms ranking credits.",
       path: "/monthly",
     }),
   loader: async () => {
@@ -39,8 +39,8 @@ function Monthly() {
             className="trophy-3d h-14 w-14 object-contain sm:h-16 sm:w-16"
           />
           <div>
-            <h1 className="font-display text-3xl font-black text-gold-grad">Monthly Prize Pool</h1>
-            <p className="mt-1 text-sm text-white/40">Top 3 split the pool. New season, new champions.</p>
+            <h1 className="font-display text-3xl font-black text-gold-grad">Monthly board</h1>
+            <p className="mt-1 text-sm text-white/40">Top 3 get featured placement. New month, new climb.</p>
           </div>
         </div>
         <Podium entries={monthly.slice(0, 3)} />

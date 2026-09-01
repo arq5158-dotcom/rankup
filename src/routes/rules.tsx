@@ -5,9 +5,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/rules")({
   head: () =>
     seoHead({
-      title: "Official Contest Rules",
+      title: "Platform Rules",
       description:
-        "Official rules for Rank Up weekly and monthly prize cycles: eligibility, how winners are chosen, prizes, and disqualification.",
+        "Rules for Pay4Rank ranking credits, promotional listings, eligibility, and featured placement. Not a prize contest.",
       path: "/rules",
     }),
   component: Page,
@@ -15,111 +15,103 @@ export const Route = createFileRoute("/rules")({
 
 function Page() {
   return (
-    <LegalDoc title="Official Contest Rules" updated="September 1, 2026">
+    <LegalDoc title="Platform Rules" updated="September 1, 2026">
       <p>
-        These Official Rules govern every Rank Up weekly and monthly prize cycle. They work together
-        with the <Link to="/terms">Terms of Service</Link>. If they conflict, the Rules control prize
-        determination for that cycle.
+        These Rules govern Pay4Rank ranking credits and public listings. They work together with the{" "}
+        <Link to="/terms">Terms of Service</Link>. The leaderboard is a promotional advertising product
+        — not a lottery or raffle. Optional community giveaways, when offered, are run separately and
+        never require a purchase.
       </p>
 
-      <h2>1. Sponsor</h2>
+      <h2>1. The product</h2>
       <p>
-        The contest is sponsored by Rank Up. Prize pools and places are published on the{" "}
-        <Link to="/prizes">Prizes</Link> page and may be adjusted by an administrator before a cycle
-        closes.
+        Pay4Rank sells ranking credits. Each confirmed Stripe payment adds credits to your profile for
+        the weekly or monthly cycle you choose. Higher confirmed credits appear higher on the public
+        leaderboard. Other buyers can overtake you at any time. You are buying visibility, not a chance
+        to win money.
       </p>
 
       <h2>2. Eligibility</h2>
       <p>
-        Open to individuals who are 18 or older, have a Rank Up account in good standing, and can
-        legally complete a Stripe payment. Employees who administer the contest may be barred from
-        winning. Void where prohibited.
+        Open to individuals who are 18 or older, have a Pay4Rank account in good standing, and can
+        legally complete a Stripe payment. Void where this kind of paid promotion is prohibited.
       </p>
 
-      <h2>3. How to enter</h2>
+      <h2>3. How to buy credits</h2>
       <p>
-        Sign in, choose the weekly or monthly cycle, select a contribution amount, agree to these
-        Rules, and complete Stripe Checkout. There is no alternate free method of entry. Amount and
-        timing of confirmed payments determine rank. An incomplete checkout is not an entry.
+        Sign in, choose weekly or monthly, select an amount in USD, agree to these Rules, and complete
+        Stripe Checkout. Ranking credits equal the confirmed USD amount (one dollar = one credit). An
+        incomplete checkout does not charge you and does not rank you.
       </p>
 
       <h2>4. Cycles</h2>
       <ul>
         <li>
           <strong>Monthly.</strong> Runs from the first moment of the calendar month through the last
-          moment of that month in the service clock. Top three confirmed totals win the published 1st,
-          2nd, and 3rd prizes.
+          moment of that month in the service clock. The top three listings receive Gold, Silver, and
+          Bronze featured placement, badges, and a note in winner history.
         </li>
         <li>
-          <strong>Weekly.</strong> Runs until the published Sunday reset. First place only wins the
-          published weekly prize.
+          <strong>Weekly.</strong> Runs until the published Sunday reset. First place receives the Weekly
+          Champion badge and featured placement for that week.
         </li>
       </ul>
 
-      <h2>5. Determining winners</h2>
+      <h2>5. How position is decided</h2>
       <p>
-        Winners are the players with the highest confirmed contribution totals in that cycle. Rank is
-        not drawn at random and does not use odds. Ties are broken by the earlier confirmed Stripe
-        payment. Reversed, charged-back, or fraudulent payments are removed and ranks are recomputed.
+        Position is the highest confirmed credit total in that cycle. Rank is not drawn at random and
+        does not use odds. Ties are broken by the earlier confirmed Stripe payment. Reversed,
+        charged-back, or fraudulent payments are removed and ranks are recomputed.
       </p>
 
-      <h2>6. Prizes</h2>
+      <h2>6. Featured placement is not a prize</h2>
       <p>
-        Prizes are cash amounts (or the cash equivalent) listed on the Prizes page at cycle close,
-        plus any stated badge. No substitution except at our discretion if a prize cannot be fulfilled
-        as described. Winners may need to complete a reasonable claim process. Unclaimed prizes may be
-        forfeited. Winners are responsible for taxes.
+        Gold, Silver, Bronze, and Weekly Champion are display titles and extra on-platform exposure
+        included with the listing product. There is no cash prize, no merchandise prize, and no prize
+        purse. We do not pay winners. Featured titles may change if payments reverse or listings are
+        removed for abuse.
       </p>
 
       <h2>7. Publicity</h2>
       <p>
-        Display names, notes, ranks, and contribution totals are public on the leaderboard. By
-        entering, you grant Rank Up permission to show that information and to refer to your display
-        name in connection with the cycle.
+        Display names, notes, ranks, credit totals, and optional website links are public on the
+        leaderboard. By buying credits, you grant Pay4Rank permission to show that information.
       </p>
 
       <h2>8. Disqualification</h2>
       <p>
-        We may disqualify entries that use stolen cards, bots, collusion, multiple accounts to evade
-        limits, or any other manipulation. Disqualified contributions do not rank and are not
-        refunded except where the law requires.
+        We may remove listings that use stolen cards, bots, collusion, multiple accounts to evade
+        limits, or any other manipulation. Removed purchases are not refunded except where the law
+        requires.
       </p>
 
-      <h2>9. Release</h2>
+      <h2>9. Public website links</h2>
       <p>
-        By entering, you release Rank Up and its operators from claims arising out of participation or
-        prize fulfillment, to the fullest extent allowed by law.
+        You may optionally publish an https website on the leaderboard to promote a brand, project, or
+        page you are authorized to share. Links are scanned and may be refused or removed (adult
+        content, malware, shorteners, private or local addresses, and other unsafe destinations).
+        Pay4Rank does not endorse third-party sites.
       </p>
 
-      <h2>10. Not a lottery or game of chance</h2>
+      <h2>10. Community giveaways (separate)</h2>
       <p>
-        Rank Up is a paid ranking contest. Winners are determined solely by confirmed contribution totals
-        during a cycle. There is no random draw, no odds, no spinning wheel, and no element of chance in
-        placement. Rank Up is not a lottery, raffle, sweepstakes, casino, or sportsbook. If the law in
-        your location treats paid contests as prohibited gambling, you may not enter — Rank Up is void
-        where prohibited.
+        Pay4Rank may run optional promotional giveaways. They are not part of ranking-credit checkout
+        and are not a prize for climbing the board. Where a giveaway is offered:
       </p>
+      <ul>
+        <li>No purchase is necessary to enter.</li>
+        <li>Buying ranking credits does not increase your chance of winning.</li>
+        <li>
+          Each giveaway posts its own prize, eligibility, entry period, free entry method, and winner
+          announcement on the <Link to="/giveaways">Giveaways</Link> page.
+        </li>
+        <li>18+ only. Void where prohibited.</li>
+      </ul>
 
-      <h2>11. Public website links</h2>
+      <h2>11. Responsible use</h2>
       <p>
-        Players may optionally publish an https website on the leaderboard. Links are scanned and may be
-        refused or removed (adult content, malware, shorteners, private or local addresses, and other
-        unsafe destinations). Rank Up does not endorse third-party sites. Clicking a player link leaves
-        Rank Up. You are responsible for the destination of any link you submit.
-      </p>
-
-      <h2>12. Taxes and winner verification</h2>
-      <p>
-        Prize winners are responsible for any taxes. We may require government identification, tax forms
-        (such as a W-9 or equivalent), and proof of eligibility before paying a prize. Failure to complete
-        a reasonable claim process within the stated window may forfeit the prize.
-      </p>
-
-      <h2>13. Responsible participation</h2>
-      <p>
-        Contribute only what you can afford. Rank Up is entertainment, not an investment, and there is no
-        guarantee you will finish in a prize place. If gambling-like spending is a problem for you, do not
-        enter and seek help from a local support service.
+        Buy only what you can afford. Ranking credits are a promotional listing, not an investment, and
+        there is no guarantee you will hold a featured position. Other participants can pass you.
       </p>
     </LegalDoc>
   );

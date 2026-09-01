@@ -76,10 +76,10 @@ export function verifyTotp(secret: string, code: string) {
 }
 
 export function otpauthUrl(secret: string, account: string) {
-  const label = encodeURIComponent(`Rank Up:${account || "competitor"}`);
+  const label = encodeURIComponent(`Pay4Rank:${account || "competitor"}`);
   const params = new URLSearchParams({
     secret,
-    issuer: "Rank Up",
+    issuer: "Pay4Rank",
     algorithm: "SHA1",
     digits: "6",
     period: "30",

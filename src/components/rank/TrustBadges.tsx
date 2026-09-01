@@ -5,19 +5,19 @@ const BADGES = [
     icon: ShieldCheck,
     t: "Secure Platform",
     s: "SSL Encrypted",
-    d: "Checkout runs on Stripe. Card numbers never touch Rank Up servers.",
+    d: "Checkout runs on Stripe. Card numbers never touch Pay4Rank servers.",
   },
   {
     icon: Scale,
-    t: "Fair Play",
-    s: "Strict Rules",
-    d: "Rank is confirmed contribution total. Ties go to the earlier payment.",
+    t: "Fair ranking",
+    s: "Credits only",
+    d: "Rank is confirmed ranking credits. Ties go to the earlier payment. Featured titles are visibility, not prizes.",
   },
   {
     icon: Headphones,
     t: "24/7 Support",
     s: "We're here",
-    d: "Payment, ranking, or prize questions — reach us any time from Contact.",
+    d: "Payment, ranking, or listing questions — reach us any time from Contact.",
   },
 ];
 
@@ -26,7 +26,7 @@ export function TrustBadges() {
     <section aria-labelledby="trust-heading" className="glass-card rounded-2xl p-6 sm:p-8">
       <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Trust</p>
       <h2 id="trust-heading" className="mt-1 font-display text-2xl font-extrabold tracking-tight text-fg">
-        Built to play fair
+        Built to rank fair
       </h2>
       <div className="stagger-in mt-6 grid gap-3 sm:grid-cols-3">
         {BADGES.map((b) => (

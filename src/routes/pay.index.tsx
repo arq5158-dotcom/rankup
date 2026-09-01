@@ -7,7 +7,6 @@ import { SiteFooter } from "@/components/rank/SiteFooter";
 import { StripeEmbed } from "@/components/rank/StripeEmbed";
 import { RedirectToSignIn } from "@/lib/auth/gates";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { getPrizes } from "@/lib/server/rank";
 import { clearPayDraft, readPayDraft, type PayDraft } from "@/lib/pay-draft";
 import { formatUsd } from "@/lib/utils";
 import { seoHead } from "@/lib/seo";
@@ -16,7 +15,7 @@ export const Route = createFileRoute("/pay/")({
   head: () =>
     seoHead({
       title: "Secure checkout",
-      description: "Pay on Rank Up. Stripe confirms your contribution, then your live rank updates.",
+      description: "Pay on Pay4Rank. Stripe confirms your ranking credits, then your live rank updates.",
       path: "/pay",
       noindex: true,
     }),
@@ -27,23 +26,9 @@ function PayPage() {
   const navigate = useNavigate();
   const { user, isPending } = useCurrentUserState();
   const [draft, setDraft] = useState<PayDraft | null | undefined>(undefined);
-  const [prize, setPrize] = useState<string>("");
 
   useEffect(() => {
-    const next = readPayDraft();
-    setDraft(next);
-    void getPrizes()
-      .then((rows) => {
-        const cycle = next?.cycleType ?? "monthly";
-        if (cycle === "weekly") {
-          const w = rows.find((r) => r.cycleType === "weekly" && r.tier === "gold");
-          setPrize(w ? `Winner takes $${formatUsd(w.amount)}` : "Winner-take-all");
-          return;
-        }
-        const gold = rows.find((r) => r.cycleType === "monthly" && r.tier === "gold");
-        setPrize(gold ? `1st place $${formatUsd(gold.amount)}` : "Top 3 split the pool");
-      })
-      .catch(() => setPrize(""));
+    setDraft(readPayDraft());
   }, []);
 
   const cancel = () => {
@@ -71,7 +56,7 @@ function PayPage() {
             </span>
             <h1 className="mt-4 font-display text-2xl font-black text-fg">No checkout in progress</h1>
             <p className="mt-2 text-sm text-white/45">
-              Pick an amount on Rank Up, then you pay here — card details go straight to Stripe.
+              Pick an amount on Pay4Rank, then you pay here — card details go straight to Stripe.
             </p>
             <Link to="/" className="btn-gold mt-6 inline-flex min-h-12 items-center rounded-xl px-5 text-sm font-extrabold">
               Back to leaderboard
@@ -83,7 +68,7 @@ function PayPage() {
     );
   }
 
-  const cycleLabel = draft.cycleType === "weekly" ? "Weekly challenge" : "Monthly prize pool";
+  const cycleLabel = draft.cycleType === "weekly" ? "Weekly spotlight" : "Monthly board";
   const canEmbed = draft.mode === "embedded" && draft.publishableKey && draft.clientSecret;
 
   return (
@@ -104,7 +89,7 @@ function PayPage() {
           Confirm your rank
         </h1>
         <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/45">
-          Pay on Rank Up. Card details never touch our servers. Your live rank updates only after Stripe
+          Pay on Pay4Rank. Card details never touch our servers. Your live rank updates only after Stripe
           confirms the charge.
         </p>
 
@@ -124,28 +109,27 @@ function PayPage() {
           <aside className="pay-ticket overflow-hidden rounded-2xl">
             <div className="px-5 py-5 sm:px-6">
               <p className="flex items-center gap-2 text-[11px] font-bold tracking-[0.16em] text-gold uppercase">
-                <Crown className="h-3.5 w-3.5 fill-gold" /> Rank Up
+                <Crown className="h-3.5 w-3.5 fill-gold" /> Pay4Rank
               </p>
               <p className="mt-4 font-display text-5xl font-black tracking-tight text-gold-grad tabular-nums">
                 ${formatUsd(draft.amount)}
               </p>
               <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-white/50">
                 <span className="pay-usd">USD only</span>
-                <span>one-time contribution</span>
+                <span>ranking credits</span>
               </p>
             </div>
             <div className="pay-perf" />
             <div className="space-y-3 px-5 py-4 text-sm sm:px-6">
               <Row label="Cycle" value={cycleLabel} />
-              <Row label="Competing as" value={draft.displayName} />
+              <Row label="Listing as" value={draft.displayName} />
               {draft.shortNote ? <Row label="Note" value={draft.shortNote} /> : null}
-              {prize ? <Row label="Now playing for" value={prize} /> : null}
             </div>
             <div className="mx-5 mb-5 rounded-xl border border-white/[0.06] bg-[#12121a] px-4 py-3 sm:mx-6">
               <p className="flex items-start gap-2 text-[12px] leading-relaxed text-white/45">
                 <Trophy className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                Higher confirmed totals rank higher. Ties go to the earlier payment. Contributions are
-                non-refundable after Stripe confirms.
+                Higher confirmed credits rank higher. Ties go to the earlier payment. Ranking credits are
+                non-refundable after Stripe confirms. This is visibility, not a cash prize.
               </p>
             </div>
           </aside>
@@ -163,7 +147,7 @@ function PayPage() {
             ) : draft.url ? (
               <div className="flex flex-1 flex-col justify-center space-y-4">
                 <p className="text-sm leading-relaxed text-white/50">
-                  Continue to Stripe to finish this ${formatUsd(draft.amount)} USD contribution. You return
+                  Continue to Stripe to finish this ${formatUsd(draft.amount)} USD ranking-credit purchase. You return
                   here the moment the charge succeeds.
                 </p>
                 <a
@@ -180,7 +164,7 @@ function PayPage() {
             <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-4">
               <p className="flex items-center gap-1.5 text-[11px] text-white/35">
                 <ShieldCheck className="h-3.5 w-3.5 text-success" />
-                Powered by Stripe. Rank Up never stores your card.
+                Powered by Stripe. Pay4Rank never stores your card.
               </p>
               <button type="button" className="min-h-11 text-[12px] text-white/40 hover:text-fg" onClick={cancel}>
                 Cancel

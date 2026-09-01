@@ -1029,7 +1029,7 @@ export const startCheckout = createServerFn({ method: "POST" })
     const email = await sessionEmail(bearerOf(context));
     const profile = await ensureProfile(sql, userId, email);
     if (!profile.username) {
-      throw new Error("Choose a unique username before ranking up.");
+      throw new Error("Choose a unique username before buying ranking credits.");
     }
     const { assertTwoFactorUnlocked } = await import("./two-factor");
     await assertTwoFactorUnlocked(sql, userId, profile.two_factor_enabled, bearerOf(context));

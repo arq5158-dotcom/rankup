@@ -23,7 +23,7 @@ import { seoHead, SITE_DESCRIPTION } from "@/lib/seo";
 export const Route = createFileRoute("/")({
   head: () =>
     seoHead({
-      title: "Rank Up — Live Prize Leaderboard",
+      title: "Pay4Rank — Promotional Leaderboard",
       description: SITE_DESCRIPTION,
       path: "/",
     }),
@@ -42,7 +42,7 @@ function TrustRow({ className = "" }: { className?: string }) {
   return (
     <ul className={`trust-row w-full max-w-[400px] ${className}`}>
       {[
-        { icon: Trophy, t: "Real Prizes", s: "For Top Rankers" },
+        { icon: Trophy, t: "Get Seen", s: "Featured Placement" },
         { icon: Lock, t: "Secure Payments", s: "Powered by Stripe" },
         { icon: Zap, t: "Live Rankings", s: "Real-time Updates" },
       ].map((f) => (
@@ -132,20 +132,20 @@ function Home() {
           <section className="order-1 min-w-0">
             <div className="grid items-end gap-3 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-8">
               <div className="flex min-w-0 flex-col">
-                <h1 className="font-hero flex flex-col gap-[0.18em] text-[42px] leading-none font-normal tracking-[0.06em] sm:text-[56px] lg:text-[70px]">
+                <h1 className="font-hero flex flex-col gap-[0.18em] text-[36px] leading-none font-normal tracking-[0.05em] sm:text-[52px] lg:text-[64px]">
                   <span className="text-fg">PAY.</span>
                   <span className="text-fg">CLIMB.</span>
-                  <span className="text-gold-grad">WIN.</span>
+                  <span className="text-gold-grad">GET SEEN.</span>
                 </h1>
-                <p className="mt-3 hidden max-w-[32ch] text-[13px] leading-[1.55] text-pretty text-white/62 sm:mt-4 sm:block sm:text-[14px]">
-                  Secure your spot on the leaderboard, outperform, and win real prizes.
+                <p className="mt-3 hidden max-w-[34ch] text-[13px] leading-[1.55] text-pretty text-white/62 sm:mt-4 sm:block sm:text-[14px]">
+                  Buy ranking credits, outperform the board, and get your profile, brand, or site seen.
                 </p>
                 <button
                   type="button"
                   onClick={jumpToRankUp}
                   className="btn-gold relative z-10 mt-4 hidden min-h-[48px] w-fit items-center gap-1.5 rounded-[14px] px-7 pr-6 text-[15px] font-extrabold sm:mt-5 sm:inline-flex sm:min-h-[50px] sm:px-8 sm:pr-7"
                 >
-                  <span>Participate Now</span>
+                  <span>Promote Now</span>
                   <ChevronRight className="h-4 w-4" />
                 </button>
                 <TrustRow className="mt-7 hidden lg:grid" />
@@ -154,7 +154,7 @@ function Home() {
             </div>
             <div className="mt-4 flex flex-col items-start gap-3 sm:hidden">
               <p className="max-w-[36ch] text-[13px] leading-[1.55] text-pretty text-white/62">
-                Secure your spot on the leaderboard, outperform, and win real prizes.
+                Buy ranking credits, outperform the board, and get your profile, brand, or site seen.
               </p>
               <button
                 type="button"
@@ -173,7 +173,7 @@ function Home() {
               <div className="glass-card card-3d rounded-[22px] p-4">
                 <p className="text-[15px] font-bold text-fg">Join the climb</p>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-pretty text-white/55">
-                  Create an account to enter the board and track your rank live.
+                  Create an account to buy ranking credits and put your profile on the live board.
                 </p>
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   <Link
@@ -201,9 +201,9 @@ function Home() {
                   className="glass-card tap mb-0 flex w-full items-center justify-between gap-3 rounded-[22px] px-4 py-4 text-left"
                 >
                   <span>
-                    <span className="block text-sm font-bold text-fg">Participate & Rank Up</span>
+                    <span className="block text-sm font-bold text-fg">Buy ranking credits</span>
                     <span className="mt-0.5 block text-[12px] text-white/40">
-                      Join the live board after checkout confirms.
+                      Climb the live board after checkout confirms.
                     </span>
                   </span>
                   <span className="btn-gold shrink-0 rounded-[12px] px-4 py-2 text-[12px] font-extrabold">Enter</span>

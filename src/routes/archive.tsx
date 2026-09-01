@@ -8,7 +8,7 @@ export const Route = createFileRoute("/archive")({
   head: () =>
     seoHead({
       title: "Past Seasons",
-      description: "Archived Rank Up weekly and monthly cycles, player counts, and prize-pool totals.",
+      description: "Archived Pay4Rank weekly and monthly cycles, listing counts, and credit totals.",
       path: "/archive",
     }),
   loader: async () => ({ archives: await getArchives() }),

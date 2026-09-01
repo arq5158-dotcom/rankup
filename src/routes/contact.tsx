@@ -9,7 +9,7 @@ export const Route = createFileRoute("/contact")({
     seoHead({
       title: "Contact",
       description:
-        "Contact Rank Up support about rankings, payments, prizes, privacy, or your account.",
+        "Contact Pay4Rank support about rankings, payments, listings, privacy, or your account.",
       path: "/contact",
     }),
   component: Page,
@@ -23,7 +23,7 @@ function Page() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`[Rank Up] ${topic} — ${name || "Player"}`);
+    const subject = encodeURIComponent(`[Pay4Rank] ${topic} — ${name || "Player"}`);
     const body = encodeURIComponent(`${message}\n\nFrom: ${name}\nEmail: ${email}`);
     window.location.href = `mailto:support@rankup.app?subject=${subject}&body=${body}`;
   };
@@ -34,9 +34,9 @@ function Page() {
         <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Support</p>
         <h1 className="mt-2 font-display text-3xl font-black text-gold-grad">Contact</h1>
         <p className="mt-3 text-sm leading-relaxed text-white/50">
-          For ranking, payment, prize, or privacy questions. Use “Report a link” to flag an unsafe
+          For ranking, payment, listing, or privacy questions. Use “Report a link” to flag an unsafe
           player website. Include your display name and the Stripe receipt email if the issue is a
-          contribution.
+          ranking-credit purchase.
         </p>
 
         <form onSubmit={submit} className="glass-card mt-8 space-y-4 rounded-2xl p-6">
@@ -72,7 +72,7 @@ function Page() {
               onChange={(e) => setTopic(e.target.value)}
               className="w-full rounded-xl border border-white/[0.06] bg-[#12121a] px-3 py-2.5 text-sm text-fg outline-none focus:border-gold/40"
             >
-              {["General", "Payment", "Ranking", "Prize claim", "Privacy", "Account", "Report a link"].map((t) => (
+              {["General", "Payment", "Ranking", "Listing", "Privacy", "Account", "Report a link"].map((t) => (
                 <option key={t}>{t}</option>
               ))}
             </select>

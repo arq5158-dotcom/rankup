@@ -240,7 +240,7 @@ export const changeEmailPassword = createServerFn({ method: "POST" })
     const sql = await sqlClient();
     const methods = await listSignInMethods(sql, context.userId);
     if (!methods.includes("email")) {
-      throw new Error("This account signs in with Google or X. There is no Rank Up password to change.");
+      throw new Error("This account signs in with Google or X. There is no Pay4Rank password to change.");
     }
     const { auth } = await import("@/lib/auth/server");
     const { getRequest } = await import("@tanstack/react-start/server");

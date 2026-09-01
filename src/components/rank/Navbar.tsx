@@ -12,7 +12,8 @@ const LINKS = [
   { label: "Weekly", href: "/weekly" },
   { label: "Monthly", href: "/monthly" },
   { label: "How It Works", href: "/how-it-works" },
-  { label: "Prizes", href: "/prizes" },
+  { label: "Positions", href: "/prizes" },
+  { label: "Giveaways", href: "/giveaways" },
 ];
 
 export type AccountInfo = {
@@ -95,11 +96,11 @@ export function Navbar({
               <Crown className="h-[18px] w-[18px] fill-gold text-gold" />
             </span>
             <span className="leading-none">
-              <span className="block text-[14px] font-extrabold tracking-[0.12em] text-fg sm:text-[16px]">
-                RANK UP
+              <span className="block text-[13px] font-extrabold tracking-[0.1em] text-fg sm:text-[15px]">
+                PAY4RANK
               </span>
-              <span className="hidden text-[8px] tracking-[0.22em] text-gold/70 uppercase sm:block">
-                Compete. Contribute. Win.
+              <span className="hidden text-[8px] tracking-[0.18em] text-gold/70 uppercase sm:block">
+                Pay. Climb. Get Seen.
               </span>
             </span>
           </Link>
@@ -243,7 +244,7 @@ export function Navbar({
               onClick={() => setMobile(false)}
               className="btn-gold tap mt-2 flex min-h-12 items-center justify-center rounded-xl text-sm font-extrabold"
             >
-              Participate Now
+              Promote Now
             </a>
           </div>
         </div>

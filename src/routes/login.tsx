@@ -18,7 +18,7 @@ export const Route = createFileRoute("/login")({
   head: () =>
     seoHead({
       title: "Sign in",
-      description: "Sign in to Rank Up to contribute with Stripe and climb the live prize leaderboard.",
+      description: "Sign in to Pay4Rank to buy ranking credits and climb the live promotional leaderboard.",
       path: "/login",
       noindex: true,
     }),
@@ -132,7 +132,7 @@ function Login() {
             <h1 className="font-display text-xl font-black text-fg">
               {mode === "in" ? "Welcome back" : "Create your account"}
             </h1>
-            <p className="mt-1 text-sm text-white/40">Pay. Climb. Win. — sign in to rank up.</p>
+            <p className="mt-1 text-sm text-white/40">Pay. Climb. Get Seen. — sign in to climb.</p>
           </div>
 
           {authEnabled ? (
@@ -154,9 +154,9 @@ function Login() {
                 </Link>{" "}
                 and{" "}
                 <Link to="/rules" className="text-gold">
-                  Official Rules
+                  Platform Rules
                 </Link>
-                . Not a lottery. Void where prohibited.
+                . Ranking credits buy visibility, not a prize. 18+ only.
               </p>
             </div>
           ) : (
@@ -264,13 +264,13 @@ function Login() {
                   </Link>
                   ,{" "}
                   <Link to="/rules" className="text-gold">
-                    Official Rules
+                    Platform Rules
                   </Link>
                   , and{" "}
                   <Link to="/privacy" className="text-gold">
                     Privacy Policy
                   </Link>
-                  . Rank Up is not a lottery. Void where prohibited.
+                  . Ranking credits buy visibility, not a prize. 18+ only.
                 </span>
               </label>
             )}

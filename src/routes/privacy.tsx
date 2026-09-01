@@ -7,7 +7,7 @@ export const Route = createFileRoute("/privacy")({
     seoHead({
       title: "Privacy Policy",
       description:
-        "How Rank Up collects, uses, and protects account, payment, and leaderboard data. Stripe processes cards. We do not sell personal information.",
+        "How Pay4Rank collects, uses, and protects account, payment, and leaderboard data. Stripe processes cards. We do not sell personal information.",
       path: "/privacy",
     }),
   component: Page,
@@ -17,7 +17,7 @@ function Page() {
   return (
     <LegalDoc title="Privacy Policy" updated="September 1, 2026">
       <p>
-        This policy explains how Rank Up (“we”, “us”) handles information when you use the Rank Up
+        This policy explains how Pay4Rank (“we”, “us”) handles information when you use the Pay4Rank
         website and services. It is written for players, not lawyers — but it is the policy that governs
         the service.
       </p>
@@ -29,7 +29,7 @@ function Page() {
           identifiers, optional profile image, short note, and website link.
         </li>
         <li>
-          <strong>Competition data.</strong> Contribution amounts, cycle (weekly or monthly), rank, and
+          <strong>Listing data.</strong> Ranking-credit amounts, cycle (weekly or monthly), rank, and
           payment status for leaderboard entries.
         </li>
         <li>
@@ -47,12 +47,12 @@ function Page() {
       <p>We use the information above to:</p>
       <ul>
         <li>Create and secure your account</li>
-        <li>Record contributions and compute live rankings</li>
-        <li>Pay out prizes and contact winners</li>
+        <li>Record ranking-credit purchases and compute live rankings</li>
+        <li>Show featured placements and contact you about your account</li>
         <li>Prevent fraud, abuse, and prohibited links</li>
         <li>Meet legal, tax, and accounting duties</li>
       </ul>
-      <p>We do not sell personal information and we do not run advertising networks on Rank Up.</p>
+      <p>We do not sell personal information. Pay4Rank is a promotional listing service, not a third-party ad network placed on other sites.</p>
 
       <h2>3. Processors</h2>
       <p>
@@ -63,10 +63,10 @@ function Page() {
 
       <h2>4. Sharing</h2>
       <p>
-        Leaderboard display names, notes, ranks, contribution totals, and optional website links are
+        Leaderboard display names, notes, ranks, credit totals, and optional website links are
         public by design — that is the product. Website links are filtered for safety but remain
         third-party pages. We share other personal data only with processors listed above, if required
-        by law, or to protect the service and other players. We do not sell or share personal
+        by law, or to protect the service and other users. We do not sell or share personal
         information for cross-context behavioral advertising.
       </p>
 
@@ -89,7 +89,7 @@ function Page() {
 
       <h2>7. Children</h2>
       <p>
-        Rank Up is for adults. We do not knowingly collect information from anyone under 18. If we
+        Pay4Rank is for adults. We do not knowingly collect information from anyone under 18. If we
         learn that we have, we will delete the account.
       </p>
 
@@ -101,7 +101,7 @@ function Page() {
 
       <h2>9. International</h2>
       <p>
-        If you access Rank Up from outside the country where our infrastructure runs, your information
+        If you access Pay4Rank from outside the country where our infrastructure runs, your information
         may be processed in other jurisdictions that may have different data-protection rules.
       </p>
 
@@ -113,7 +113,7 @@ function Page() {
 
       <h2>11. Contact</h2>
       <p>
-        Privacy questions: <Link to="/contact">Contact Rank Up</Link>. Related documents:{" "}
+        Privacy questions: <Link to="/contact">Contact Pay4Rank</Link>. Related documents:{" "}
         <Link to="/terms">Terms</Link>, <Link to="/cookies">Cookies</Link>,{" "}
         <Link to="/rules">Official rules</Link>.
       </p>

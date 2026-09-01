@@ -11,7 +11,7 @@ export function NotFound() {
           That route is not on the board. Head back to the live leaderboard.
         </p>
         <Link to="/" className="btn-gold mt-6 rounded-full px-6 py-2.5 text-sm font-extrabold">
-          Back to Rank Up
+          Back to Pay4Rank
         </Link>
       </main>
     </PageShell>

@@ -7,9 +7,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/prizes")({
   head: () =>
     seoHead({
-      title: "Prizes",
+      title: "Featured Positions",
       description:
-        "Monthly top three take home cash plus exclusive badges. The weekly sprint is winner-take-all.",
+        "Monthly Gold, Silver, and Bronze plus the Weekly Champion get featured placement, badges, and history — not cash prizes.",
       path: "/prizes",
     }),
   loader: async () => ({ prizes: await getPrizes() }),
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/prizes")({
 function Page() {
   const { prizes } = Route.useLoaderData();
   return (
-    <PageShell active="Prizes">
+    <PageShell active="Positions">
       <main className="relative z-10 mx-auto max-w-5xl space-y-5 px-4 py-6 sm:px-6 sm:py-10">
         <div className="flex items-end gap-3">
           <img
@@ -29,16 +29,16 @@ function Page() {
             className="trophy-3d h-14 w-14 object-contain sm:h-16 sm:w-16"
           />
           <div>
-            <h1 className="font-display text-3xl font-black text-gold-grad">Prizes</h1>
+            <h1 className="font-display text-3xl font-black text-gold-grad">Featured positions</h1>
             <p className="mt-1 max-w-xl text-sm text-white/45">
-              Monthly top three take home cash plus exclusive badges. The weekly sprint is winner-take-all.
+              Top listings get extra visibility, exclusive badges, and a place in the Hall of Fame. There is no cash prize for rank.
             </p>
           </div>
         </div>
         <p className="max-w-xl text-sm text-white/45">
-          Amounts shown are the current published pool and may be updated before a cycle closes. See the{" "}
+          Ranking credits buy promotion. Featured titles are part of the listing. See the{" "}
           <a href="/rules" className="text-gold hover:underline">
-            official rules
+            platform rules
           </a>
           .
         </p>

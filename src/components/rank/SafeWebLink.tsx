@@ -18,7 +18,7 @@ export function SafeWebLink({
       target="_blank"
       rel="noopener noreferrer nofollow ugc"
       referrerPolicy="no-referrer"
-      title={`Opens ${host} — third-party site, not affiliated with Rank Up`}
+      title={`Opens ${host} — third-party site, not affiliated with Pay4Rank`}
       aria-label={`Visit ${host} (opens in a new tab, third-party site)`}
       className={cn(
         "inline-flex max-w-full min-w-0 items-center gap-1 text-gold/70 hover:text-gold",

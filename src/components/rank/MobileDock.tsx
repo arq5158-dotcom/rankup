@@ -13,7 +13,7 @@ export function MobileDock() {
   const items = [
     { id: "home", to: "/" as const, label: "Home", icon: Crown, match: pathname === "/" },
     { id: "weekly", to: "/weekly" as const, label: "Weekly", icon: Zap, match: pathname.startsWith("/weekly") },
-    { id: "prizes", to: "/prizes" as const, label: "Prizes", icon: Gift, match: pathname.startsWith("/prizes") },
+    { id: "prizes", to: "/prizes" as const, label: "Tiers", icon: Gift, match: pathname.startsWith("/prizes") },
     {
       id: "you",
       to: youTo,

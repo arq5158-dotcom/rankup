@@ -9,7 +9,7 @@ export const Route = createFileRoute("/pay/cancel")({
   head: () =>
     seoHead({
       title: "Payment cancelled",
-      description: "Your Rank Up checkout was cancelled. No charge was made.",
+      description: "Your Pay4Rank checkout was cancelled. No charge was made.",
       path: "/pay/cancel",
       noindex: true,
     }),
@@ -26,7 +26,7 @@ function PayCancel() {
           <X className="mx-auto mb-4 h-12 w-12 text-white/30" />
           <h1 className="font-display text-xl font-black text-fg">Payment cancelled</h1>
           <p className="mt-2 text-sm text-white/45">
-            No charge was made. You can rank up whenever you're ready.
+            No charge was made. You can buy ranking credits whenever you're ready.
           </p>
           <Link to="/" className="btn-gold mt-6 inline-flex rounded-xl px-5 py-2.5 text-sm font-extrabold">
             Back to leaderboard

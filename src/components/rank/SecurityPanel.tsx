@@ -102,19 +102,19 @@ export function SecurityPanel({
           {hasGoogle ? (
             <MethodRow
               title="Google"
-              body="Rank Up never sees a Google password. 2-step verification is in your Google account — turn it on at Google if it is not already."
+              body="Pay4Rank never sees a Google password. 2-step verification is in your Google account — turn it on at Google if it is not already."
             />
           ) : null}
           {hasX ? (
             <MethodRow
               title="X"
-              body="Rank Up never sees an X password. Extra login protection lives in your X account, not here."
+              body="Pay4Rank never sees an X password. Extra login protection lives in your X account, not here."
             />
           ) : null}
           {hasEmail ? (
             <MethodRow
               title="Email and password"
-              body={`${email || "Your email"} + a Rank Up password. Add an authenticator below so a stolen password is not enough.`}
+              body={`${email || "Your email"} + a Pay4Rank password. Add an authenticator below so a stolen password is not enough.`}
             />
           ) : null}
           {!hasGoogle && !hasX && !hasEmail ? (
@@ -124,7 +124,7 @@ export function SecurityPanel({
       </section>
 
       <section className="glass-card rounded-2xl p-6">
-        <p className="text-[10px] font-bold tracking-[0.16em] text-gold uppercase">Rank Up authenticator</p>
+        <p className="text-[10px] font-bold tracking-[0.16em] text-gold uppercase">Pay4Rank authenticator</p>
         <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-display text-xl font-black text-fg">Two-factor on this account</h2>
           <span
@@ -136,7 +136,7 @@ export function SecurityPanel({
           </span>
         </div>
         <p className="mt-2 text-sm leading-relaxed text-white/45">
-          This is separate from Google or X. When it is on, Rank Up asks for a 6-digit app code on new sessions
+          This is separate from Google or X. When it is on, Pay4Rank asks for a 6-digit app code on new sessions
           and before checkout. Use Google Authenticator, Authy, or 1Password.
         </p>
 
@@ -283,8 +283,8 @@ export function SecurityPanel({
         ) : (
           <p className="mt-2 text-sm leading-relaxed text-white/45">
             {hasGoogle || hasX
-              ? "This account has no Rank Up password. Sign-in is Google or X — change that password with them."
-              : "No Rank Up password on this account."}
+              ? "This account has no Pay4Rank password. Sign-in is Google or X — change that password with them."
+              : "No Pay4Rank password on this account."}
           </p>
         )}
       </section>

@@ -23,7 +23,7 @@ export const Route = createFileRoute("/dashboard")({
   head: () =>
     seoHead({
       title: "Dashboard",
-      description: "Manage your Rank Up profile, security, and contribution history.",
+      description: "Manage your Pay4Rank profile, security, and ranking-credit history.",
       path: "/dashboard",
       noindex: true,
     }),

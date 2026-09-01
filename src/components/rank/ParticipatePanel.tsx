@@ -105,7 +105,7 @@ export function ParticipatePanel({
         >
           <X className="h-4 w-4" />
         </button>
-        <h3 className="pr-10 text-[16px] font-bold tracking-tight text-fg">Participate & Rank Up</h3>
+        <h3 className="pr-10 text-[16px] font-bold tracking-tight text-fg">Buy ranking credits</h3>
 
         <div className="mt-3.5 space-y-3">
           <Segmented
@@ -118,7 +118,7 @@ export function ParticipatePanel({
           />
           <div className="field">
             <label className="mb-1.5 block text-[10px] font-semibold tracking-wider text-white/40 uppercase">
-              Enter Amount (USD)
+              Ranking credits (USD)
             </label>
             <div className="relative">
               <span className="absolute top-1/2 left-3.5 -translate-y-1/2 text-[24px] font-bold text-gold">$</span>
@@ -172,7 +172,7 @@ export function ParticipatePanel({
               maxLength={NOTE_MAX_CHARS}
               suppressHydrationWarning
               onChange={(e) => setNote(e.target.value.slice(0, NOTE_MAX_CHARS))}
-              placeholder="Here to compete and win!"
+              placeholder="Here to get seen."
               className={field}
             />
           </div>
@@ -216,13 +216,13 @@ export function ParticipatePanel({
               </Link>
               ,{" "}
               <Link to="/rules" className="text-gold hover:underline">
-                Official Rules
+                Platform Rules
               </Link>
               , and{" "}
               <Link to="/privacy" className="text-gold hover:underline">
                 Privacy Policy
               </Link>
-              . This is not a lottery. Contributions are generally non-refundable. Void where prohibited.
+              . I am buying promotional ranking credits, not entering a prize contest. Purchases are generally non-refundable. 18+ only.
             </span>
           </label>
           <button
@@ -232,7 +232,7 @@ export function ParticipatePanel({
             className="btn-gold relative z-10 tap flex min-h-[50px] w-full items-center justify-center gap-2 rounded-[14px] text-sm font-extrabold"
           >
             <Lock className="h-3.5 w-3.5" />
-            {loading ? "Opening checkout…" : signedIn ? "Pay Securely & Rank Up" : "Sign in to Rank Up"}
+            {loading ? "Opening checkout…" : signedIn ? "Pay securely & climb" : "Sign in to Pay4Rank"}
           </button>
           <p className="flex flex-col items-center justify-center gap-0.5 pt-0.5 text-center text-[10px] text-white/30">
             <span>

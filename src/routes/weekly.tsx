@@ -12,7 +12,7 @@ export const Route = createFileRoute("/weekly")({
     seoHead({
       title: "Weekly Challenge",
       description:
-        "Rank Up weekly challenge — winner-take-all. Rankings reset every Sunday. Contribute with Stripe to climb.",
+        "Pay4Rank weekly spotlight — #1 gets the Weekly Champion badge and featured placement. Rankings reset every Sunday.",
       path: "/weekly",
     }),
   loader: async () => {
@@ -40,7 +40,7 @@ function Weekly() {
           />
           <div>
             <h1 className="font-display text-3xl font-black text-gold-grad">Weekly Challenge</h1>
-            <p className="mt-1 text-sm text-white/40">Only #1 takes the prize. Rankings reset every Sunday.</p>
+            <p className="mt-1 text-sm text-white/40">Only #1 is featured this week. Rankings reset every Sunday.</p>
           </div>
         </div>
         <Podium entries={weekly.slice(0, 3)} />

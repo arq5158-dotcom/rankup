@@ -15,6 +15,7 @@ import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as GiveawaysRouteImport } from './routes/giveaways'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MonthlyRouteImport } from './routes/monthly'
@@ -59,6 +60,11 @@ const CookiesRoute = CookiesRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GiveawaysRoute = GiveawaysRouteImport.update({
+  id: '/giveaways',
+  path: '/giveaways',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -144,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
+  '/giveaways': typeof GiveawaysRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/monthly': typeof MonthlyRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
+  '/giveaways': typeof GiveawaysRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/monthly': typeof MonthlyRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
+  '/giveaways': typeof GiveawaysRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/monthly': typeof MonthlyRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookies'
     | '/dashboard'
+    | '/giveaways'
     | '/how-it-works'
     | '/login'
     | '/monthly'
@@ -239,6 +249,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookies'
     | '/dashboard'
+    | '/giveaways'
     | '/how-it-works'
     | '/login'
     | '/monthly'
@@ -262,6 +273,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookies'
     | '/dashboard'
+    | '/giveaways'
     | '/how-it-works'
     | '/login'
     | '/monthly'
@@ -286,6 +298,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CookiesRoute: typeof CookiesRoute
   DashboardRoute: typeof DashboardRoute
+  GiveawaysRoute: typeof GiveawaysRoute
   HowItWorksRoute: typeof HowItWorksRoute
   LoginRoute: typeof LoginRoute
   MonthlyRoute: typeof MonthlyRoute
@@ -345,6 +358,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/giveaways': {
+      id: '/giveaways'
+      path: '/giveaways'
+      fullPath: '/giveaways'
+      preLoaderRoute: typeof GiveawaysRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -462,6 +482,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CookiesRoute: CookiesRoute,
   DashboardRoute: DashboardRoute,
+  GiveawaysRoute: GiveawaysRoute,
   HowItWorksRoute: HowItWorksRoute,
   LoginRoute: LoginRoute,
   MonthlyRoute: MonthlyRoute,

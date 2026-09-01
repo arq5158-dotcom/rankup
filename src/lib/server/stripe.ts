@@ -135,7 +135,7 @@ export async function createRankCheckoutSession(
   const stripe = await getStripe(sql);
   const origin = getAppOrigin();
   const dollars = (opts.amountCents / 100).toFixed(2);
-  const cycleLabel = opts.meta.cycleType === "weekly" ? "Weekly challenge" : "Monthly prize pool";
+  const cycleLabel = opts.meta.cycleType === "weekly" ? "Weekly spotlight" : "Monthly board";
   const base = {
     mode: "payment" as const,
     locale: "en" as const,
@@ -148,19 +148,19 @@ export async function createRankCheckoutSession(
       background_color: "#08080c",
       button_color: "#d4b445",
       border_style: "rounded" as const,
-      display_name: "Rank Up",
+      display_name: "Pay4Rank",
       font_family: "inter" as const,
     },
     custom_text: {
-      submit: { message: "Your live rank updates only after Stripe confirms this payment." },
+      submit: { message: "Your live rank updates only after Stripe confirms this payment. Ranking credits buy visibility, not a prize." },
     },
     line_items: [
       {
         price_data: {
           currency: "usd",
           product_data: {
-            name: `Rank Up · ${cycleLabel}`,
-            description: `USD ${dollars} contribution`,
+            name: `Pay4Rank ranking credits · ${cycleLabel}`,
+            description: `USD ${dollars} promotional ranking credits`,
           },
           unit_amount: opts.amountCents,
         },
@@ -168,7 +168,7 @@ export async function createRankCheckoutSession(
       },
     ],
     payment_intent_data: {
-      description: `Rank Up ${opts.meta.cycleType} · $${dollars}`,
+      description: `Pay4Rank ${opts.meta.cycleType} ranking credits · $${dollars}`,
       metadata: opts.meta,
     },
   };

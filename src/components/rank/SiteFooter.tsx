@@ -5,13 +5,14 @@ const COMPETE = [
   { to: "/", label: "Leaderboard", hash: "/#leaderboard" },
   { to: "/weekly", label: "Weekly" },
   { to: "/monthly", label: "Monthly" },
-  { to: "/prizes", label: "Prizes" },
+  { to: "/prizes", label: "Positions" },
+  { to: "/giveaways", label: "Giveaways" },
   { to: "/how-it-works", label: "How it works" },
   { to: "/archive", label: "Past seasons" },
 ] as const;
 
 const LEGAL = [
-  { to: "/rules", label: "Official rules" },
+  { to: "/rules", label: "Platform rules" },
   { to: "/terms", label: "Terms" },
   { to: "/privacy", label: "Privacy" },
   { to: "/cookies", label: "Cookies" },
@@ -23,7 +24,7 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
     return (
       <footer className="relative z-10 mt-auto border-t border-white/[0.06] bg-bg/90">
         <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-3 px-5 py-4">
-          <p className="text-[11px] text-white/35">© {new Date().getFullYear()} Rank Up · Payments in USD</p>
+          <p className="text-[11px] text-white/35">© {new Date().getFullYear()} Pay4Rank · Payments in USD</p>
           <nav className="flex flex-wrap gap-4 text-[11px] text-white/40">
             <Link to="/terms" className="hover:text-fg">
               Terms
@@ -51,13 +52,13 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold/15 ring-1 ring-gold/35">
               <Crown className="h-3.5 w-3.5 fill-gold text-gold" />
             </span>
-            <span className="text-[13px] font-extrabold tracking-[0.08em] text-fg">RANK UP</span>
+            <span className="text-[13px] font-extrabold tracking-[0.08em] text-fg">PAY4RANK</span>
           </Link>
           <p className="mt-2.5 max-w-xs text-[12px] leading-relaxed text-pretty text-white/48">
-            A live prize leaderboard. Contribute, climb, and win — rankings update only after payment confirms.
+            A promotional leaderboard. Buy ranking credits, climb, and get seen — rank updates only after payment confirms.
           </p>
           <p className="mt-2.5 text-[10px] font-bold tracking-wider text-white/28 uppercase">
-            18+ · Not a lottery · Void where prohibited
+            18+ · Promotional listing · Not a prize contest
           </p>
         </div>
         <nav aria-label="Compete">
@@ -95,7 +96,7 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
         <div className="col-span-2 md:col-span-1">
           <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">Payments</p>
           <p className="mt-2.5 max-w-xs text-[12px] leading-relaxed text-white/52">
-            Card payments are processed by Stripe. Rank Up never stores full card numbers.
+            Card payments are processed by Stripe. Pay4Rank never stores full card numbers.
           </p>
           <Link to="/contact" className="mt-2.5 inline-block text-[12px] text-gold hover:text-gold-light">
             Contact support
@@ -104,7 +105,7 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
       </div>
       <div className="border-t border-white/[0.04] py-3">
         <p className="text-center text-[11px] tracking-wide text-white/38">
-          © {new Date().getFullYear()} Rank Up. Not a game of chance. Play responsibly.
+          © {new Date().getFullYear()} Pay4Rank. Ranking credits buy visibility, not a cash prize.
         </p>
       </div>
     </footer>

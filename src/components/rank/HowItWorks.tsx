@@ -1,22 +1,22 @@
-import { ArrowRight, Crown, Lock, Trophy, Zap } from "lucide-react";
+import { ArrowRight, Crown, Eye, Lock, Zap } from "lucide-react";
 
 const STEPS = [
   {
     icon: Lock,
     title: "Pay",
-    body: "Secure your entry with Stripe. Choose a contribution — higher amounts climb faster.",
+    body: "Buy ranking credits with Stripe. More credits move you higher on the public board.",
     cup: "/rank/cup-gold.webp?v=3d4",
   },
   {
     icon: Zap,
     title: "Climb",
-    body: "Live rankings update the moment you pay. Outperform the field and hold your rank.",
+    body: "Live rankings update the moment payment confirms. Others can overtake you at any time.",
     cup: "/rank/cup-silver.webp?v=3d4",
   },
   {
-    icon: Trophy,
-    title: "Win",
-    body: "Monthly top 3 split the prize pool. Weekly, only #1 takes the crown.",
+    icon: Eye,
+    title: "Get Seen",
+    body: "Top listings get featured placement, badges, and the Hall of Fame. Separate giveaways never require a purchase.",
     cup: "/rank/cup-bronze.webp?v=3d4",
   },
 ];
@@ -52,7 +52,7 @@ export function HowItWorks() {
         ))}
       </div>
       <p className="mt-5 flex items-center justify-center gap-2 text-center text-[11px] text-white/30">
-        Fair play. Strict rules. Real prizes. Not a lottery. 18+ only. <ArrowRight className="h-3 w-3" />
+        Promotional listings. Featured placement. 18+ only. <ArrowRight className="h-3 w-3" />
       </p>
     </section>
   );

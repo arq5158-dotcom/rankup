@@ -50,7 +50,7 @@ export function TwoFactorGate() {
         </p>
         <h2 className="mt-1 font-display text-2xl font-black text-fg">Enter your code</h2>
         <p className="mt-2 text-sm text-white/45">
-          This Rank Up session needs the 6-digit code from your authenticator app (Google Authenticator, Authy,
+          This Pay4Rank session needs the 6-digit code from your authenticator app (Google Authenticator, Authy,
           1Password).
         </p>
         <form

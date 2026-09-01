@@ -7,7 +7,7 @@ export const Route = createFileRoute("/cookies")({
     seoHead({
       title: "Cookie Policy",
       description:
-        "Rank Up uses essential cookies for sign-in, security, and Stripe checkout. No advertising cookies. How to manage consent.",
+        "Pay4Rank uses essential cookies for sign-in, security, and Stripe checkout. No advertising cookies. How to manage consent.",
       path: "/cookies",
     }),
   component: Page,
@@ -17,7 +17,7 @@ function Page() {
   return (
     <LegalDoc title="Cookie Policy" updated="September 1, 2026">
       <p>
-        This policy describes the cookies and similar storage Rank Up uses. It should be read with the{" "}
+        This policy describes the cookies and similar storage Pay4Rank uses. It should be read with the{" "}
         <Link to="/privacy">Privacy Policy</Link>.
       </p>
 
@@ -31,7 +31,7 @@ function Page() {
       <ul>
         <li>
           <strong>Session / authentication (essential).</strong> Keeps you signed in as you move
-          between pages and return to Rank Up. Without this cookie, login cannot work.
+          between pages and return to Pay4Rank. Without this cookie, login cannot work.
         </li>
         <li>
           <strong>Cookie consent (essential).</strong> Stores that you acknowledged this notice so we
@@ -47,7 +47,7 @@ function Page() {
 
       <h2>What we do not use</h2>
       <p>
-        Rank Up does not set advertising cookies, does not run a third-party ad network, and does not
+        Pay4Rank does not set advertising cookies, does not run a third-party ad network, and does not
         sell cookie data. We do not currently use optional analytics cookies.
       </p>
 

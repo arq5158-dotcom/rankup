@@ -31,7 +31,7 @@ export const Route = createFileRoute("/admin")({
   head: () =>
     seoHead({
       title: "Admin",
-      description: "Rank Up administration.",
+      description: "Pay4Rank administration.",
       path: "/admin",
       noindex: true,
     }),
