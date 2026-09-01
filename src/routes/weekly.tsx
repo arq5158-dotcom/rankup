@@ -1,0 +1,42 @@
+import { useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { getLeaderboard, getPrizes } from "@/lib/server/rank";
+import { PageShell } from "@/components/rank/PageShell";
+import { Podium } from "@/components/rank/Podium";
+import { PrizePools } from "@/components/rank/PrizePools";
+import { LeaderboardTable } from "@/components/rank/LeaderboardTable";
+import { seoHead } from "@/lib/seo";
+
+export const Route = createFileRoute("/weekly")({
+  head: () =>
+    seoHead({
+      title: "Weekly Challenge",
+      description:
+        "Rank Up weekly challenge — winner-take-all. Rankings reset every Sunday. Contribute with Stripe to climb.",
+      path: "/weekly",
+    }),
+  loader: async () => {
+    const [weekly, prizes] = await Promise.all([
+      getLeaderboard({ data: { cycleType: "weekly" } }),
+      getPrizes(),
+    ]);
+    return { weekly, prizes };
+  },
+  component: Weekly,
+});
+
+function Weekly() {
+  const { weekly, prizes } = Route.useLoaderData();
+  const [showAll, setShowAll] = useState(true);
+  return (
+    <PageShell active="Weekly">
+      <main className="relative z-10 mx-auto max-w-[1400px] space-y-5 px-4 py-6 sm:px-6 sm:py-10">
+        <h1 className="font-display text-3xl font-black text-gold-grad">Weekly Challenge</h1>
+        <p className="text-sm text-white/40">Only #1 takes the prize. Rankings reset every Sunday.</p>
+        <Podium entries={weekly.slice(0, 3)} />
+        <PrizePools prizes={prizes} />
+        <LeaderboardTable entries={weekly} showAll={showAll} onToggle={() => setShowAll((v) => !v)} />
+      </main>
+    </PageShell>
+  );
+}
