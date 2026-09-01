@@ -43,12 +43,53 @@ export const Route = createFileRoute("/admin")({
 
 type Tab = "overview" | "users" | "prizes" | "spin" | "economy" | "reset" | "stripe";
 
+function shrinkWheelImage(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (file.size > 8 * 1024 * 1024) {
+      reject(new Error("Image must be under 8MB."));
+      return;
+    }
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const max = 256;
+      const scale = Math.min(1, max / Math.max(img.width || 1, img.height || 1));
+      const w = Math.max(1, Math.round((img.width || 1) * scale));
+      const h = Math.max(1, Math.round((img.height || 1) * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        reject(new Error("Could not process image."));
+        return;
+      }
+      ctx.drawImage(img, 0, 0, w, h);
+      let q = 0.82;
+      let data = canvas.toDataURL("image/jpeg", q);
+      while (data.length > 140_000 && q > 0.4) {
+        q -= 0.1;
+        data = canvas.toDataURL("image/jpeg", q);
+      }
+      if (data.length > 175_000) reject(new Error("Image is still too large. Try a simpler graphic."));
+      else resolve(data);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Could not read that image."));
+    };
+    img.src = url;
+  });
+}
+
 function AdminPage() {
   const { user, isPending } = useCurrentUserState();
   const [tab, setTab] = useState<Tab>("overview");
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [isOwner, setIsOwner] = useState(false);
   const [board, setBoard] = useState<BoardEntry[]>([]);
+  const [weeklyBoard, setWeeklyBoard] = useState<BoardEntry[]>([]);
   const [users, setUsers] = useState<Awaited<ReturnType<typeof adminListUsers>>>([]);
   const [payments, setPayments] = useState<Awaited<ReturnType<typeof adminListPayments>>>([]);
   const [gold, setGold] = useState(1000);
@@ -75,13 +116,15 @@ function AdminPage() {
         setIsAdmin(acc.profile.isAdmin);
         setIsOwner(acc.profile.isOwner);
         if (!acc.profile.isAdmin) return;
-        const [b, p, u, pay] = await Promise.all([
+        const [b, w, p, u, pay] = await Promise.all([
           getLeaderboard({ data: { cycleType: "monthly" } }),
+          getLeaderboard({ data: { cycleType: "weekly" } }),
           getPrizes(),
           adminListUsers(),
           adminListPayments(),
         ]);
         setBoard(b);
+        setWeeklyBoard(w);
         setUsers(u);
         setPayments(pay);
         setGold(p.find((x) => x.cycleType === "monthly" && x.tier === "gold")?.amount ?? 1000);
@@ -133,6 +176,9 @@ function AdminPage() {
   }
 
   const filteredBoard = board.filter((e) =>
+    matchesQuery(query, e.displayName, e.username, e.shortNote, e.webLink),
+  );
+  const filteredWeeklyBoard = weeklyBoard.filter((e) =>
     matchesQuery(query, e.displayName, e.username, e.shortNote, e.webLink),
   );
   const filteredUsers = users.filter((u) =>
@@ -215,15 +261,23 @@ function AdminPage() {
                     <button
                       type="button"
                       onClick={async () => {
+                        if (
+                          !window.confirm(
+                            `Remove ${e.displayName}${e.username ? ` (@${e.username})` : ""} from the monthly leaderboard?\n\nTheir account, credits, and weekly rank stay.`,
+                          )
+                        ) {
+                          return;
+                        }
                         try {
                           await adminRemoveEntry({ data: { id: e.id, cycleType: "monthly" } });
                           setBoard(await getLeaderboard({ data: { cycleType: "monthly" } }));
-                          toast.success("Removed");
+                          toast.success("Removed from monthly");
                         } catch (err) {
                           toast.error(publicErrorMessage(err, "Could not remove"));
                         }
                       }}
                       className="p-1 text-white/30 hover:text-danger"
+                      aria-label={`Remove ${e.displayName} from monthly`}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -232,6 +286,54 @@ function AdminPage() {
               </div>
             </div>
             <div className="glass-card rounded-2xl p-5">
+              <h2 className="mb-4 font-bold text-fg">
+                Weekly board
+                {query.trim() ? (
+                  <span className="ml-2 text-xs font-semibold text-white/35">
+                    {filteredWeeklyBoard.length} match{filteredWeeklyBoard.length === 1 ? "" : "es"}
+                  </span>
+                ) : null}
+              </h2>
+              <div className="max-h-[520px] space-y-1 overflow-y-auto">
+                {filteredWeeklyBoard.length === 0 && (
+                  <p className="px-2 py-6 text-center text-sm text-white/35">No players match that search.</p>
+                )}
+                {filteredWeeklyBoard.slice(0, 70).map((e) => (
+                  <div key={e.id} className="lb-row flex items-center gap-3 rounded-lg px-2 py-2">
+                    <span className="w-8 text-center text-xs font-bold text-white/50">{e.rank}</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm text-fg">{e.displayName}</p>
+                      {e.username ? <p className="truncate text-[10px] text-white/35">@{e.username}</p> : null}
+                    </div>
+                    <span className="text-sm font-bold text-gold">{formatScore(e.amountPaid)} SCORE</span>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (
+                          !window.confirm(
+                            `Remove ${e.displayName}${e.username ? ` (@${e.username})` : ""} from the weekly leaderboard?\n\nTheir account, credits, and monthly rank stay.`,
+                          )
+                        ) {
+                          return;
+                        }
+                        try {
+                          await adminRemoveEntry({ data: { id: e.id, cycleType: "weekly" } });
+                          setWeeklyBoard(await getLeaderboard({ data: { cycleType: "weekly" } }));
+                          toast.success("Removed from weekly");
+                        } catch (err) {
+                          toast.error(publicErrorMessage(err, "Could not remove"));
+                        }
+                      }}
+                      className="p-1 text-white/30 hover:text-danger"
+                      aria-label={`Remove ${e.displayName} from weekly`}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="glass-card rounded-2xl p-5 lg:col-span-2">
               <h2 className="mb-4 font-bold text-fg">Recent payments</h2>
               <div className="max-h-[520px] space-y-2 overflow-y-auto">
                 {payments.length === 0 && <p className="text-sm text-white/35">No Stripe payments yet.</p>}
@@ -409,20 +511,20 @@ function AdminPage() {
                     />
                     Enabled
                   </label>
+                  {s.image ? (
+                    <img src={s.image} alt="" className="mt-2 h-16 w-16 rounded-lg object-cover ring-1 ring-white/10" />
+                  ) : null}
                   <input
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
-                    className="mt-2 text-xs text-white/40"
+                    className="mt-2 w-full text-xs text-white/40"
                     onChange={(e) => {
                       const f = e.target.files?.[0];
                       e.target.value = "";
                       if (!f) return;
-                      const reader = new FileReader();
-                      reader.onload = () => {
-                        const url = String(reader.result || "");
-                        setSpinSegs((rows) => rows.map((r, idx) => (idx === i ? { ...r, image: url } : r)));
-                      };
-                      reader.readAsDataURL(f);
+                      void shrinkWheelImage(f)
+                        .then((url) => setSpinSegs((rows) => rows.map((r, idx) => (idx === i ? { ...r, image: url } : r))))
+                        .catch((err) => toast.error(publicErrorMessage(err, "Could not use that image.")));
                     }}
                   />
                   {s.image ? (
@@ -440,6 +542,10 @@ function AdminPage() {
             <button
               type="button"
               onClick={async () => {
+                if (spinSegs.length !== 6) {
+                  toast.error("Wheel portions did not load. Refresh the page and try again.");
+                  return;
+                }
                 try {
                   const res = await adminSaveSpin({ data: { segments: spinSegs } });
                   setSpinSegs(res.segments);

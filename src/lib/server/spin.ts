@@ -22,6 +22,42 @@ function num(v: number | string | null | undefined) {
 
 async function boot(sql: Sql) {
   await sql.query("alter table profiles add column if not exists credits double precision not null default 0");
+  await sql.query(`
+    create table if not exists spin_segments (
+      slot int primary key check (slot between 1 and 6),
+      label text not null,
+      score_reward double precision not null,
+      image text,
+      enabled boolean not null default true
+    )
+  `);
+  await sql.query(`
+    insert into spin_segments (slot, label, score_reward, enabled) values
+      (1, 'Boost', 100, true),
+      (2, 'Climb', 250, true),
+      (3, 'Charge', 500, true),
+      (4, 'Mega', 1000, true),
+      (5, 'Super', 2500, true),
+      (6, 'Jackpot', 5000, true)
+    on conflict (slot) do nothing
+  `);
+  await sql.query(`
+    create table if not exists spins (
+      id text primary key,
+      user_id text not null,
+      segment_slot int not null,
+      score_reward double precision not null,
+      config_json text not null,
+      claimed boolean not null default false,
+      claimed_at timestamptz,
+      monthly_score double precision,
+      monthly_rank int,
+      weekly_score double precision,
+      weekly_rank int,
+      created_at timestamptz not null default now()
+    )
+  `);
+  await sql.query("create index if not exists spins_user_idx on spins (user_id, created_at desc)");
 }
 
 async function segments(sql: Sql): Promise<SpinSegment[]> {
@@ -202,6 +238,7 @@ export const adminSaveSpin = createServerFn({ method: "POST" })
   }))
   .handler(async ({ context, data }) => {
     const sql = await getSql();
+    await boot(sql);
     const me = await sql<{ is_admin: boolean; is_owner: boolean }>`
       select is_admin, is_owner from profiles where user_id = ${context.userId}
     `;
@@ -212,7 +249,13 @@ export const adminSaveSpin = createServerFn({ method: "POST" })
       if (slot < 1 || slot > 6) throw new Error("Invalid portion.");
       const label = clampText(s.label, 24) || `Slot ${slot}`;
       const reward = Math.max(0, Math.min(1_000_000, Math.round(Number(s.scoreReward) || 0)));
-      const image = s.image && isImageSafe(s.image) ? s.image : null;
+      let image: string | null = null;
+      if (s.image) {
+        if (!isImageSafe(s.image)) {
+          throw new Error(`Portion ${slot} image is too large or not a JPEG/PNG/WebP. Use a smaller file.`);
+        }
+        image = s.image;
+      }
       await sql`
         insert into spin_segments (slot, label, score_reward, image, enabled)
         values (${slot}, ${label}, ${reward}, ${image}, ${Boolean(s.enabled)})
