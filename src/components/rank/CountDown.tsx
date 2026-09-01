@@ -4,6 +4,16 @@ function pad(n: number) {
   return String(n).padStart(2, "0");
 }
 
+function parts(target: number) {
+  const diff = Math.max(0, (Number.isFinite(target) ? target : 0) - Date.now());
+  return {
+    d: Math.floor(diff / 864e5),
+    h: Math.floor((diff % 864e5) / 36e5),
+    m: Math.floor((diff % 36e5) / 6e4),
+    s: Math.floor((diff % 6e4) / 1e3),
+  };
+}
+
 export function CountDown({
   target,
   prefix = "Resets in",
@@ -13,17 +23,9 @@ export function CountDown({
   prefix?: string;
   compact?: boolean;
 }) {
-  const [t, setT] = useState({ d: 0, h: 0, m: 0, s: 0 });
+  const [t, setT] = useState(() => parts(target));
   useEffect(() => {
-    const tick = () => {
-      const diff = Math.max(0, target - Date.now());
-      setT({
-        d: Math.floor(diff / 864e5),
-        h: Math.floor((diff % 864e5) / 36e5),
-        m: Math.floor((diff % 36e5) / 6e4),
-        s: Math.floor((diff % 6e4) / 1e3),
-      });
-    };
+    const tick = () => setT(parts(target));
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
@@ -32,11 +34,11 @@ export function CountDown({
   if (compact) {
     return (
       <div
-        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-1.5"
+        className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/12 bg-black/45 px-3 py-1.5"
         aria-label={`${prefix} ${t.d} days ${t.h} hours`}
       >
         <span className="text-[10px] font-medium tracking-wide text-white/45">{prefix}</span>
-        <span className="font-mono text-[12px] font-bold tabular-nums text-fg">
+        <span className="font-mono text-[13px] font-bold tabular-nums text-gold-light">
           {t.d}d {pad(t.h)}h
         </span>
       </div>

@@ -265,16 +265,29 @@ function PayPage() {
               <Row label="Usage" value="Spend Credits 1:1 to gain Score" icon={<Trophy className="h-3.5 w-3.5" />} />
             </dl>
 
-            <div className="relative mt-5 overflow-hidden rounded-2xl border border-gold/15 bg-gradient-to-r from-gold/10 to-transparent p-4">
-              <p className="flex items-center gap-2 text-[12px] font-bold text-fg">
-                <Info className="h-3.5 w-3.5 text-gold" /> How it works
+            <div className="relative mt-5 overflow-hidden rounded-2xl border border-gold/18 bg-[#14120c] p-4 pr-28 sm:p-5 sm:pr-40">
+              <p className="flex items-center gap-2 text-[13px] font-bold text-fg">
+                <Info className="h-4 w-4 text-gold" /> How it works
               </p>
-              <ol className="relative z-10 mt-2 space-y-1 text-[12px] text-white/55">
-                <li>1. Buy Credits with Stripe</li>
-                <li>2. Credits land in your wallet</li>
-                <li>3. Spend Credits to rank up</li>
+              <ol className="relative z-10 mt-3 space-y-2 text-[13px] text-white/62">
+                {[
+                  "Buy Credits with Stripe",
+                  "Credits land in your wallet",
+                  "Spend Credits to rank up",
+                ].map((line, i) => (
+                  <li key={line} className="flex items-center gap-2.5">
+                    <span className="grid h-5 w-5 place-items-center rounded-full bg-gold text-[10px] font-black text-[#1a1408]">
+                      {i + 1}
+                    </span>
+                    {line}
+                  </li>
+                ))}
               </ol>
-              <img src="/rank/wallet.webp" alt="" className="pointer-events-none absolute right-0 bottom-0 h-24 w-40 object-contain opacity-90" />
+              <img
+                src="/rank/wallet.webp"
+                alt=""
+                className="pointer-events-none absolute right-0 bottom-0 h-[108px] w-[168px] object-contain sm:h-[124px] sm:w-[196px]"
+              />
             </div>
 
             <div className="mt-4 grid grid-cols-3 gap-2 text-center">
@@ -337,7 +350,7 @@ function PayPage() {
           </section>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-3 rounded-[18px] border border-white/[0.06] bg-[#101018]/80 px-4 py-4 sm:grid-cols-3">
+        <div className="mt-5 grid grid-cols-1 divide-y divide-white/[0.06] rounded-[18px] border border-white/[0.08] bg-[#101018]/85 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           <FootNote icon={<Check className="h-4 w-4 text-gold" />} title="Credits are added after payment confirmation" />
           <FootNote icon={<Zap className="h-4 w-4 text-gold" />} title="Wallet balance updates instantly" />
           <FootNote icon={<Trophy className="h-4 w-4 text-gold" />} title="Spend Credits to gain Score" />
@@ -372,7 +385,7 @@ function TrustCell({ icon, title, body }: { icon: ReactNode; title: string; body
 
 function FootNote({ icon, title }: { icon: ReactNode; title: string }) {
   return (
-    <p className="flex items-center justify-center gap-2 text-center text-[12px] text-white/55">
+    <p className="flex items-center justify-center gap-2 px-4 py-3.5 text-center text-[12px] text-white/58">
       {icon}
       {title}
     </p>
