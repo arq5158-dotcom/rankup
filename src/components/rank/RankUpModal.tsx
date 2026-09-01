@@ -123,24 +123,24 @@ export function RankUpModal({
   const gain = moved?.from && moved.to && moved.to < moved.from ? moved.from - moved.to : 0;
 
   return (
-    <div className={`modal-layer fixed inset-0 z-[96] grid place-items-center bg-black/75 p-4 ${on ? "is-open" : ""}`}>
-      <div className="modal-card glass-card max-h-[min(92dvh,720px)] w-full max-w-md overflow-y-auto rounded-2xl p-5">
-        <div className="mb-3 flex items-center justify-between">
+    <div className={`modal-layer fixed inset-0 z-[96] grid place-items-center bg-black/70 p-3 sm:p-4 ${on ? "is-open" : ""}`}>
+      <div className="rank-modal modal-card glass-card max-h-[min(90dvh,640px)] w-full max-w-[360px] overflow-y-auto rounded-2xl p-4">
+        <div className="mb-2 flex items-center justify-between">
           <p className="text-[10px] font-bold tracking-[0.16em] text-gold uppercase">Rank up</p>
-          <button type="button" onClick={onClose} className="tap grid h-10 w-10 place-items-center rounded-full text-white/45" aria-label="Close">
-            <X className="h-4 w-4" />
+          <button type="button" onClick={onClose} className="tap grid h-8 w-8 place-items-center rounded-full text-white/45" aria-label="Close">
+            <X className="h-3.5 w-3.5" />
           </button>
         </div>
 
         {moved ? (
           <div className="text-center">
-            <p className="font-display text-2xl font-black text-gold-grad">
+            <p className="font-display text-xl font-black text-gold-grad">
               YOU MOVED UP {gain} POSITIONS
             </p>
-            <p className="mt-3 text-sm font-bold text-fg capitalize">
+            <p className="mt-2 text-sm font-bold text-fg capitalize">
               {moved.cycle} {moved.from ? `#${moved.from}` : "—"} → {moved.to ? `#${moved.to}` : "—"}
             </p>
-            <p className="mt-2 text-sm text-white/45">+{formatScore(moved.spent)} Score on the {moved.cycle} board.</p>
+            <p className="mt-1.5 text-xs text-white/45">+{formatScore(moved.spent)} Score on the {moved.cycle} board.</p>
             <button
               type="button"
               onClick={() => {
@@ -148,41 +148,41 @@ export function RankUpModal({
                 onDone?.();
                 onClose();
               }}
-              className="btn-gold tap mt-5 min-h-12 w-full rounded-xl text-sm font-extrabold"
+              className="btn-gold tap mt-4 min-h-10 w-full rounded-lg text-xs font-extrabold"
             >
               Nice
             </button>
           </div>
         ) : !enough ? (
           <div>
-            <h2 className="font-display text-2xl font-black text-fg">Not enough credits</h2>
-            <p className="mt-3 text-sm text-white/50">
+            <h2 className="font-display text-xl font-black text-fg">Not enough credits</h2>
+            <p className="mt-2 text-sm text-white/50">
               Current balance: <span className="font-bold text-fg">{formatScore(credits)}</span> Credits
             </p>
             <p className="mt-1 text-sm text-white/50">
               Required: <span className="font-bold text-gold">{formatScore(spend)}</span> Credits
               {rate > 0 ? ` · $${formatUsd(spend / rate)}` : ""}
             </p>
-            <div className="mt-5 grid grid-cols-2 gap-2">
-              <button type="button" onClick={onBuyCredits} className="btn-gold tap min-h-12 rounded-xl text-xs font-extrabold">
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <button type="button" onClick={onBuyCredits} className="btn-gold tap min-h-10 rounded-lg text-[11px] font-extrabold">
                 BUY CREDITS
               </button>
               <button
                 type="button"
                 onClick={() => applyCredits(Math.max(1, credits))}
-                className="btn-outline tap min-h-12 rounded-xl text-xs font-bold"
+                className="btn-outline tap min-h-10 rounded-lg text-[11px] font-bold"
               >
-                CHOOSE LOWER AMOUNT
+                LOWER AMOUNT
               </button>
             </div>
           </div>
         ) : (
           <>
-            <h2 className="font-display text-2xl font-black text-fg">Spend credits. Earn score.</h2>
-            <p className="mt-1 text-xs text-white/40">
+            <h2 className="font-display text-xl font-black tracking-tight text-fg">Spend credits. Earn score.</h2>
+            <p className="mt-1 text-[11px] text-white/40">
               $1 = {formatScore(rate)} Credits = {formatScore(rate)} Score · Pick one board
             </p>
-            <div className="mt-3">
+            <div className="mt-2.5">
               <Segmented
                 value={cycle}
                 onChange={setCycle}
@@ -192,15 +192,15 @@ export function RankUpModal({
                 ]}
               />
             </div>
-            <p className="mt-3 rounded-xl border border-gold/20 bg-gold/10 px-4 py-3 text-center">
-              <span className="block text-[10px] tracking-wider text-white/45 uppercase">Your balance</span>
-              <span className="font-display text-3xl font-black text-gold-grad tabular-nums">{formatScore(credits)}</span>
-              <span className="mt-1 block text-xs text-white/40">
-                Credits · ${formatUsd(credits / rate)} purchase value
+            <p className="mt-2.5 rounded-xl border border-gold/20 bg-gold/10 px-3 py-2 text-center">
+              <span className="block text-[9px] tracking-wider text-white/45 uppercase">Your balance</span>
+              <span className="font-display text-2xl font-black text-gold-grad tabular-nums">{formatScore(credits)}</span>
+              <span className="mt-0.5 block text-[11px] text-white/40">
+                Credits · ${formatUsd(credits / rate)}
               </span>
             </p>
-            <p className="mt-4 text-[10px] font-semibold tracking-wider text-white/40 uppercase">Credits to spend</p>
-            <div className="mt-2 grid grid-cols-3 gap-1.5">
+            <p className="mt-3 text-[9px] font-semibold tracking-wider text-white/40 uppercase">Credits to spend</p>
+            <div className="mt-1.5 grid grid-cols-3 gap-1.5">
               {PRESETS.map((p) => (
                 <button
                   key={p}
@@ -209,10 +209,10 @@ export function RankUpModal({
                     applyCredits(p);
                     setCustom(false);
                   }}
-                  className={`chip tap flex flex-col items-center rounded-[12px] py-2 ${!custom && spend === p ? "is-on" : ""}`}
+                  className={`chip tap flex flex-col items-center rounded-[10px] py-1.5 ${!custom && spend === p ? "is-on" : ""}`}
                 >
-                  <span className="text-xs font-bold">+{formatScore(p)}</span>
-                  <span className="text-[10px] opacity-70">${formatUsd(p / rate)}</span>
+                  <span className="text-[11px] font-bold">+{formatScore(p)}</span>
+                  <span className="text-[9px] opacity-70">${formatUsd(p / rate)}</span>
                 </button>
               ))}
               <button
@@ -221,17 +221,17 @@ export function RankUpModal({
                   setCustom(true);
                   setUsdText(rate > 0 ? (spend / rate).toFixed(2).replace(/\.00$/, "") : "0");
                 }}
-                className={`chip tap rounded-[12px] text-xs font-bold ${custom ? "is-on" : ""}`}
+                className={`chip tap rounded-[10px] text-[11px] font-bold ${custom ? "is-on" : ""}`}
               >
                 Custom
               </button>
             </div>
             {custom ? (
-              <div className="mt-3 grid grid-cols-2 gap-2">
+              <div className="mt-2 grid grid-cols-2 gap-2">
                 <label className="block">
-                  <span className="mb-1 block text-[10px] font-semibold tracking-wider text-white/40 uppercase">USD</span>
-                  <div className="flex h-12 items-center rounded-xl border border-white/[0.08] bg-[#12121a] px-3">
-                    <span className="mr-1 text-sm text-white/35">$</span>
+                  <span className="mb-1 block text-[9px] font-semibold tracking-wider text-white/40 uppercase">USD</span>
+                  <div className="flex h-9 items-center rounded-lg border border-white/[0.08] bg-[#12121a] px-2.5">
+                    <span className="mr-1 text-xs text-white/35">$</span>
                     <input
                       type="text"
                       inputMode="decimal"
@@ -244,7 +244,7 @@ export function RankUpModal({
                   </div>
                 </label>
                 <label className="block">
-                  <span className="mb-1 block text-[10px] font-semibold tracking-wider text-white/40 uppercase">Credits</span>
+                  <span className="mb-1 block text-[9px] font-semibold tracking-wider text-white/40 uppercase">Credits</span>
                   <input
                     type="text"
                     inputMode="numeric"
@@ -254,31 +254,31 @@ export function RankUpModal({
                       const digits = e.target.value.replace(/\D/g, "").slice(0, String(cap).length);
                       applyCredits(Number(digits) || 1);
                     }}
-                    className="h-12 w-full rounded-xl border border-white/[0.08] bg-[#12121a] px-3 text-sm text-fg outline-none"
+                    className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#12121a] px-2.5 text-sm text-fg outline-none"
                     aria-label="Custom credits to spend"
                   />
                 </label>
               </div>
             ) : null}
-            <div className="mt-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-3 text-center">
-              <p className="text-[10px] font-semibold tracking-wider text-white/40 uppercase">Live conversion</p>
-              <p className="mt-1.5 text-sm font-bold text-fg">
+            <div className="mt-2.5 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-center">
+              <p className="text-[9px] font-semibold tracking-wider text-white/40 uppercase">Live conversion</p>
+              <p className="mt-1 text-[12px] font-bold text-fg">
                 ${formatUsd(usdValue)} → {formatScore(add)} Credits → +{formatScore(add)} {cycle} Score
               </p>
-              <p className="mt-1 text-[11px] text-white/40">Only the {cycle} leaderboard changes.</p>
+              <p className="mt-0.5 text-[10px] text-white/40">Only the {cycle} leaderboard changes.</p>
             </div>
-            <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-              <div className="rounded-xl bg-white/[0.03] px-2 py-3">
-                <p className="text-[9px] tracking-wider text-white/40 uppercase">Current</p>
-                <p className="mt-1 text-sm font-extrabold text-fg tabular-nums">{formatScore(current)}</p>
+            <div className="mt-2 grid grid-cols-3 gap-1.5 text-center">
+              <div className="rounded-lg bg-white/[0.03] px-1.5 py-2">
+                <p className="text-[8px] tracking-wider text-white/40 uppercase">Current</p>
+                <p className="mt-0.5 text-[12px] font-extrabold text-fg tabular-nums">{formatScore(current)}</p>
               </div>
-              <div className="rounded-xl bg-white/[0.03] px-2 py-3">
-                <p className="text-[9px] tracking-wider text-white/40 uppercase">After</p>
-                <p className="mt-1 text-sm font-extrabold text-gold tabular-nums">{formatScore(after)}</p>
+              <div className="rounded-lg bg-white/[0.03] px-1.5 py-2">
+                <p className="text-[8px] tracking-wider text-white/40 uppercase">After</p>
+                <p className="mt-0.5 text-[12px] font-extrabold text-gold tabular-nums">{formatScore(after)}</p>
               </div>
-              <div className="rounded-xl bg-white/[0.03] px-2 py-3">
-                <p className="text-[9px] tracking-wider text-white/40 uppercase">Est. rank</p>
-                <p className="mt-1 text-sm font-extrabold text-fg">
+              <div className="rounded-lg bg-white/[0.03] px-1.5 py-2">
+                <p className="text-[8px] tracking-wider text-white/40 uppercase">Est. rank</p>
+                <p className="mt-0.5 text-[12px] font-extrabold text-fg">
                   {currentRank ? `#${currentRank}` : "—"} → #{est}
                 </p>
               </div>
@@ -287,10 +287,10 @@ export function RankUpModal({
               type="button"
               disabled={loading || spend < 1}
               onClick={() => void go()}
-              className="btn-gold tap mt-5 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-extrabold"
+              className="btn-gold tap mt-3 flex min-h-10 w-full items-center justify-center gap-1.5 rounded-lg text-[12px] font-extrabold"
             >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
-              SPEND {formatScore(spend)} CREDITS · ${formatUsd(usdValue)}
+              {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5" />}
+              SPEND {formatScore(spend)} · ${formatUsd(usdValue)}
             </button>
           </>
         )}

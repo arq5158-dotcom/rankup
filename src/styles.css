@@ -459,8 +459,23 @@
   color: rgba(255, 255, 255, 0.4);
   transition: color var(--motion-quick) var(--ease-out);
 }
-.seg button.is-on {
-  color: #1a1408;
+.rank-modal .seg {
+  padding: 3px;
+  border-radius: 10px;
+}
+.rank-modal .seg-pill {
+  top: 3px;
+  bottom: 3px;
+  border-radius: 8px;
+}
+.rank-modal .seg button {
+  min-height: 30px;
+  padding: 0 8px;
+  font-size: 11px;
+}
+.rank-modal .chip {
+  min-height: 34px;
+  border-radius: 10px;
 }
 
 .fade-switch {
