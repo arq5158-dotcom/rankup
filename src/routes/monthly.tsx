@@ -17,11 +17,12 @@ export const Route = createFileRoute("/monthly")({
       path: "/monthly",
     }),
   loader: async () => {
-    const [monthly, prizes] = await Promise.all([
+    const [monthly, weekly, prizes] = await Promise.all([
       getLeaderboard({ data: { cycleType: "monthly" } }),
+      getLeaderboard({ data: { cycleType: "weekly" } }),
       getPrizes(),
     ]);
-    return { monthly, prizes };
+    return { monthly, weekly, prizes };
   },
   staleTime: 20_000,
   pendingComponent: RoutePending,
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/monthly")({
 });
 
 function Monthly() {
-  const { monthly, prizes } = Route.useLoaderData();
+  const { monthly, weekly, prizes } = Route.useLoaderData();
   const [showAll, setShowAll] = useState(true);
   return (
     <PageShell active="Monthly">
@@ -47,7 +48,7 @@ function Monthly() {
           </div>
         </div>
         <Podium entries={monthly.slice(0, 3)} />
-        <PrizePools prizes={prizes} />
+        <PrizePools prizes={prizes} weeklyChampion={weekly[0] ?? null} />
         <LeaderboardTable entries={monthly} showAll={showAll} onToggle={() => setShowAll((v) => !v)} cycle="monthly" />
       </main>
     </PageShell>

@@ -4,7 +4,15 @@ function pad(n: number) {
   return String(n).padStart(2, "0");
 }
 
-export function CountDown({ target }: { target: number }) {
+export function CountDown({
+  target,
+  prefix = "Resets in",
+  compact = false,
+}: {
+  target: number;
+  prefix?: string;
+  compact?: boolean;
+}) {
   const [t, setT] = useState({ d: 0, h: 0, m: 0, s: 0 });
   useEffect(() => {
     const tick = () => {
@@ -21,6 +29,20 @@ export function CountDown({ target }: { target: number }) {
     return () => clearInterval(id);
   }, [target]);
 
+  if (compact) {
+    return (
+      <div
+        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-1.5"
+        aria-label={`${prefix} ${t.d} days ${t.h} hours`}
+      >
+        <span className="text-[10px] font-medium tracking-wide text-white/45">{prefix}</span>
+        <span className="font-mono text-[12px] font-bold tabular-nums text-fg">
+          {t.d}d {pad(t.h)}h
+        </span>
+      </div>
+    );
+  }
+
   const units = [
     { value: t.d, label: "d" },
     { value: t.h, label: "h" },
@@ -29,11 +51,8 @@ export function CountDown({ target }: { target: number }) {
   ];
 
   return (
-    <div
-      className="cd"
-      aria-label={`Resets in ${t.d} days, ${t.h} hours, ${t.m} minutes, ${t.s} seconds`}
-    >
-      <span className="cd-prefix">Resets in</span>
+    <div className="cd" aria-label={`${prefix} ${t.d} days, ${t.h} hours, ${t.m} minutes, ${t.s} seconds`}>
+      <span className="cd-prefix">{prefix}</span>
       <span className="cd-track">
         {units.map((u, i) => (
           <span key={u.label} className="cd-cell">

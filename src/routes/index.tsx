@@ -220,7 +220,7 @@ function Home() {
           </aside>
 
           <div className="order-3">
-            <PrizePools prizes={prizeRows} />
+            <PrizePools prizes={prizeRows} weeklyChampion={weeklyBoard[0] ?? null} />
           </div>
 
           <div className="order-4 lg:col-span-2">
