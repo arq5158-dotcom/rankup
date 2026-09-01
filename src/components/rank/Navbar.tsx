@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { ChevronDown, Crown, Menu, Shield, X } from "lucide-react";
+import { Crown, History, Lock, LogOut, Menu, Settings, Shield, X } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { signOut } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { getMyAccount } from "@/lib/server/rank";
 import { AvatarImg } from "./Avatar";
-import { ProfileMenu } from "./ProfileMenu";
 import { usePresence } from "./motion";
 
 const LINKS = [
@@ -37,7 +37,6 @@ export function Navbar({
 }) {
   const navigate = useNavigate();
   const { user } = useCurrentUserState();
-  const [open, setOpen] = useState(false);
   const [mobile, setMobile] = useState(false);
   const [fetched, setFetched] = useState<AccountInfo | null>(null);
   const [hydrated, setHydrated] = useState(false);
@@ -156,26 +155,20 @@ export function Navbar({
               </>
             )}
             {hydrated && signedIn && (
-              <button
-                type="button"
-                onClick={() => {
-                  setOpen((v) => !v);
-                  setMobile(false);
-                }}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/30 bg-white/[0.03] shadow-[0_0_12px_rgba(212,180,69,0.2)] sm:h-9 sm:w-auto sm:gap-1.5 sm:py-0 sm:pr-2 sm:pl-0.5"
-                aria-label="Account"
+              <Link
+                to="/dashboard"
+                search={{ tab: "profile" }}
+                preload="intent"
+                aria-label="Your profile"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/30 bg-white/[0.03] shadow-[0_0_12px_rgba(212,180,69,0.2)]"
               >
                 <AvatarImg src={image} name={displayName} size={26} ring="gold" />
-                <ChevronDown className={`hidden h-3 w-3 text-white/35 sm:block chevron-rot ${open ? "is-open" : ""}`} />
-              </button>
+              </Link>
             )}
             <button
               type="button"
-              className="tap flex h-10 w-10 items-center justify-center rounded-full text-white/60 lg:hidden"
-              onClick={() => {
-                setMobile((v) => !v);
-                setOpen(false);
-              }}
+              className="tap flex h-10 w-10 items-center justify-center rounded-full text-white/60"
+              onClick={() => setMobile((v) => !v)}
               aria-label={mobile ? "Close menu" : "Menu"}
               aria-expanded={mobile}
             >
@@ -192,14 +185,61 @@ export function Navbar({
         </nav>
       </header>
       {sheet.shown && (
-        <div className={`menu-layer z-[70] lg:hidden ${sheet.on ? "is-open" : ""}`}>
+        <div className={`menu-layer z-[70] ${sheet.on ? "is-open" : ""}`}>
           <button
             type="button"
             className="menu-scrim"
             aria-label="Close menu"
             onClick={() => setMobile(false)}
           />
-          <div className="sheet-surface glass-card absolute inset-x-3 top-[80px] max-h-[min(78dvh,640px)] overflow-y-auto rounded-2xl p-2">
+          <div className="sheet-surface glass-card absolute inset-x-3 top-[80px] max-h-[min(78dvh,640px)] overflow-y-auto rounded-2xl p-2 lg:inset-x-auto lg:right-6 lg:w-[360px]">
+            {hydrated && signedIn && (
+              <>
+                <Link
+                  to="/dashboard"
+                  search={{ tab: "profile" }}
+                  preload="intent"
+                  onClick={() => setMobile(false)}
+                  className="mb-1 flex items-center gap-3 rounded-xl px-3 py-3 hover:bg-white/[0.04]"
+                >
+                  <AvatarImg src={image} name={displayName} size={40} ring="gold" />
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-bold text-fg">{displayName}</span>
+                    <span className="block truncate text-[11px] text-white/40">{email || "Signed in"}</span>
+                  </span>
+                </Link>
+                <Link
+                  to="/dashboard"
+                  search={{ tab: "profile" }}
+                  preload="intent"
+                  onClick={() => setMobile(false)}
+                  className={`link-row tap flex min-h-12 items-center gap-2.5 rounded-xl px-4 text-[15px] font-semibold ${
+                    active === "Profile" ? "bg-white/[0.05] text-fg" : "text-white/70 hover:bg-white/[0.04] hover:text-fg"
+                  }`}
+                >
+                  <Settings className="h-4 w-4" /> Profile Settings
+                </Link>
+                <Link
+                  to="/dashboard"
+                  search={{ tab: "security" }}
+                  preload="intent"
+                  onClick={() => setMobile(false)}
+                  className="link-row tap flex min-h-12 items-center gap-2.5 rounded-xl px-4 text-[15px] font-semibold text-white/70 hover:bg-white/[0.04] hover:text-fg"
+                >
+                  <Lock className="h-4 w-4" /> Security
+                </Link>
+                <Link
+                  to="/dashboard"
+                  search={{ tab: "history" }}
+                  preload="intent"
+                  onClick={() => setMobile(false)}
+                  className="link-row tap flex min-h-12 items-center gap-2.5 rounded-xl px-4 text-[15px] font-semibold text-white/70 hover:bg-white/[0.04] hover:text-fg"
+                >
+                  <History className="h-4 w-4" /> Contribution History
+                </Link>
+                <div className="my-1 border-t border-white/[0.06]" />
+              </>
+            )}
             {LINKS.map((item) => (
               <Link
                 key={item.label}
@@ -252,22 +292,22 @@ export function Navbar({
             >
               Promote Now
             </Link>
+            {hydrated && signedIn && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMobile(false);
+                  void signOut().then(() => {
+                    window.location.href = "/";
+                  });
+                }}
+                className="link-row tap mt-1 flex min-h-12 w-full items-center gap-2.5 rounded-xl px-4 text-[15px] font-semibold text-danger hover:bg-danger/10"
+              >
+                <LogOut className="h-4 w-4" /> Sign out
+              </button>
+            )}
           </div>
         </div>
-      )}
-      {signedIn && (
-        <ProfileMenu
-          open={open}
-          onClose={() => setOpen(false)}
-          name={displayName}
-          email={email}
-          image={image}
-          completeness={account?.completeness ?? 20}
-          monthlyRank={account?.monthlyRank ?? null}
-          weeklyRank={account?.weeklyRank ?? null}
-          twoFactor={account?.twoFactor ?? false}
-          isAdmin={isAdmin}
-        />
       )}
     </>
   );

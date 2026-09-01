@@ -96,6 +96,7 @@ function Dashboard() {
     <div className="relative min-h-screen">
       <SceneBackground />
       <Navbar
+        active="Profile"
         account={
           account
             ? {
