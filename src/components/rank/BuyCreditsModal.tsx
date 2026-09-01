@@ -121,18 +121,32 @@ export function BuyCreditsModal({
           ) : null}
         </div>
         {custom && eco.customEnabled ? (
-          <input
-            type="number"
-            min={eco.minUsd}
-            step={1}
-            value={usd}
-            onChange={(e) => setUsd(Math.max(eco.minUsd, Number(e.target.value) || eco.minUsd))}
-            className="mt-3 h-12 w-full rounded-xl border border-white/[0.08] bg-[#12121a] px-3 text-sm text-fg outline-none"
-          />
+          <div className="mt-3">
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              autoComplete="off"
+              value={String(usd)}
+              onChange={(e) => {
+                const maxDigits = String(Math.floor(eco.maxUsd)).length;
+                const digits = e.target.value.replace(/\D/g, "").slice(0, maxDigits);
+                const n = Number(digits);
+                setUsd(Number.isFinite(n) && n > 0 ? Math.min(eco.maxUsd, n) : eco.minUsd);
+              }}
+              className="h-12 w-full rounded-xl border border-white/[0.08] bg-[#12121a] px-3 text-sm text-fg outline-none"
+              aria-label="Custom USD amount"
+            />
+            <p className="mt-1.5 text-[11px] text-white/35">
+              Min ${eco.minUsd} · Max ${eco.maxUsd.toLocaleString()}
+            </p>
+          </div>
         ) : null}
-        <p className="mt-4 rounded-xl border border-gold/20 bg-gold/10 px-4 py-3 text-center">
+        <p className="mt-4 overflow-hidden rounded-xl border border-gold/20 bg-gold/10 px-4 py-3 text-center">
           <span className="block text-[10px] tracking-wider text-white/45 uppercase">You receive</span>
-          <span className="font-display text-3xl font-black text-gold-grad tabular-nums">{formatScore(credits)}</span>
+          <span className="font-display block truncate text-3xl font-black text-gold-grad tabular-nums">
+            {formatScore(credits)}
+          </span>
           <span className="mt-1 block text-xs text-white/40">Credits</span>
         </p>
         {isOwner && !stripeReady ? (
@@ -153,10 +167,10 @@ export function BuyCreditsModal({
           type="button"
           disabled={loading || usd < eco.minUsd || !agreed}
           onClick={() => void buy()}
-          className="btn-gold tap mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-extrabold"
+          className="btn-gold tap mt-4 flex min-h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-xl px-3 text-sm font-extrabold"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
-          BUY {formatScore(credits)} CREDITS — ${usd}
+          BUY {formatScore(credits)} CREDITS — ${usd.toLocaleString()}
         </button>
       </div>
     </div>

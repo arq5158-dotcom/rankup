@@ -185,13 +185,24 @@ export function RankUpModal({
               </button>
             </div>
             {custom ? (
-              <input
-                type="number"
-                min={1}
-                value={spend}
-                onChange={(e) => setSpend(Math.max(1, Math.round(Number(e.target.value) || 0)))}
-                className="mt-3 h-12 w-full rounded-xl border border-white/[0.08] bg-[#12121a] px-3 text-sm text-fg outline-none"
-              />
+              <div className="mt-3">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  autoComplete="off"
+                  value={String(spend)}
+                  onChange={(e) => {
+                    const cap = Math.max(1, Math.min(1_000_000, Math.floor(credits) || 1));
+                    const digits = e.target.value.replace(/\D/g, "").slice(0, String(cap).length);
+                    const n = Number(digits);
+                    setSpend(Number.isFinite(n) && n > 0 ? Math.min(cap, n) : 1);
+                  }}
+                  className="h-12 w-full rounded-xl border border-white/[0.08] bg-[#12121a] px-3 text-sm text-fg outline-none"
+                  aria-label="Custom credits to spend"
+                />
+                <p className="mt-1.5 text-[11px] text-white/35">Max {formatScore(Math.min(1_000_000, Math.max(1, credits)))} credits</p>
+              </div>
             ) : null}
             <div className="mt-4 grid grid-cols-2 gap-2 text-center">
               <div className="rounded-xl bg-white/[0.03] px-2 py-3">
