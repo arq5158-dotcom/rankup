@@ -48,7 +48,7 @@ function Weekly() {
         </div>
         <Podium entries={weekly.slice(0, 3)} />
         <PrizePools prizes={prizes} />
-        <LeaderboardTable entries={weekly} showAll={showAll} onToggle={() => setShowAll((v) => !v)} />
+        <LeaderboardTable entries={weekly} showAll={showAll} onToggle={() => setShowAll((v) => !v)} cycle="weekly" />
       </main>
     </PageShell>
   );

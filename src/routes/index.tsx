@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ChevronRight, Lock, Trophy, Zap } from "lucide-react";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import type { CycleType } from "@/lib/players";
 import {
   getLeaderboard,
   getPrizes,
@@ -65,16 +66,20 @@ function Home() {
   const { monthly, weekly, prizes, stripe } = Route.useLoaderData();
   const { user, isPending } = useCurrentUserState();
   const [showAll, setShowAll] = useState(false);
+  const [cycle, setCycle] = useState<CycleType>("monthly");
   const [payOpen, setPayOpen] = useState(false);
   const [rankOpen, setRankOpen] = useState(false);
   const [account, setAccount] = useState<MyAccount | null>(() => peekAccount());
-  const [board, setBoard] = useState<BoardEntry[]>(monthly);
+  const [monthlyBoard, setMonthlyBoard] = useState<BoardEntry[]>(monthly);
+  const [weeklyBoard, setWeeklyBoard] = useState<BoardEntry[]>(weekly);
   const [prizeRows, setPrizeRows] = useState<PrizeRow[]>(prizes);
+  const board = cycle === "weekly" ? weeklyBoard : monthlyBoard;
 
   useEffect(() => {
-    setBoard(monthly);
+    setMonthlyBoard(monthly);
+    setWeeklyBoard(weekly);
     setPrizeRows(prizes);
-  }, [monthly, prizes]);
+  }, [monthly, weekly, prizes]);
 
   useEffect(() => {
     if (!user) {
@@ -219,7 +224,13 @@ function Home() {
           </div>
 
           <div className="order-4 lg:col-span-2">
-            <LeaderboardTable entries={board} showAll={showAll} onToggle={() => setShowAll((v) => !v)} />
+            <LeaderboardTable
+              entries={board}
+              showAll={showAll}
+              onToggle={() => setShowAll((v) => !v)}
+              cycle={cycle}
+              onCycleChange={setCycle}
+            />
           </div>
         </div>
       </main>
@@ -236,8 +247,8 @@ function Home() {
         monthlyRank={monthlyRank}
         weeklyScore={account?.weeklyPaid ?? 0}
         weeklyRank={weeklyRank}
-        board={board}
-        weeklyBoard={weekly}
+        board={monthlyBoard}
+        weeklyBoard={weeklyBoard}
         onDone={() => {
           void loadAccount(true).then(setAccount).catch(() => null);
         }}

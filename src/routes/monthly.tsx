@@ -48,7 +48,7 @@ function Monthly() {
         </div>
         <Podium entries={monthly.slice(0, 3)} />
         <PrizePools prizes={prizes} />
-        <LeaderboardTable entries={monthly} showAll={showAll} onToggle={() => setShowAll((v) => !v)} />
+        <LeaderboardTable entries={monthly} showAll={showAll} onToggle={() => setShowAll((v) => !v)} cycle="monthly" />
       </main>
     </PageShell>
   );
