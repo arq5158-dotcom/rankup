@@ -9,7 +9,7 @@ export const Route = createFileRoute("/how-it-works")({
     seoHead({
       title: "How Pay4Rank Works",
       description:
-        "Buy ranking credits with Stripe, climb the live leaderboard, and get featured placement. Visibility — not cash prizes.",
+        "Buy credits with Stripe, spend them for Score, climb weekly and monthly boards. Visibility — not cash prizes.",
       path: "/how-it-works",
     }),
   component: Page,
@@ -21,8 +21,8 @@ function Page() {
       <main className="relative z-10 mx-auto max-w-4xl space-y-5 px-4 py-6 sm:px-6 sm:py-10">
         <h1 className="font-display text-3xl font-black text-gold-grad">How Pay4Rank works</h1>
         <p className="max-w-2xl text-sm leading-relaxed text-pretty text-white/50">
-          Pay4Rank is a promotional leaderboard. You buy ranking credits with Stripe and take your
-          place by confirmed total. Top listings get seen — there is no cash prize.
+          Pay4Rank is a promotional leaderboard. You buy credits with Stripe, spend them 1:1 for Score,
+          and take your place on both weekly and monthly boards. Top listings get seen — there is no cash prize.
         </p>
         <HowItWorks />
         <Faq withSchema />

@@ -25,10 +25,11 @@ function Page() {
 
       <h2>1. The product</h2>
       <p>
-        Pay4Rank sells ranking credits. Each confirmed Stripe payment adds credits to your profile for
-        the weekly or monthly cycle you choose. Higher confirmed credits appear higher on the public
-        leaderboard. Other buyers can overtake you at any time. You are buying visibility, not a chance
-        to win money.
+        Pay4Rank sells credits. Stripe payments add credits to your private wallet. Rank is determined
+        by Score. You earn Score by spending credits (1 credit = 1 Score on both the weekly and monthly
+        boards) or by claiming a Free Spin Score reward. Credits in a wallet do not affect rank until
+        spent. Other players can overtake you at any time. You are buying visibility, not a chance to
+        win money.
       </p>
 
       <h2>2. Eligibility</h2>
@@ -39,9 +40,10 @@ function Page() {
 
       <h2>3. How to buy credits</h2>
       <p>
-        Sign in, choose weekly or monthly, select an amount in USD, agree to these Rules, and complete
-        Stripe Checkout. Ranking credits equal the confirmed USD amount (one dollar = one credit). An
-        incomplete checkout does not charge you and does not rank you.
+        Sign in, choose a USD amount (minimum $1), agree to these Rules, and complete Stripe Checkout.
+        By default $1 USD = 1,000 credits. The rate in force at checkout is stored on that payment;
+        later rate changes do not rewrite old wallets. An incomplete checkout does not charge you and
+        does not add credits. Buying credits does not change your rank until you spend them.
       </p>
 
       <h2>4. Cycles</h2>
@@ -59,9 +61,11 @@ function Page() {
 
       <h2>5. How position is decided</h2>
       <p>
-        Position is the highest confirmed credit total in that cycle. Rank is not drawn at random and
-        does not use odds. Ties are broken by the earlier confirmed Stripe payment. Reversed,
-        charged-back, or fraudulent payments are removed and ranks are recomputed.
+        Position is the highest Score in that cycle. Score is not drawn at random and does not use odds.
+        Spending credits adds the same Score to the current weekly board and the current monthly board.
+        Free Spin Score uses the same rule. Credits never reset. Weekly Score returns to 0 at the weekly
+        reset; Monthly Score returns to 0 at the monthly reset. Ties are broken by the earlier Score gain.
+        Reversed, charged-back, or fraudulent payments are removed from the wallet and ranks are recomputed.
       </p>
 
       <h2>6. Featured placement is not a prize</h2>

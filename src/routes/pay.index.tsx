@@ -14,7 +14,7 @@ export const Route = createFileRoute("/pay/")({
   head: () =>
     seoHead({
       title: "Secure checkout",
-      description: "Pay on Pay4Rank. Stripe confirms your ranking credits, then your live rank updates.",
+      description: "Pay on Pay4Rank. Stripe confirms credits in your wallet. Spend credits later to earn Score.",
       path: "/pay",
       noindex: true,
     }),
@@ -66,7 +66,6 @@ function PayPage() {
     );
   }
 
-  const cycleLabel = draft.cycleType === "weekly" ? "Weekly spotlight" : "Monthly board";
   const canEmbed = draft.mode === "embedded" && draft.publishableKey && draft.clientSecret;
 
   return (
@@ -83,10 +82,10 @@ function PayPage() {
 
         <p className="text-[11px] font-bold tracking-[0.18em] text-gold uppercase">Secure checkout</p>
         <h1 className="mt-1 font-display text-3xl font-black tracking-tight text-fg sm:text-4xl">
-          Confirm your rank
+          Confirm your credits
         </h1>
         <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/45">
-          Pay on Pay4Rank. Card details never touch our servers. Your live rank updates only after Stripe
+          Pay on Pay4Rank. Card details never touch our servers. Credits land in your wallet only after Stripe
           confirms the charge.
         </p>
 
@@ -98,7 +97,7 @@ function PayPage() {
             <Lock className="h-3 w-3" /> Pay
           </li>
           <li>
-            <Trophy className="h-3 w-3" /> Live rank
+            <Trophy className="h-3 w-3" /> Wallet
           </li>
         </ol>
 
@@ -113,20 +112,19 @@ function PayPage() {
               </p>
               <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-white/50">
                 <span className="pay-usd">USD only</span>
-                <span>ranking credits</span>
+                <span>credits for your wallet</span>
               </p>
             </div>
             <div className="pay-perf" />
             <div className="space-y-3 px-5 py-4 text-sm sm:px-6">
-              <Row label="Cycle" value={cycleLabel} />
               <Row label="Listing as" value={draft.displayName} />
               {draft.shortNote ? <Row label="Note" value={draft.shortNote} /> : null}
             </div>
             <div className="mx-5 mb-5 rounded-xl border border-white/[0.06] bg-[#12121a] px-4 py-3 sm:mx-6">
               <p className="flex items-start gap-2 text-[12px] leading-relaxed text-white/45">
                 <Trophy className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                Higher confirmed credits rank higher. Ties go to the earlier payment. Ranking credits are
-                non-refundable after Stripe confirms. This is visibility, not a cash prize.
+                Credits go to your wallet after Stripe confirms. Spend them 1:1 for Score on weekly and monthly
+                boards. Credits are non-refundable after Stripe confirms. This is visibility, not a cash prize.
               </p>
             </div>
           </aside>
@@ -144,7 +142,7 @@ function PayPage() {
             ) : draft.url ? (
               <div className="flex flex-1 flex-col justify-center space-y-4">
                 <p className="text-sm leading-relaxed text-white/50">
-                  Continue to Stripe to finish this ${formatUsd(draft.amount)} USD ranking-credit purchase. You return
+                  Continue to Stripe to finish this ${formatUsd(draft.amount)} USD credit purchase. You return
                   here the moment the charge succeeds.
                 </p>
                 <a

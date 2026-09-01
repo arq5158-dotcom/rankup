@@ -55,7 +55,7 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
             <span className="text-[13px] font-extrabold tracking-[0.08em] text-fg">PAY4RANK</span>
           </Link>
           <p className="mt-2.5 max-w-xs text-[12px] leading-relaxed text-pretty text-white/48">
-            A promotional leaderboard. Buy ranking credits, climb, and get seen — rank updates only after payment confirms.
+            A promotional leaderboard. Buy credits, spend them for Score, climb, and get seen — rank updates when Score changes.
           </p>
           <p className="mt-2.5 text-[10px] font-bold tracking-wider text-white/28 uppercase">
             18+ · Promotional listing · Not a prize contest
@@ -105,7 +105,7 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
       </div>
       <div className="border-t border-white/[0.04] py-3">
         <p className="text-center text-[11px] tracking-wide text-white/38">
-          © {new Date().getFullYear()} Pay4Rank. Ranking credits buy visibility, not a cash prize.
+          © {new Date().getFullYear()} Pay4Rank. Credits buy Score. Score buys visibility, not a cash prize.
         </p>
       </div>
     </footer>

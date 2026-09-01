@@ -18,7 +18,7 @@ export const Route = createFileRoute("/pay/success")({
   head: () =>
     seoHead({
       title: "Payment confirmed",
-      description: "Stripe confirmed your Pay4Rank ranking credits.",
+      description: "Stripe confirmed credits in your Pay4Rank wallet.",
       path: "/pay/success",
       noindex: true,
     }),

@@ -158,14 +158,14 @@ function Home() {
             </div>
             <div className="mt-4 flex flex-col items-start gap-3 sm:hidden">
               <p className="max-w-[36ch] text-[13px] leading-[1.55] text-pretty text-white/62">
-                Buy ranking credits, outperform the board, and get your profile, brand, or site seen.
+                Buy credits, spend them for Score, and get your profile, brand, or site seen.
               </p>
               <button
                 type="button"
                 onClick={jumpToRankUp}
                 className="btn-gold relative z-10 inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-[14px] px-6 text-[15px] font-extrabold"
               >
-                <span>Participate Now</span>
+                <span>RANK UP</span>
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
@@ -177,7 +177,7 @@ function Home() {
               <div className="glass-card card-3d rounded-[22px] p-4">
                 <p className="text-[15px] font-bold text-fg">Join the climb</p>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-pretty text-white/55">
-                  Create an account to buy ranking credits and put your profile on the live board.
+                  Create an account to buy credits, spend them for Score, and put your profile on the live board.
                 </p>
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   <Link

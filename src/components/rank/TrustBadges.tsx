@@ -11,7 +11,7 @@ const BADGES = [
     icon: Scale,
     t: "Fair ranking",
     s: "Credits only",
-    d: "Rank is confirmed ranking credits. Ties go to the earlier payment. Featured titles are visibility, not prizes.",
+    d: "Rank is Score. Spend credits 1:1, or claim Free Spin Score. Ties go to the earlier Score gain. Featured titles are visibility, not prizes.",
   },
   {
     icon: Headphones,

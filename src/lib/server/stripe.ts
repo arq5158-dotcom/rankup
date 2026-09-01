@@ -169,7 +169,7 @@ export async function createRankCheckoutSession(
       },
     ],
     payment_intent_data: {
-      description: `Pay4Rank ${opts.meta.cycleType} ranking credits · $${dollars}`,
+      description: `Pay4Rank credits · $${dollars}`,
       metadata: opts.meta,
     },
   };

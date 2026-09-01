@@ -1,14 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { getArchives } from "@/lib/server/rank";
 import { PageShell } from "@/components/rank/PageShell";
-import { formatUsd } from "@/lib/utils";
+import { formatScore } from "@/lib/utils";
 import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/archive")({
   head: () =>
     seoHead({
       title: "Past Seasons",
-      description: "Archived Pay4Rank weekly and monthly cycles, listing counts, and credit totals.",
+      description: "Archived Pay4Rank weekly and monthly cycles and Score totals.",
       path: "/archive",
     }),
   loader: async () => ({ archives: await getArchives() }),
@@ -33,7 +33,7 @@ function Page() {
                 <p className="text-sm font-bold text-fg capitalize">{a.cycle_type} cycle</p>
                 <p className="text-xs text-white/35">{a.total_participants} players</p>
               </div>
-              <p className="font-bold text-gold">${formatUsd(Number(a.total_revenue))}</p>
+              <p className="font-bold text-gold tabular-nums">{formatScore(Number(a.total_revenue))} SCORE</p>
             </div>
           ))}
         </div>

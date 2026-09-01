@@ -21,7 +21,7 @@ import {
 import { Navbar } from "@/components/rank/Navbar";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { toast } from "sonner";
-import { formatUsd, publicErrorMessage } from "@/lib/utils";
+import { formatScore, formatUsd, publicErrorMessage } from "@/lib/utils";
 import { loadAccount } from "@/lib/account-cache";
 import { adminGetSpin, adminSaveSpin, type SpinSegment } from "@/lib/server/spin";
 import { adminGetEconomy, adminSaveEconomy, type CreditEconomy } from "@/lib/server/economy";
@@ -211,7 +211,7 @@ function AdminPage() {
                       <p className="truncate text-sm text-fg">{e.displayName}</p>
                       {e.username ? <p className="truncate text-[10px] text-white/35">@{e.username}</p> : null}
                     </div>
-                    <span className="text-sm font-bold text-gold">${formatUsd(e.amountPaid)}</span>
+                    <span className="text-sm font-bold text-gold">{formatScore(e.amountPaid)} SCORE</span>
                     <button
                       type="button"
                       onClick={async () => {

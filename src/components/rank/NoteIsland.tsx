@@ -13,7 +13,7 @@ import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { AvatarImg, Verified } from "./Avatar";
 import { SafeWebLink } from "./SafeWebLink";
-import { cn, formatUsd } from "@/lib/utils";
+import { cn, formatScore } from "@/lib/utils";
 
 export type NoteOpenArgs = {
   note: string;
@@ -553,7 +553,7 @@ function NoteIsland({ payload, onClose }: { payload: NoteOpenArgs; onClose: () =
           <blockquote className="liquid-quote">{payload.note}</blockquote>
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
             {payload.amount != null ? (
-              <p className="text-[12px] font-bold text-success tabular-nums">${formatUsd(payload.amount)}</p>
+              <p className="text-[12px] font-bold text-success tabular-nums">{formatScore(payload.amount)} SCORE</p>
             ) : (
               <span />
             )}

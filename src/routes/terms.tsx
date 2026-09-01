@@ -25,11 +25,12 @@ function Page() {
 
       <h2>1. The service</h2>
       <p>
-        Pay4Rank is a paid promotional leaderboard. You purchase ranking credits through Stripe to
-        increase visibility for your public profile, brand, project, or approved website. Live rank is
-        determined by confirmed credit totals, not by chance. Featured Gold, Silver, Bronze, and Weekly
-        Champion titles are extra on-platform exposure — not cash or material prizes. Pay4Rank is not a
-        lottery, raffle, casino, sweepstakes, or prize contest. The service is void where prohibited.
+        Pay4Rank is a paid promotional leaderboard. You purchase credits through Stripe. Spending
+        credits increases your Score and visibility for your public profile, brand, project, or approved
+        website. Live rank is determined by Score, not by chance and not by dollars sitting in a wallet.
+        Featured Gold, Silver, Bronze, and Weekly Champion titles are extra on-platform exposure — not
+        cash or material prizes. Pay4Rank is not a lottery, raffle, casino, sweepstakes, or prize contest.
+        The service is void where prohibited.
       </p>
 
       <h2>2. Eligibility</h2>
@@ -48,22 +49,23 @@ function Page() {
 
       <h2>4. Ranking credits and payments</h2>
       <ul>
-        <li>All credit purchases are processed by Stripe Checkout.</li>
-        <li>Your rank updates only after Stripe confirms a successful payment.</li>
-        <li>Cancelled or failed checkouts do not charge you and do not rank you.</li>
+        <li>All credit purchases are processed by Stripe Checkout. Stripe does not sell Score.</li>
+        <li>Credits are added only after Stripe confirms a successful payment.</li>
+        <li>Cancelled or failed checkouts do not charge you and do not add credits.</li>
+        <li>Rank updates when you spend credits for Score or claim a Free Spin Score reward.</li>
         <li>
           Completed purchases are generally <strong>non-refundable</strong>, except where Stripe or the
           law requires otherwise.
         </li>
         <li>You authorize Stripe to charge the selected amount plus any stated processing costs.</li>
-        <li>Credits apply only to the cycle you select (weekly or monthly) and reset when that cycle ends.</li>
+        <li>Credits stay in your wallet until you spend them. Credits never reset with weekly or monthly boards.</li>
       </ul>
 
       <h2>5. Rankings</h2>
       <p>
-        Rank is ordered by confirmed credit total in the active cycle. Ties are broken by the earlier
-        confirmed payment. We may correct rankings if a payment is reversed, flagged as fraud, or
-        recorded in error. Other buyers can overtake you at any time.
+        Rank is ordered by Score on the active weekly and monthly boards. Spending credits adds the same
+        Score to both. Ties are broken by the earlier Score gain. We may correct rankings if a payment is
+        reversed, flagged as fraud, or recorded in error. Other players can overtake you at any time.
       </p>
 
       <h2>6. Featured placement</h2>

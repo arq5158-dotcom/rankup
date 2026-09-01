@@ -1,7 +1,7 @@
 export const SITE_NAME = "Pay4Rank";
 export const SITE_TAGLINE = "Pay. Climb. Get Seen.";
 export const SITE_DESCRIPTION =
-  "Pay4Rank is a competitive promotional leaderboard. Buy ranking credits, climb live weekly and monthly boards, and get your profile, brand, or site seen.";
+  "Pay4Rank is a competitive promotional leaderboard. Buy credits, spend them for Score, climb live weekly and monthly boards, and get your profile, brand, or site seen.";
 
 export const PUBLIC_PATHS = [
   { path: "/", changefreq: "hourly", priority: "1.0" },
@@ -9,6 +9,7 @@ export const PUBLIC_PATHS = [
   { path: "/monthly", changefreq: "daily", priority: "0.9" },
   { path: "/prizes", changefreq: "weekly", priority: "0.8" },
   { path: "/giveaways", changefreq: "weekly", priority: "0.7" },
+  { path: "/spin", changefreq: "daily", priority: "0.8" },
   { path: "/how-it-works", changefreq: "monthly", priority: "0.8" },
   { path: "/archive", changefreq: "weekly", priority: "0.5" },
   { path: "/rules", changefreq: "monthly", priority: "0.6" },
@@ -21,23 +22,23 @@ export const PUBLIC_PATHS = [
 export const FAQ_ITEMS = [
   {
     q: "How do rankings work?",
-    a: "Rankings are ordered by confirmed ranking credits purchased with Stripe for the active weekly or monthly cycle. More credits rank higher. If two profiles tie, the earlier confirmed payment holds the slot.",
+    a: "Rankings are ordered by Score on the active weekly and monthly boards. You buy credits with Stripe, then spend credits 1:1 into Score. The same Score is added to both boards. Credits sitting in a wallet do not affect rank. Free Spin can also award Score. If two profiles tie, the earlier Score gain holds the slot.",
   },
   {
     q: "What am I paying for?",
-    a: "You are buying ranking credits — a promotional listing on the public leaderboard. Credits increase your visibility. This is not a prize drawing and you are not paying for a chance to win cash.",
+    a: "You are buying credits for your wallet. Spending credits increases your Score and visibility on the public leaderboard. This is not a prize drawing and you are not paying for a chance to win cash.",
   },
   {
     q: "What do top positions get?",
-    a: "Gold, Silver, and Bronze (monthly) and the Weekly Rank Champion are featured placements: extra exposure, profile styling, platform badges, and a spot in the Hall of Fame. Ranking credits do not buy a cash prize. Separate community giveaways, when offered, are free to enter and are not part of the paid board.",
+    a: "Gold, Silver, and Bronze (monthly) and the Weekly Rank Champion are featured placements: extra exposure, profile styling, platform badges, and a spot in the Hall of Fame. Credits and Score do not buy a cash prize. Separate community giveaways, when offered, are free to enter and are not part of the paid board.",
   },
   {
     q: "Are ranking credits refundable?",
-    a: "Completed purchases are generally non-refundable. If you cancel Stripe Checkout or the payment fails, you are not charged and you are not ranked.",
+    a: "Completed credit purchases are generally non-refundable. If you cancel Stripe Checkout or the payment fails, you are not charged and no credits are added. Rank only changes after you spend credits or claim a Free Spin.",
   },
   {
     q: "Is this a lottery or contest for prizes?",
-    a: "No. The leaderboard sells promotional ranking credits. Position is determined only by confirmed credits in a cycle — not by a random draw. Featured titles are part of the listing product, not a prize purse. Optional community giveaways are run separately: no purchase is required to enter, and buying credits does not improve your odds.",
+    a: "No. Stripe sells promotional credits. Position is determined by Score — not by a random draw and not by dollars paid. Featured titles are part of the listing product, not a prize purse. Optional community giveaways are run separately: no purchase is required to enter, and buying credits does not improve your odds.",
   },
   {
     q: "Who can participate?",
