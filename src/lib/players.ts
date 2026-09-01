@@ -17,7 +17,7 @@ export const TOP_PLAYERS: PlayerSeed[] = [
     displayName: "ApexPredator",
     username: "apexpredator",
     shortNote: "Consistency is the edge. Show up, ship, and climb — then do it again tomorrow.",
-    webLink: "https://apexpedator.dev",
+    webLink: "https://apexpredator.dev",
     profileImage: "/avatars/apex.jpg",
     amountPaid: 1250,
     movement: 0,

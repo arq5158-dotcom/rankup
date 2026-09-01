@@ -316,6 +316,17 @@ async function ensureUniqueBoard(sql: Sql) {
   }
 }
 
+async function ensureLinkFixes(sql: Sql) {
+  const done = await getCfg(sql, "linkFix0010");
+  if (done === "1") return;
+  try {
+    await sql`update leaderboard set web_link = ${"https://apexpredator.dev"} where web_link = ${"https://apexpedator.dev"}`;
+    await setCfg(sql, "linkFix0010", "1");
+  } catch (err) {
+    console.error("[rank] link fix skipped", err instanceof Error ? err.message : err);
+  }
+}
+
 async function ensureSeed(sql: Sql) {
   await ensureUsernameSchema(sql);
   await ensureHardening(sql);
@@ -323,6 +334,7 @@ async function ensureSeed(sql: Sql) {
   await ensureTwoFactorSchema(sql);
   await ensureRicherNotes(sql);
   await ensureUniqueBoard(sql);
+  await ensureLinkFixes(sql);
   const prizes = await sql<{ c: number }>`select count(*)::int as c from prizes`;
   if ((prizes[0]?.c ?? 0) === 0) {
     for (const p of DEFAULT_PRIZES) {

@@ -80,7 +80,7 @@ function Place({
             style={{ filter: m.glow, animationDelay: m.delay }}
           />
         </div>
-        <figcaption className="plaque-glass relative z-20 -mt-1 w-full rounded-[14px] px-1.5 py-2 text-center sm:-mt-2 sm:px-2 sm:py-2.5">
+        <figcaption className="plaque-glass relative z-20 -mt-1 w-full overflow-visible rounded-[14px] px-1.5 py-2 text-center sm:-mt-2 sm:px-2 sm:py-2.5">
           <p className="flex min-w-0 items-center justify-center gap-0.5 text-[11px] font-bold text-fg sm:text-[13px]">
             <span className="truncate">{entry.displayName}</span>
             <Verified />
@@ -106,7 +106,7 @@ function Place({
           <SafeWebLink
             href={entry.webLink}
             compact
-            className="relative z-30 mx-auto mt-1 max-w-full justify-center text-[9px] font-semibold text-gold/80 sm:text-[10px]"
+            className="relative z-30 mx-auto mt-1 max-w-[96%] justify-center"
           />
         </figcaption>
       </div>
@@ -158,7 +158,7 @@ export function Podium({ entries }: { entries: BoardEntry[] }) {
   return (
     <div
       ref={stage}
-      className="stage-3d relative mx-auto w-full max-w-[400px] overflow-x-clip sm:max-w-[520px] lg:max-w-[560px]"
+      className="stage-3d relative mx-auto w-full max-w-[400px] overflow-x-clip pb-4 sm:max-w-[520px] sm:pb-5 lg:max-w-[560px]"
     >
       <div className="stage-rig relative">
         <div className="stage-floor" />

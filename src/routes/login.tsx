@@ -38,6 +38,7 @@ function Login() {
   const [userOk, setUserOk] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [ageOk, setAgeOk] = useState(false);
 
   useEffect(() => {
     if (modeParam === "up" || modeParam === "in") setMode(modeParam);
@@ -76,6 +77,7 @@ function Login() {
     setLoading(true);
     try {
       if (mode === "up") {
+        if (!ageOk) throw new Error("Confirm you are 18 or older to create an account.");
         const named = validateDisplayName(name);
         if (!named.ok) throw new Error(named.error);
         const handle = validateUsername(username);
@@ -145,6 +147,17 @@ function Login() {
                   Continue with {p.label}
                 </button>
               ))}
+              <p className="pt-1 text-center text-[10px] leading-relaxed text-white/35">
+                By continuing you confirm you are 18 or older and agree to the{" "}
+                <Link to="/terms" className="text-gold">
+                  Terms
+                </Link>{" "}
+                and{" "}
+                <Link to="/rules" className="text-gold">
+                  Official Rules
+                </Link>
+                . Not a lottery. Void where prohibited.
+              </p>
             </div>
           ) : (
             <p className="text-center text-sm text-white/40">Sign-in is disabled.</p>
@@ -236,31 +249,39 @@ function Login() {
               />
             </div>
             {error && <p className="hint-in text-sm text-danger">{error}</p>}
+            {mode === "up" && (
+              <label className="flex items-start gap-2.5 text-[11px] leading-relaxed text-white/45">
+                <input
+                  type="checkbox"
+                  checked={ageOk}
+                  onChange={(e) => setAgeOk(e.target.checked)}
+                  className="check mt-0.5 shrink-0"
+                />
+                <span>
+                  I confirm I am 18 or older and agree to the{" "}
+                  <Link to="/terms" className="text-gold">
+                    Terms
+                  </Link>
+                  ,{" "}
+                  <Link to="/rules" className="text-gold">
+                    Official Rules
+                  </Link>
+                  , and{" "}
+                  <Link to="/privacy" className="text-gold">
+                    Privacy Policy
+                  </Link>
+                  . Rank Up is not a lottery. Void where prohibited.
+                </span>
+              </label>
+            )}
             <button
               type="submit"
-              disabled={loading || (mode === "up" && (!userOk || !name.trim()))}
+              disabled={loading || (mode === "up" && (!userOk || !name.trim() || !ageOk))}
               className="btn-gold relative z-10 tap flex w-full items-center justify-center gap-2 rounded-xl text-sm font-extrabold"
             >
               {loading ? "Please wait…" : mode === "in" ? "Sign in" : "Create account"}
               <ArrowRight className="h-4 w-4" />
             </button>
-            {mode === "up" && (
-              <p className="text-center text-[10px] leading-relaxed text-white/35">
-                By creating an account you confirm you are 18 or older and agree to the{" "}
-                <Link to="/terms" className="text-gold">
-                  Terms
-                </Link>
-                ,{" "}
-                <Link to="/rules" className="text-gold">
-                  Official Rules
-                </Link>
-                , and{" "}
-                <Link to="/privacy" className="text-gold">
-                  Privacy Policy
-                </Link>
-                . Not a lottery. Void where prohibited.
-              </p>
-            )}
           </form>
           </FadeSwitch>
         </div>

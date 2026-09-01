@@ -115,7 +115,7 @@ export function LeaderboardTable({
                   className="mt-0.5 min-w-0 text-[11px] text-white/35"
                 />
               ) : null}
-              <SafeWebLink href={e.webLink} className="mt-0.5 text-[11px] font-semibold" />
+              <SafeWebLink href={e.webLink} className="mt-1 max-w-full" />
             </div>
           </div>
         ))}

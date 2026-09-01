@@ -4,7 +4,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { startCheckout } from "@/lib/server/rank";
 import type { CycleType } from "@/lib/players";
-import { MAX_CONTRIBUTION, NOTE_MAX_CHARS, publicErrorMessage } from "@/lib/utils";
+import { MAX_CONTRIBUTION, NOTE_MAX_CHARS, normalizeHttpUrl, publicErrorMessage } from "@/lib/utils";
 import { savePayDraft } from "@/lib/pay-draft";
 import { Segmented } from "./motion";
 
@@ -51,6 +51,15 @@ export function ParticipatePanel({
       return;
     }
     if (amount < 1 || amount > MAX_CONTRIBUTION || !name.trim()) return;
+    if (!agreed) {
+      toast.error("Confirm you are 18 or older and agree to the rules.");
+      return;
+    }
+    const safeLink = link.trim() ? normalizeHttpUrl(link.trim()) : null;
+    if (link.trim() && !safeLink) {
+      toast.error("That website did not pass safety review. Use a full https:// link — shorteners and adult sites are blocked.");
+      return;
+    }
     setLoading(true);
     try {
       const res = await startCheckout({
@@ -58,7 +67,7 @@ export function ParticipatePanel({
           amount,
           displayName: name.trim().slice(0, 24),
           shortNote: note.trim().slice(0, NOTE_MAX_CHARS) || undefined,
-          webLink: link.trim().slice(0, 300) || undefined,
+          webLink: safeLink || undefined,
           cycleType: cycle,
         },
       });
