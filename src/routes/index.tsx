@@ -28,12 +28,13 @@ export const Route = createFileRoute("/")({
       path: "/",
     }),
   loader: async () => {
-    const [monthly, prizes, stripe] = await Promise.all([
+    const [monthly, weekly, prizes, stripe] = await Promise.all([
       getLeaderboard({ data: { cycleType: "monthly" } }),
+      getLeaderboard({ data: { cycleType: "weekly" } }),
       getPrizes(),
       getStripeStatus(),
     ]);
-    return { monthly, prizes, stripe };
+    return { monthly, weekly, prizes, stripe };
   },
   staleTime: 20_000,
   pendingComponent: RoutePending,
@@ -61,7 +62,7 @@ function TrustRow({ className = "" }: { className?: string }) {
 }
 
 function Home() {
-  const { monthly, prizes, stripe } = Route.useLoaderData();
+  const { monthly, weekly, prizes, stripe } = Route.useLoaderData();
   const { user, isPending } = useCurrentUserState();
   const [showAll, setShowAll] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
@@ -236,6 +237,7 @@ function Home() {
         weeklyScore={account?.weeklyPaid ?? 0}
         weeklyRank={weeklyRank}
         board={board}
+        weeklyBoard={weekly}
         onDone={() => {
           void loadAccount(true).then(setAccount).catch(() => null);
         }}

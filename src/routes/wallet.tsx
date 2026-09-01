@@ -24,14 +24,15 @@ export const Route = createFileRoute("/wallet")({
     }),
   loader: async () => {
     try {
-      const [account, ledger, monthly] = await Promise.all([
+      const [account, ledger, monthly, weekly] = await Promise.all([
         loadAccount(),
         getMyLedger(),
         getLeaderboard({ data: { cycleType: "monthly" } }),
+        getLeaderboard({ data: { cycleType: "weekly" } }),
       ]);
-      return { account, ledger, monthly };
+      return { account, ledger, monthly, weekly };
     } catch {
-      return { account: null, ledger: [] as LedgerRow[], monthly: [] };
+      return { account: null, ledger: [] as LedgerRow[], monthly: [], weekly: [] };
     }
   },
   staleTime: 8_000,
@@ -129,6 +130,7 @@ function WalletPage() {
         weeklyScore={account.weeklyPaid ?? 0}
         weeklyRank={account.weeklyRank}
         board={loaded.monthly}
+        weeklyBoard={loaded.weekly}
       />
     </div>
   );

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/monthly")({
     seoHead({
       title: "Monthly Board",
       description:
-        "Pay4Rank monthly board — top three get Gold, Silver, and Bronze featured placement. Live rankings after Stripe confirms ranking credits.",
+        "Pay4Rank monthly board — top three get Gold, Silver, and Bronze featured placement. Score from credit spends and Free Spin.",
       path: "/monthly",
     }),
   loader: async () => {

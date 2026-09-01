@@ -468,12 +468,43 @@ async function ensureSeed(sql: Sql) {
 
 async function getCycleStart(sql: Sql, type: CycleType) {
   const key = type === "monthly" ? "monthlyCycleStart" : "weeklyCycleStart";
+  const calendar = cycleStart(type);
   const rows = await sql<{ value: string }>`select value from config where key = ${key}`;
   const stored = Number(rows[0]?.value);
-  if (Number.isFinite(stored) && stored > 0) return stored;
-  const start = cycleStart(type);
-  await sql`insert into config (key, value) values (${key}, ${String(start)}) on conflict (key) do nothing`;
-  return start;
+  if (!Number.isFinite(stored) || stored <= 0) {
+    await sql`insert into config (key, value) values (${key}, ${String(calendar)}) on conflict (key) do nothing`;
+    return calendar;
+  }
+  if (stored < calendar) {
+    await archiveCycle(sql, type, stored, calendar);
+    return calendar;
+  }
+  return stored;
+}
+
+async function archiveCycle(sql: Sql, type: CycleType, oldStart: number, newStart: number) {
+  const already = await sql<{ id: number }>`
+    select id from archive where cycle_type = ${type} and cycle_start = ${oldStart} limit 1
+  `;
+  const entries = await sql<LbRow>`
+    select id, user_id, display_name, username, short_note, web_link, profile_image,
+           amount_paid, rank, cycle_type, movement
+    from leaderboard where cycle_type = ${type} and cycle_start = ${oldStart}
+    order by rank
+  `;
+  if (!already[0]) {
+    const revenue = entries.reduce((s, e) => s + num(e.amount_paid), 0);
+    await sql`
+      insert into archive (cycle_type, cycle_start, cycle_end, entries_json, total_participants, total_revenue)
+      values (
+        ${type}, ${oldStart}, ${newStart},
+        ${JSON.stringify(entries.map(publicEntry))}, ${entries.length}, ${revenue}
+      )
+    `;
+  }
+  await sql`delete from leaderboard where cycle_type = ${type} and cycle_start = ${oldStart}`;
+  const key = type === "monthly" ? "monthlyCycleStart" : "weeklyCycleStart";
+  await setCfg(sql, key, String(newStart));
 }
 
 async function rerank(sql: Sql, type: CycleType, start: number) {
@@ -1311,9 +1342,8 @@ export const completeCheckout = createServerFn({ method: "POST" })
 
 export const spendCredits = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((data: { credits?: number; cycleType?: CycleType } | null | undefined) => ({
+  .validator((data: { credits?: number } | null | undefined) => ({
     credits: Number(data?.credits),
-    cycleType: asCycle(data?.cycleType),
   }))
   .handler(async ({ context, data }) => {
     rateLimit(`spend:${context.userId}`, 20, 60_000);
@@ -1339,28 +1369,31 @@ export const spendCredits = createServerFn({ method: "POST" })
 
     await sql`
       insert into credit_ledger (user_id, kind, credits_delta, score_delta, cycle_type, resulting_credits, note)
-      values (${context.userId}, ${"spend"}, ${-spend}, ${spend}, ${data.cycleType}, ${num(deducted[0].credits)}, ${`Rank up ${data.cycleType}`})
+      values (${context.userId}, ${"spend"}, ${-spend}, ${spend}, ${"both"}, ${num(deducted[0].credits)}, ${"Rank up weekly + monthly"})
     `;
 
     const parsedName = validateDisplayName(profile.display_name || "Competitor");
-    const moved = await addScore(sql, {
+    const base = {
       userId: context.userId,
       scoreDelta: spend,
-      cycleType: data.cycleType,
       displayName: parsedName.ok ? parsedName.name : "Competitor",
       shortNote: profile.short_note,
       webLink: profile.web_link,
       profileImage: profile.profile_image,
       username: profile.username,
-    });
+    };
+    const monthly = await addScore(sql, { ...base, cycleType: "monthly" });
+    const weekly = await addScore(sql, { ...base, cycleType: "weekly" });
 
     return {
       credits: num(deducted[0].credits),
-      score: moved.score,
-      rank: moved.rank,
-      prevRank: moved.prevRank,
-      cycleType: data.cycleType,
       spent: spend,
+      monthlyScore: monthly.score,
+      monthlyRank: monthly.rank,
+      monthlyPrev: monthly.prevRank,
+      weeklyScore: weekly.score,
+      weeklyRank: weekly.rank,
+      weeklyPrev: weekly.prevRank,
     };
   });
 

@@ -10,7 +10,7 @@ const STEPS = [
   {
     icon: Zap,
     title: "Climb",
-    body: "Spend credits 1:1 into Score. Rankings move the moment the spend confirms. Others can overtake you.",
+    body: "Spend credits 1:1 into Score on both the weekly and monthly boards. Others can overtake you at any time.",
     cup: "/rank/cup-silver.webp?v=3d4",
   },
   {
