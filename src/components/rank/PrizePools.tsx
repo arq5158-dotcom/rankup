@@ -14,6 +14,7 @@ function Cup({
       src={`/rank/cup-${tone}.webp?v=3d5`}
       alt=""
       draggable={false}
+      decoding="async"
       className={`trophy-3d object-contain object-bottom ${className}`}
     />
   );

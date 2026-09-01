@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Check, Crown, Lock, ShieldCheck, Trophy } from "lucide-react";
-import { SceneBackground } from "@/components/rank/Background";
 import { Navbar } from "@/components/rank/Navbar";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { StripeEmbed } from "@/components/rank/StripeEmbed";
@@ -47,7 +46,6 @@ function PayPage() {
   if (!draft) {
     return (
       <div className="relative flex min-h-screen flex-col">
-        <SceneBackground />
         <Navbar />
         <main id="main" className="page-enter relative z-10 mx-auto w-full max-w-lg px-4 py-20 text-center">
           <div className="pay-ticket rounded-2xl p-8">
@@ -73,7 +71,6 @@ function PayPage() {
 
   return (
     <div className="relative flex min-h-screen flex-col">
-      <SceneBackground />
       <Navbar />
       <main id="main" className="page-enter relative z-10 mx-auto w-full max-w-6xl px-4 py-8 pb-24 sm:py-12 sm:pb-12">
         <button

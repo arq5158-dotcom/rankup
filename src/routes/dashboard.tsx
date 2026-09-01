@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Crown, Loader2, Save } from "lucide-react";
+import { Camera, Crown, Loader2, Save } from "lucide-react";
 import { RedirectToSignIn } from "@/lib/auth/gates";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { getMyAccount, updateMyProfile } from "@/lib/server/rank";
-import { SceneBackground } from "@/components/rank/Background";
 import { Navbar } from "@/components/rank/Navbar";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { SecurityPanel } from "@/components/rank/SecurityPanel";
+import { PhotoCropper } from "@/components/rank/PhotoCropper";
+import { AvatarImg } from "@/components/rank/Avatar";
 import { toast } from "sonner";
 import { formatUsd, NOTE_MAX_CHARS, publicErrorMessage } from "@/lib/utils";
 import { seoHead } from "@/lib/seo";
@@ -41,6 +42,8 @@ function Dashboard() {
   const [link, setLink] = useState("");
   const [image, setImage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [cropFile, setCropFile] = useState<File | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (tabParam) setTab(tabParam);
@@ -94,7 +97,6 @@ function Dashboard() {
 
   return (
     <div className="relative min-h-screen">
-      <SceneBackground />
       <Navbar
         active="Profile"
         account={
@@ -146,6 +148,46 @@ function Dashboard() {
         <FadeSwitch id={tab}>
           {tab === "profile" && (
             <div className="glass-card space-y-4 rounded-2xl p-5 sm:p-6">
+              <div className="flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="tap relative shrink-0"
+                  aria-label="Change profile photo"
+                >
+                  <AvatarImg src={image} name={name || "You"} size={84} ring="gold" />
+                  <span className="absolute right-0 bottom-0 grid h-8 w-8 place-items-center rounded-full border border-gold/40 bg-[#12121a] text-gold">
+                    <Camera className="h-3.5 w-3.5" />
+                  </span>
+                </button>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold tracking-wider text-white/40 uppercase">Profile photo</p>
+                  <p className="mt-1 text-sm text-white/50">Upload a photo, then drag and zoom to frame it before saving.</p>
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="btn-outline tap mt-2 min-h-11 rounded-xl px-3 text-xs font-bold"
+                  >
+                    Choose photo
+                  </button>
+                </div>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    e.target.value = "";
+                    if (!f) return;
+                    if (f.size > 8 * 1024 * 1024) {
+                      toast.error("Use a photo under 8 MB.");
+                      return;
+                    }
+                    setCropFile(f);
+                  }}
+                />
+              </div>
               {[
                 { label: "Display name", value: name, set: setName, hint: "Shown large on the board", max: 24 },
                 {
@@ -157,7 +199,6 @@ function Dashboard() {
                 },
                 { label: "Short note", value: note, set: setNote, max: NOTE_MAX_CHARS },
                 { label: "Website", value: link, set: setLink, max: 300, hint: "Public https:// link. Adult, malware, and shortened URLs are blocked." },
-                { label: "Profile image URL", value: image, set: setImage, max: 500 },
               ].map((f) => (
                 <div key={f.label} className="field">
                   <label className="mb-1 block text-[10px] font-semibold tracking-wider text-white/40 uppercase">
@@ -230,6 +271,17 @@ function Dashboard() {
         </div>
       </main>
       <SiteFooter />
+      {cropFile ? (
+        <PhotoCropper
+          file={cropFile}
+          onCancel={() => setCropFile(null)}
+          onConfirm={(dataUrl) => {
+            setImage(dataUrl);
+            setCropFile(null);
+            toast.success("Photo framed. Save profile to keep it.");
+          }}
+        />
+      ) : null}
     </div>
   );
 }

@@ -10,7 +10,6 @@ import {
   type BoardEntry,
   type PrizeRow,
 } from "@/lib/server/rank";
-import { SceneBackground } from "@/components/rank/Background";
 import { Navbar } from "@/components/rank/Navbar";
 import { Podium } from "@/components/rank/Podium";
 import { PrizePools } from "@/components/rank/PrizePools";
@@ -125,7 +124,6 @@ function Home() {
 
   return (
     <div className="relative min-h-screen">
-      <SceneBackground />
       <Navbar active="Leaderboard" account={navAccount} />
 
       <main id="main" className="relative z-10 mx-auto max-w-[1640px] px-3 pb-8 sm:px-6 lg:px-8">

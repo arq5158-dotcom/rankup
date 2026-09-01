@@ -19,11 +19,18 @@ export function SceneBackground() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       <div className="absolute inset-0 bg-bg" />
-      <img
-        src="/rank/mountains.jpg"
-        alt=""
-        className="scene-mountains absolute inset-x-0 top-0 h-[78%] w-full object-cover object-[center_42%] opacity-[0.72]"
-      />
+      <picture>
+        <source srcSet="/rank/mountains.webp" type="image/webp" />
+        <img
+          src="/rank/mountains.jpg"
+          alt=""
+          width={1920}
+          height={1080}
+          fetchPriority="high"
+          decoding="async"
+          className="scene-mountains absolute inset-x-0 top-0 h-[78%] w-full object-cover object-[center_42%] opacity-[0.72]"
+        />
+      </picture>
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/18 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-[66%] bg-gradient-to-t from-bg via-bg/88 to-transparent" />
       <div className="god-rays absolute inset-0" />

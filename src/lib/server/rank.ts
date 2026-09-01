@@ -714,7 +714,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
     username: typeof data?.username === "string" ? data.username.slice(0, 64) : data?.username,
     shortNote: typeof data?.shortNote === "string" ? data.shortNote.slice(0, NOTE_MAX_CHARS + 16) : data?.shortNote,
     webLink: typeof data?.webLink === "string" ? data.webLink.slice(0, 320) : data?.webLink,
-    profileImage: typeof data?.profileImage === "string" ? data.profileImage.slice(0, 500) : data?.profileImage,
+    profileImage: typeof data?.profileImage === "string" ? data.profileImage.slice(0, 180_000) : data?.profileImage,
   }))
   .handler(async ({ context, data }) => {
     rateLimit(`profile:${context.userId}`, 30, 60_000);

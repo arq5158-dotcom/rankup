@@ -3,7 +3,6 @@ import { createFileRoute, Link, Navigate, useNavigate } from "@tanstack/react-ro
 import { ArrowRight, AtSign, Crown, Lock, Mail } from "lucide-react";
 import { GROK_PROVIDERS, authClient, authEnabled, signIn } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { SceneBackground } from "@/components/rank/Background";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { seoHead } from "@/lib/seo";
 import { checkUsername, setUsername } from "@/lib/server/rank";
@@ -109,7 +108,6 @@ function Login() {
 
   return (
     <div className="relative min-h-screen">
-      <SceneBackground />
       <header className="relative z-10 border-b border-white/[0.04]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2">

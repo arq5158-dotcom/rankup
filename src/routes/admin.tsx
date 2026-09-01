@@ -18,7 +18,6 @@ import {
   getPrizes,
   type BoardEntry,
 } from "@/lib/server/rank";
-import { SceneBackground } from "@/components/rank/Background";
 import { Navbar } from "@/components/rank/Navbar";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { toast } from "sonner";
@@ -127,7 +126,6 @@ function AdminPage() {
 
   return (
     <div className="relative min-h-screen">
-      <SceneBackground />
       <Navbar
         active="Admin"
         account={

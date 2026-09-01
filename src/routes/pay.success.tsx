@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { Check, Loader2, X } from "lucide-react";
 import { completeCheckout } from "@/lib/server/rank";
-import { SceneBackground } from "@/components/rank/Background";
 import { Navbar } from "@/components/rank/Navbar";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { RedirectToSignIn } from "@/lib/auth/gates";
@@ -58,7 +57,6 @@ function PaySuccess() {
 
   return (
     <div className="relative min-h-screen">
-      <SceneBackground />
       <Navbar />
       <main className="relative z-10 mx-auto flex max-w-lg flex-col items-center px-4 py-20 text-center">
         <div className="glass-card w-full rounded-2xl p-8">

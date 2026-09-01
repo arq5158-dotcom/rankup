@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { X } from "lucide-react";
-import { SceneBackground } from "@/components/rank/Background";
 import { Navbar } from "@/components/rank/Navbar";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { seoHead } from "@/lib/seo";
@@ -19,7 +18,6 @@ export const Route = createFileRoute("/pay/cancel")({
 function PayCancel() {
   return (
     <div className="relative min-h-screen">
-      <SceneBackground />
       <Navbar />
       <main className="relative z-10 mx-auto flex max-w-lg flex-col items-center px-4 py-20 text-center">
         <div className="glass-card w-full rounded-2xl p-8">

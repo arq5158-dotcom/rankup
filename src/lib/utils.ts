@@ -160,21 +160,29 @@ export function normalizeHttpUrl(raw: string): string | null {
 }
 
 export function isImageSafe(url: string): boolean {
-  let t = url.trim();
-  if (!t || t.length > 500) return false;
+  const t = url.trim();
+  if (!t) return false;
+  if (t.startsWith("data:")) {
+    return (
+      t.length <= 180_000 &&
+      /^data:image\/(jpeg|jpg|webp|png);base64,[A-Za-z0-9+/=\s]+$/.test(t)
+    );
+  }
+  if (t.length > 500) return false;
+  let decoded = t;
   try {
-    t = decodeURIComponent(t);
+    decoded = decodeURIComponent(t);
   } catch {
     return false;
   }
-  if (/\.svg(\?|#|$)/i.test(t) || t.toLowerCase().includes("data:")) return false;
-  if (t.startsWith("/avatars/") || t.startsWith("/rank/")) {
-    if (t.includes("..") || t.includes("\\") || t.includes("//", 1) || t.includes("%")) return false;
-    return /^\/(avatars|rank)\/[A-Za-z0-9._-]+$/.test(t);
+  if (/\.svg(\?|#|$)/i.test(decoded) || decoded.toLowerCase().includes("data:")) return false;
+  if (decoded.startsWith("/avatars/") || decoded.startsWith("/rank/")) {
+    if (decoded.includes("..") || decoded.includes("\\") || decoded.includes("//", 1) || decoded.includes("%")) return false;
+    return /^\/(avatars|rank)\/[A-Za-z0-9._-]+$/.test(decoded);
   }
-  if (!isUrlSafe(t)) return false;
+  if (!isUrlSafe(decoded)) return false;
   try {
-    const u = new URL(t);
+    const u = new URL(decoded);
     return u.protocol === "https:";
   } catch {
     return false;

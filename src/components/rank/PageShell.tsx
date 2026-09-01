@@ -1,4 +1,3 @@
-import { SceneBackground } from "./Background";
 import { Navbar, type AccountInfo } from "./Navbar";
 import { SiteFooter } from "./SiteFooter";
 
@@ -15,7 +14,6 @@ export function PageShell({
 }) {
   return (
     <div className="relative min-h-screen">
-      <SceneBackground />
       {nav ?? <Navbar active={active} account={account} />}
       <div id="main" className="page-enter">
         {children}
