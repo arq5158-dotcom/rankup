@@ -58,12 +58,10 @@ export function PrizePools({
 
   return (
     <section id="prizes" className="grid grid-cols-1 items-stretch gap-3 md:grid-cols-2 md:gap-4">
-      <div className="glass-card card-3d flex flex-col rounded-[22px] p-5 sm:p-6">
+      <div className="lux-panel card-3d flex flex-col rounded-[24px] p-5 sm:p-6">
         <div className="mb-5">
-          <h3 className="text-[12px] font-extrabold tracking-[0.22em] text-fg uppercase sm:text-[13px]">
-            Monthly Top 3 Benefits
-          </h3>
-          <p className="mt-1.5 text-[13px] text-white/48">Finish in the Top 3 to unlock premium visibility perks.</p>
+          <h3 className="lux-kicker">Monthly Top 3 Benefits</h3>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-white/50">Finish in the Top 3 to unlock premium visibility perks.</p>
         </div>
         <div className="grid flex-1 grid-cols-3 gap-2 sm:gap-3">
           {MONTHLY.map((p) => (
@@ -73,7 +71,7 @@ export function PrizePools({
                 p.tone === "gold" ? "prize-gold" : p.tone === "silver" ? "prize-silver" : "prize-bronze"
               }`}
             >
-              <Cup tone={p.tone} className="mx-auto h-[68px] w-[68px] sm:h-[86px] sm:w-[86px]" />
+              <Cup tone={p.tone} className="mx-auto h-[76px] w-[76px] sm:h-[96px] sm:w-[96px]" />
               <p className="mt-2 text-center text-[9px] font-bold tracking-[0.16em] text-white/50 uppercase sm:text-[10px]">
                 {p.place}
               </p>
@@ -95,13 +93,11 @@ export function PrizePools({
         </p>
       </div>
 
-      <div id="weekly" className="glass-card card-3d flex flex-col rounded-[22px] p-5 sm:p-6">
+      <div id="weekly" className="lux-panel lux-panel-weekly card-3d flex flex-col rounded-[24px] p-5 sm:p-6">
         <div className="mb-4 flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="text-[12px] font-extrabold tracking-[0.22em] text-fg uppercase sm:text-[13px]">
-              Weekly Spotlight
-            </h3>
-            <p className="mt-1.5 text-[13px] text-white/48">The #1 player this week takes the crown.</p>
+            <h3 className="lux-kicker">Weekly Spotlight</h3>
+            <p className="mt-1.5 text-[13px] leading-relaxed text-white/50">The #1 player this week takes the crown.</p>
           </div>
           <CountDown target={nextSundayEnd()} prefix="Featured for" compact />
         </div>
@@ -109,7 +105,9 @@ export function PrizePools({
           {champ ? (
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(180px,0.85fr)] lg:items-center">
               <div className="flex min-w-0 items-center gap-4">
-                <AvatarImg src={champ.profileImage} name={champ.displayName} size={92} ring="gold" />
+                <div className="champ-ring shrink-0">
+                  <AvatarImg src={champ.profileImage} name={champ.displayName} size={88} ring="none" />
+                </div>
                 <div className="min-w-0">
                   <p className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.16em] text-weekly uppercase">
                     <Crown className="h-3.5 w-3.5 fill-weekly text-weekly" /> Weekly Champion

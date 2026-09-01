@@ -33,14 +33,10 @@ export function CountDown({
 
   if (compact) {
     return (
-      <div
-        className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/12 bg-black/45 px-3 py-1.5"
-        aria-label={`${prefix} ${t.d} days ${t.h} hours`}
-      >
+      <div className="cd-pill" aria-label={`${prefix} ${t.d} days ${t.h} hours`}>
         <span className="text-[10px] font-medium tracking-wide text-white/45">{prefix}</span>
-        <span className="font-mono text-[13px] font-bold tabular-nums text-gold-light">
-          {t.d}d {pad(t.h)}h
-        </span>
+        <span className="cd-pill-box">{t.d}d</span>
+        <span className="cd-pill-box">{pad(t.h)}h</span>
       </div>
     );
   }
