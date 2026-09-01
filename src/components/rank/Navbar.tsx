@@ -13,6 +13,7 @@ const LINKS = [
   { label: "Monthly", to: "/monthly" as const },
   { label: "How It Works", to: "/how-it-works" as const },
   { label: "Positions", to: "/prizes" as const },
+  { label: "Free Spin", to: "/spin" as const },
   { label: "Giveaways", to: "/giveaways" as const },
 ];
 

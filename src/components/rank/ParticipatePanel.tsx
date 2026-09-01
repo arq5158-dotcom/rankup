@@ -3,10 +3,8 @@ import { Check, Lock, X } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { startCheckout } from "@/lib/server/rank";
-import type { CycleType } from "@/lib/players";
-import { MAX_CONTRIBUTION, NOTE_MAX_CHARS, normalizeHttpUrl, publicErrorMessage } from "@/lib/utils";
 import { savePayDraft } from "@/lib/pay-draft";
-import { Segmented } from "./motion";
+import { MAX_CONTRIBUTION, NOTE_MAX_CHARS, normalizeHttpUrl, publicErrorMessage, formatScore, CREDITS_PER_USD } from "@/lib/utils";
 
 const PRESETS = [10, 25, 50, 100, 250];
 
@@ -31,11 +29,10 @@ export function ParticipatePanel({
   isOwner?: boolean;
 }) {
   const navigate = useNavigate();
-  const [amount, setAmount] = useState(50);
+  const [amount, setAmount] = useState(25);
   const [name, setName] = useState(defaultName);
   const [note, setNote] = useState(defaultNote ?? "");
   const [link, setLink] = useState(defaultLink ?? "");
-  const [cycle, setCycle] = useState<CycleType>("monthly");
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
 
@@ -68,7 +65,7 @@ export function ParticipatePanel({
           displayName: name.trim().slice(0, 24),
           shortNote: note.trim().slice(0, NOTE_MAX_CHARS) || undefined,
           webLink: safeLink || undefined,
-          cycleType: cycle,
+          cycleType: "monthly",
         },
       });
       savePayDraft({
@@ -105,20 +102,15 @@ export function ParticipatePanel({
         >
           <X className="h-4 w-4" />
         </button>
-        <h3 className="pr-10 text-[16px] font-bold tracking-tight text-fg">Buy ranking credits</h3>
+        <h3 className="pr-10 text-[16px] font-bold tracking-tight text-fg">Buy credits</h3>
+        <p className="mt-1 text-[12px] text-white/40">
+          ${amount.toFixed(0)} → {formatScore(amount * CREDITS_PER_USD)} credits in your wallet
+        </p>
 
         <div className="mt-3.5 space-y-3">
-          <Segmented
-            value={cycle}
-            onChange={setCycle}
-            options={[
-              { id: "monthly", label: "Monthly" },
-              { id: "weekly", label: "Weekly" },
-            ]}
-          />
           <div className="field">
             <label className="mb-1.5 block text-[10px] font-semibold tracking-wider text-white/40 uppercase">
-              Ranking credits (USD)
+              Amount (USD)
             </label>
             <div className="relative">
               <span className="absolute top-1/2 left-3.5 -translate-y-1/2 text-[24px] font-bold text-gold">$</span>
@@ -232,7 +224,7 @@ export function ParticipatePanel({
             className="btn-gold relative z-10 tap flex min-h-[50px] w-full items-center justify-center gap-2 rounded-[14px] text-sm font-extrabold"
           >
             <Lock className="h-3.5 w-3.5" />
-            {loading ? "Opening checkout…" : signedIn ? "Pay securely & climb" : "Sign in to Pay4Rank"}
+            {loading ? "Opening checkout…" : signedIn ? "Buy credits with Stripe" : "Sign in to Pay4Rank"}
           </button>
           <p className="flex flex-col items-center justify-center gap-0.5 pt-0.5 text-center text-[10px] text-white/30">
             <span>

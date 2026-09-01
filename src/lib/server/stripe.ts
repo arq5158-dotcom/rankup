@@ -135,7 +135,6 @@ export async function createRankCheckoutSession(
   const stripe = await getStripe(sql);
   const origin = getAppOrigin();
   const dollars = (opts.amountCents / 100).toFixed(2);
-  const cycleLabel = opts.meta.cycleType === "weekly" ? "Weekly spotlight" : "Monthly board";
   const base = {
     mode: "payment" as const,
     locale: "en" as const,
@@ -152,15 +151,15 @@ export async function createRankCheckoutSession(
       font_family: "inter" as const,
     },
     custom_text: {
-      submit: { message: "Your live rank updates only after Stripe confirms this payment. Ranking credits buy visibility, not a prize." },
+      submit: { message: "Credits are added to your wallet after Stripe confirms payment. Spend credits to earn Score and climb." },
     },
     line_items: [
       {
         price_data: {
           currency: "usd",
           product_data: {
-            name: `Pay4Rank ranking credits · ${cycleLabel}`,
-            description: `USD ${dollars} promotional ranking credits`,
+            name: `Pay4Rank credits · ${Math.round(opts.amountCents)} credits`,
+            description: `USD ${dollars} adds ${Math.round(opts.amountCents).toLocaleString()} credits to your wallet`,
           },
           unit_amount: opts.amountCents,
         },

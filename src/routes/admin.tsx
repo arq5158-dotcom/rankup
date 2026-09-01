@@ -23,6 +23,7 @@ import { SiteFooter } from "@/components/rank/SiteFooter";
 import { toast } from "sonner";
 import { formatUsd, publicErrorMessage } from "@/lib/utils";
 import { loadAccount } from "@/lib/account-cache";
+import { adminGetSpin, adminSaveSpin, type SpinSegment } from "@/lib/server/spin";
 import { matchesQuery } from "@/lib/username";
 import { seoHead } from "@/lib/seo";
 import { FadeSwitch, Segmented } from "@/components/rank/motion";
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "users" | "prizes" | "reset" | "stripe";
+type Tab = "overview" | "users" | "prizes" | "spin" | "reset" | "stripe";
 
 function AdminPage() {
   const { user, isPending } = useCurrentUserState();
@@ -59,6 +60,7 @@ function AdminPage() {
   const [webhookSecret, setWebhookSecret] = useState("");
   const [account, setAccount] = useState<Awaited<ReturnType<typeof getMyAccount>> | null>(null);
   const [query, setQuery] = useState("");
+  const [spinSegs, setSpinSegs] = useState<SpinSegment[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -84,6 +86,11 @@ function AdminPage() {
         setWeekly(p.find((x) => x.cycleType === "weekly")?.amount ?? 100);
         if (acc.profile.isOwner) {
           setStripeInfo(await adminStripeSettings());
+        }
+        try {
+          setSpinSegs((await adminGetSpin()).segments);
+        } catch {
+          setSpinSegs([]);
         }
       } catch {
         setIsAdmin(false);
@@ -122,8 +129,8 @@ function AdminPage() {
   );
 
   const tabs: Tab[] = isOwner
-    ? ["overview", "users", "prizes", "reset", "stripe"]
-    : ["overview", "users", "prizes", "reset"];
+    ? ["overview", "users", "prizes", "spin", "reset", "stripe"]
+    : ["overview", "users", "prizes", "spin", "reset"];
 
   return (
     <div className="relative min-h-screen">
@@ -350,6 +357,89 @@ function AdminPage() {
               className="btn-gold inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-extrabold"
             >
               <Save className="h-4 w-4" /> Save prizes
+            </button>
+          </div>
+        )}
+
+        {tab === "spin" && (
+          <div className="glass-card space-y-4 rounded-2xl p-6">
+            <h2 className="font-bold text-fg">Free Spin — 6 portions</h2>
+            <p className="text-sm text-white/40">Images and score rewards appear on the public wheel. Disabled slices are never drawn as winners.</p>
+            <div className="grid gap-3 md:grid-cols-2">
+              {spinSegs.map((s, i) => (
+                <div key={s.slot} className="rounded-xl border border-white/[0.06] bg-[#12121a] p-3">
+                  <p className="text-[10px] font-bold tracking-wider text-gold uppercase">Portion {s.slot}</p>
+                  <input
+                    value={s.label}
+                    onChange={(e) =>
+                      setSpinSegs((rows) => rows.map((r, idx) => (idx === i ? { ...r, label: e.target.value.slice(0, 24) } : r)))
+                    }
+                    className="mt-2 h-10 w-full rounded-lg border border-white/[0.08] bg-[#0c0c12] px-2 text-sm text-fg"
+                    placeholder="Label"
+                  />
+                  <input
+                    type="number"
+                    value={s.scoreReward}
+                    onChange={(e) =>
+                      setSpinSegs((rows) =>
+                        rows.map((r, idx) => (idx === i ? { ...r, scoreReward: Number(e.target.value) || 0 } : r)),
+                      )
+                    }
+                    className="mt-2 h-10 w-full rounded-lg border border-white/[0.08] bg-[#0c0c12] px-2 text-sm text-fg"
+                    placeholder="Score reward"
+                  />
+                  <label className="mt-2 flex items-center gap-2 text-xs text-white/50">
+                    <input
+                      type="checkbox"
+                      checked={s.enabled}
+                      onChange={(e) =>
+                        setSpinSegs((rows) => rows.map((r, idx) => (idx === i ? { ...r, enabled: e.target.checked } : r)))
+                      }
+                    />
+                    Enabled
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="mt-2 text-xs text-white/40"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      e.target.value = "";
+                      if (!f) return;
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        const url = String(reader.result || "");
+                        setSpinSegs((rows) => rows.map((r, idx) => (idx === i ? { ...r, image: url } : r)));
+                      };
+                      reader.readAsDataURL(f);
+                    }}
+                  />
+                  {s.image ? (
+                    <button
+                      type="button"
+                      className="mt-1 text-[11px] text-danger"
+                      onClick={() => setSpinSegs((rows) => rows.map((r, idx) => (idx === i ? { ...r, image: null } : r)))}
+                    >
+                      Remove image
+                    </button>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  const res = await adminSaveSpin({ data: { segments: spinSegs } });
+                  setSpinSegs(res.segments);
+                  toast.success("Wheel saved");
+                } catch (err) {
+                  toast.error(publicErrorMessage(err, "Could not save wheel"));
+                }
+              }}
+              className="btn-gold inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-extrabold"
+            >
+              <Save className="h-4 w-4" /> Save wheel
             </button>
           </div>
         )}

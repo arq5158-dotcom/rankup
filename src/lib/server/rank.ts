@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { dbSource, getSql, type Sql } from "@/lib/db";
 import { authMiddleware } from "@/lib/auth/middleware";
 import { buildSeedPlayers, DEFAULT_PRIZES, type CycleType } from "@/lib/players";
-import { isImageSafe, isUrlSafe, MAX_CONTRIBUTION, MAX_PRIZE, MIN_CONTRIBUTION, monthCycleStart, weekCycleStart, clipNote, NOTE_MAX_CHARS } from "@/lib/utils";
+import { isImageSafe, isUrlSafe, MAX_CONTRIBUTION, MAX_PRIZE, MIN_CONTRIBUTION, monthCycleStart, weekCycleStart, clipNote, NOTE_MAX_CHARS, CREDITS_PER_USD } from "@/lib/utils";
 import { handleFromDisplayName, USERNAME_MAX, validateDisplayName, validateUsername } from "@/lib/username";
 import { asCycle, clientIp, clampText, parsePositiveInt, parseStripeSessionId, rateLimit } from "@/lib/server/security";
 
@@ -48,6 +48,7 @@ export type ProfileRow = {
   isAdmin: boolean;
   isOwner: boolean;
   twoFactorEnabled: boolean;
+  credits: number;
 };
 
 type LbRow = {
@@ -75,6 +76,7 @@ type ProfileDb = {
   is_admin: boolean;
   is_owner: boolean;
   two_factor_enabled: boolean;
+  credits?: number | string | null;
 };
 
 function num(v: number | string | null | undefined) {
@@ -115,6 +117,7 @@ function mapProfile(p: ProfileDb): ProfileRow {
     isAdmin: p.is_admin || p.is_owner,
     isOwner: p.is_owner,
     twoFactorEnabled: p.two_factor_enabled,
+    credits: Math.max(0, num(p.credits)),
   };
 }
 
@@ -327,6 +330,73 @@ async function ensureLinkFixes(sql: Sql) {
   }
 }
 
+async function ensureCreditsSchema(sql: Sql) {
+  const done = await getCfg(sql, "creditsScore0009");
+  if (done === "1") return;
+  try {
+    await sql.query("alter table profiles add column if not exists credits double precision not null default 0");
+    await sql.query(`
+      create table if not exists credit_ledger (
+        id serial primary key,
+        user_id text not null,
+        kind text not null,
+        credits_delta double precision not null default 0,
+        score_delta double precision not null default 0,
+        cycle_type text,
+        stripe_session_id text,
+        spin_id text,
+        created_at timestamptz not null default now()
+      )
+    `);
+    await sql.query(
+      "create unique index if not exists credit_ledger_stripe_uidx on credit_ledger (stripe_session_id) where stripe_session_id is not null",
+    );
+    await sql.query(
+      "create unique index if not exists credit_ledger_spin_uidx on credit_ledger (spin_id) where spin_id is not null",
+    );
+    await sql.query("create index if not exists credit_ledger_user_idx on credit_ledger (user_id, created_at desc)");
+    await sql.query(`
+      create table if not exists spin_segments (
+        slot int primary key check (slot between 1 and 6),
+        label text not null,
+        score_reward double precision not null,
+        image text,
+        enabled boolean not null default true
+      )
+    `);
+    await sql.query(`
+      insert into spin_segments (slot, label, score_reward, enabled) values
+        (1, 'Boost', 100, true),
+        (2, 'Climb', 250, true),
+        (3, 'Charge', 500, true),
+        (4, 'Mega', 1000, true),
+        (5, 'Super', 2500, true),
+        (6, 'Jackpot', 5000, true)
+      on conflict (slot) do nothing
+    `);
+    await sql.query(`
+      create table if not exists spins (
+        id text primary key,
+        user_id text not null,
+        segment_slot int not null,
+        score_reward double precision not null,
+        config_json text not null,
+        claimed boolean not null default false,
+        claimed_at timestamptz,
+        monthly_score double precision,
+        monthly_rank int,
+        weekly_score double precision,
+        weekly_rank int,
+        created_at timestamptz not null default now()
+      )
+    `);
+    await sql.query("create index if not exists spins_user_idx on spins (user_id, created_at desc)");
+    await setCfg(sql, "creditsScore0009", "1");
+  } catch (err) {
+    console.error("[rank] credits schema skipped", err instanceof Error ? err.message : err);
+  }
+}
+
 async function ensureSeed(sql: Sql) {
   await ensureUsernameSchema(sql);
   await ensureHardening(sql);
@@ -335,6 +405,7 @@ async function ensureSeed(sql: Sql) {
   await ensureRicherNotes(sql);
   await ensureUniqueBoard(sql);
   await ensureLinkFixes(sql);
+  await ensureCreditsSchema(sql);
   const prizes = await sql<{ c: number }>`select count(*)::int as c from prizes`;
   if ((prizes[0]?.c ?? 0) === 0) {
     for (const p of DEFAULT_PRIZES) {
@@ -429,7 +500,7 @@ async function ownerCount(sql: Sql) {
 
 async function loadProfile(sql: Sql, userId: string) {
   const rows = await sql<ProfileDb>`
-    select user_id, display_name, username, short_note, web_link, profile_image, email, is_admin, is_owner, two_factor_enabled
+    select user_id, display_name, username, short_note, web_link, profile_image, email, is_admin, is_owner, two_factor_enabled, credits
     from profiles where user_id = ${userId}
   `;
   return rows[0] ?? null;
@@ -684,9 +755,11 @@ export const getMyAccount = createServerFn({ method: "GET" })
 
     return {
       profile: mapProfile(profile),
+      credits: Math.max(0, num(profile.credits)),
       monthlyRank: monthly[0]?.rank ?? null,
       weeklyRank: weekly[0]?.rank ?? null,
       monthlyPaid: monthly[0] ? num(monthly[0].amount_paid) : 0,
+      weeklyPaid: weekly[0] ? num(weekly[0].amount_paid) : 0,
       completeness,
       signInMethods,
       twoFactorUnlocked: unlocked,
@@ -877,6 +950,42 @@ async function upsertLeaderboard(
   return mine[0]?.rank ?? null;
 }
 
+export async function addScore(
+  sql: Sql,
+  opts: {
+    userId: string;
+    scoreDelta: number;
+    cycleType: CycleType;
+    displayName: string;
+    shortNote: string | null;
+    webLink: string | null;
+    profileImage: string | null;
+    username: string | null;
+  },
+) {
+  const start = await getCycleStart(sql, opts.cycleType);
+  const delta = Math.min(Math.max(0, opts.scoreDelta), 1_000_000_000);
+  const existing = await sql<{ id: number; amount_paid: number | string; rank: number }>`
+    select id, amount_paid, rank from leaderboard
+    where user_id = ${opts.userId} and cycle_type = ${opts.cycleType} and cycle_start = ${start}
+    limit 1
+  `;
+  const prevRank = existing[0]?.rank ?? null;
+  const prevScore = existing[0] ? num(existing[0].amount_paid) : 0;
+  const next = prevScore + delta;
+  await upsertLeaderboard(sql, { ...opts, amount: next });
+  const mine = await sql<{ rank: number; amount_paid: number | string }>`
+    select rank, amount_paid from leaderboard
+    where user_id = ${opts.userId} and cycle_type = ${opts.cycleType} and cycle_start = ${start}
+    limit 1
+  `;
+  return {
+    prevRank,
+    rank: mine[0]?.rank ?? null,
+    score: mine[0] ? num(mine[0].amount_paid) : next,
+  };
+}
+
 export async function fulfillPaidSession(session: {
   id: string;
   payment_status?: string | null;
@@ -900,6 +1009,7 @@ export async function fulfillPaidSession(session: {
   }
   const sql = await getSql();
   await ensureHardening(sql);
+  await ensureCreditsSchema(sql);
   type PayRow = {
     id: number;
     user_id: string;
@@ -970,29 +1080,28 @@ export async function fulfillPaidSession(session: {
 
   const parsedName = validateDisplayName(row.display_name || meta.displayName || "Competitor");
   const name = parsedName.ok ? parsedName.name : "Competitor";
-  const note = sanitizeNote(row.short_note || meta.shortNote || null);
-  const rawLink = row.web_link || meta.webLink || null;
-  const link = rawLink && isUrlSafe(rawLink) && rawLink.length <= 300 ? rawLink : null;
-  const profile = await loadProfile(sql, row.user_id);
+  const already = row.status === "completed";
+  if (already) {
+    const bal = await sql<{ credits: number | string }>`select credits from profiles where user_id = ${row.user_id} limit 1`;
+    return { ok: true as const, rank: null, already: true, credits: num(bal[0]?.credits) };
+  }
 
-  const tot = await sql<{ s: number | string }>`
-    select coalesce(sum(amount), 0) as s from payments
-    where user_id = ${row.user_id}
-      and cycle_type = ${cycleType}
-      and status = 'completed'
-      and cycle_start = ${start}
-  `;
-  const rank = await upsertLeaderboard(sql, {
-    userId: row.user_id,
-    amount: num(tot[0]?.s),
-    displayName: name,
-    shortNote: note,
-    webLink: link,
-    cycleType,
-    profileImage: profile?.profile_image ?? null,
-    username: profile?.username ?? null,
-  });
-  return { ok: true as const, rank, already: row.status === "completed" };
+  const creditsDelta = Math.round(cents);
+  await sql.query(
+    "update profiles set credits = coalesce(credits, 0) + $1 where user_id = $2",
+    [creditsDelta, row.user_id],
+  );
+  try {
+    await sql`
+      insert into credit_ledger (user_id, kind, credits_delta, score_delta, stripe_session_id)
+      values (${row.user_id}, ${"purchase"}, ${creditsDelta}, ${0}, ${session.id})
+    `;
+  } catch {
+    /* unique stripe session — already ledgered */
+  }
+
+  const profile = await loadProfile(sql, row.user_id);
+  return { ok: true as const, rank: null, already: false, credits: num(profile?.credits) };
 }
 
 export const startCheckout = createServerFn({ method: "POST" })
@@ -1029,7 +1138,7 @@ export const startCheckout = createServerFn({ method: "POST" })
     const email = await sessionEmail(bearerOf(context));
     const profile = await ensureProfile(sql, userId, email);
     if (!profile.username) {
-      throw new Error("Choose a unique username before buying ranking credits.");
+      throw new Error("Choose a unique username before buying credits.");
     }
     const { assertTwoFactorUnlocked } = await import("./two-factor");
     await assertTwoFactorUnlocked(sql, userId, profile.two_factor_enabled, bearerOf(context));
@@ -1156,7 +1265,62 @@ export const completeCheckout = createServerFn({ method: "POST" })
             : "Payment not found.",
       );
     }
-    return { ok: true, rank: result.rank, already: result.already };
+    return { ok: true, rank: result.rank, already: result.already, credits: "credits" in result ? result.credits : null };
+  });
+
+export const spendCredits = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((data: { credits?: number; cycleType?: CycleType } | null | undefined) => ({
+    credits: Number(data?.credits),
+    cycleType: asCycle(data?.cycleType),
+  }))
+  .handler(async ({ context, data }) => {
+    rateLimit(`spend:${context.userId}`, 20, 60_000);
+    const spend = Math.round(Number(data.credits));
+    if (!Number.isFinite(spend) || spend < 1 || spend > 1_000_000) {
+      throw new Error("Choose between 1 and 1,000,000 credits.");
+    }
+    const sql = await getSql();
+    await ensureSeed(sql);
+    const email = await sessionEmail(bearerOf(context));
+    const profile = await ensureProfile(sql, context.userId, email);
+    if (!profile.username) throw new Error("Choose a username before ranking up.");
+    const { assertTwoFactorUnlocked } = await import("./two-factor");
+    await assertTwoFactorUnlocked(sql, context.userId, profile.two_factor_enabled, bearerOf(context));
+
+    const deducted = await sql<{ credits: number | string }>`
+      update profiles
+      set credits = credits - ${spend}
+      where user_id = ${context.userId} and credits >= ${spend}
+      returning credits
+    `;
+    if (!deducted[0]) throw new Error("Not enough credits. Buy credits first.");
+
+    await sql`
+      insert into credit_ledger (user_id, kind, credits_delta, score_delta, cycle_type)
+      values (${context.userId}, ${"spend"}, ${-spend}, ${spend}, ${data.cycleType})
+    `;
+
+    const parsedName = validateDisplayName(profile.display_name || "Competitor");
+    const moved = await addScore(sql, {
+      userId: context.userId,
+      scoreDelta: spend,
+      cycleType: data.cycleType,
+      displayName: parsedName.ok ? parsedName.name : "Competitor",
+      shortNote: profile.short_note,
+      webLink: profile.web_link,
+      profileImage: profile.profile_image,
+      username: profile.username,
+    });
+
+    return {
+      credits: num(deducted[0].credits),
+      score: moved.score,
+      rank: moved.rank,
+      prevRank: moved.prevRank,
+      cycleType: data.cycleType,
+      spent: spend,
+    };
   });
 
 export const adminUpdatePrizes = createServerFn({ method: "POST" })

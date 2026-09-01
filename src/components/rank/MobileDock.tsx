@@ -93,7 +93,7 @@ export function MobileDock() {
         <span className="dock-enter-orb">
           <Trophy className="h-5 w-5" strokeWidth={2.4} />
         </span>
-        <span className="dock-label">Enter</span>
+        <span className="dock-label">Rank</span>
       </Link>
       {items.slice(2).map((item) => {
         const Icon = item.icon;

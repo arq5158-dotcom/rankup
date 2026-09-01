@@ -1644,6 +1644,83 @@
   100% { background-position: -100% 0; }
 }
 
+.wheel-stage {
+  position: relative;
+  width: min(320px, 86vw);
+  height: min(320px, 86vw);
+  margin: 8px auto 18px;
+}
+.wheel-pointer {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  z-index: 4;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 22px solid #e8d48a;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55));
+}
+.wheel-disk {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 8px solid #c4a24a;
+  box-shadow: 0 0 40px rgba(196,162,74,0.35), inset 0 0 24px rgba(0,0,0,0.45);
+  overflow: hidden;
+  transition: transform 4.2s cubic-bezier(0.12, 0.7, 0.08, 1);
+  background: #12121a;
+}
+.wheel-conic {
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(
+    from -90deg,
+    #c4a24a 0 60deg,
+    #6b5420 60deg 120deg,
+    #e8d48a 120deg 180deg,
+    #8a7028 180deg 240deg,
+    #d4b445 240deg 300deg,
+    #4a3a14 300deg 360deg
+  );
+}
+.wheel-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 72px;
+  margin-left: -36px;
+  margin-top: -14px;
+  color: #08080c;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  pointer-events: none;
+}
+.wheel-art {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto 2px;
+  display: block;
+}
+.wheel-hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 54px;
+  height: 54px;
+  margin: -27px 0 0 -27px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f0d78c, #c4a24a 55%, #7a6418);
+  box-shadow: 0 0 16px rgba(212,180,69,0.55);
+  z-index: 3;
+}
+
 .nav-progress {
   position: fixed;
   top: 0;

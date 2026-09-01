@@ -15,6 +15,7 @@ import { Podium } from "@/components/rank/Podium";
 import { PrizePools } from "@/components/rank/PrizePools";
 import { LeaderboardTable } from "@/components/rank/LeaderboardTable";
 import { ParticipatePanel } from "@/components/rank/ParticipatePanel";
+import { RankUpModal } from "@/components/rank/RankUpModal";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { FluidFold } from "@/components/rank/motion";
 import { RoutePending } from "@/components/rank/RoutePending";
@@ -65,6 +66,7 @@ function Home() {
   const { user, isPending } = useCurrentUserState();
   const [showAll, setShowAll] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
+  const [rankOpen, setRankOpen] = useState(false);
   const [account, setAccount] = useState<MyAccount | null>(() => peekAccount());
   const [board, setBoard] = useState<BoardEntry[]>(monthly);
   const [prizeRows, setPrizeRows] = useState<PrizeRow[]>(prizes);
@@ -110,7 +112,8 @@ function Home() {
 
   useEffect(() => {
     const sync = () => {
-      if (window.location.hash === "#rank-up") setPayOpen(true);
+      if (window.location.hash === "#rank-up") setRankOpen(true);
+      if (window.location.hash === "#buy") setPayOpen(true);
     };
     sync();
     window.addEventListener("hashchange", sync);
@@ -118,7 +121,7 @@ function Home() {
   }, []);
 
   const jumpToRankUp = () => {
-    setPayOpen(true);
+    setRankOpen(true);
     requestAnimationFrame(() => {
       document.getElementById("rank-up")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -139,14 +142,14 @@ function Home() {
                   <span className="text-gold-grad">GET SEEN.</span>
                 </h1>
                 <p className="mt-3 hidden max-w-[34ch] text-[13px] leading-[1.55] text-pretty text-white/62 sm:mt-4 sm:block sm:text-[14px]">
-                  Buy ranking credits, outperform the board, and get your profile, brand, or site seen.
+                  Buy credits, spend them for Score, and get your profile, brand, or site seen.
                 </p>
                 <button
                   type="button"
                   onClick={jumpToRankUp}
                   className="btn-gold relative z-10 mt-4 hidden min-h-[48px] w-fit items-center gap-1.5 rounded-[14px] px-7 pr-6 text-[15px] font-extrabold sm:mt-5 sm:inline-flex sm:min-h-[50px] sm:px-8 sm:pr-7"
                 >
-                  <span>Promote Now</span>
+                  <span>RANK UP</span>
                   <ChevronRight className="h-4 w-4" />
                 </button>
                 <TrustRow className="mt-7 hidden lg:grid" />
@@ -202,9 +205,9 @@ function Home() {
                   className="glass-card tap mb-0 flex w-full items-center justify-between gap-3 rounded-[22px] px-4 py-4 text-left"
                 >
                   <span>
-                    <span className="block text-sm font-bold text-fg">Buy ranking credits</span>
+                    <span className="block text-sm font-bold text-fg">Buy credits</span>
                     <span className="mt-0.5 block text-[12px] text-white/40">
-                      Climb the live board after checkout confirms.
+                      Wallet credits convert 1:1 into Score when you Rank Up.
                     </span>
                   </span>
                   <span className="btn-gold shrink-0 rounded-[12px] px-4 py-2 text-[12px] font-extrabold">Enter</span>
@@ -235,6 +238,19 @@ function Home() {
         </div>
       </main>
       <SiteFooter />
+      <RankUpModal
+        open={rankOpen}
+        onClose={() => setRankOpen(false)}
+        credits={account?.credits ?? 0}
+        monthlyScore={account?.monthlyPaid ?? 0}
+        monthlyRank={monthlyRank}
+        weeklyScore={account?.weeklyPaid ?? 0}
+        weeklyRank={weeklyRank}
+        board={board}
+        onDone={() => {
+          void loadAccount(true).then(setAccount).catch(() => null);
+        }}
+      />
     </div>
   );
 }

@@ -4,13 +4,13 @@ const STEPS = [
   {
     icon: Lock,
     title: "Pay",
-    body: "Buy ranking credits with Stripe. More credits move you higher on the public board.",
+    body: "Buy credits with Stripe. Credits sit in your wallet until you spend them.",
     cup: "/rank/cup-gold.webp?v=3d4",
   },
   {
     icon: Zap,
     title: "Climb",
-    body: "Live rankings update the moment payment confirms. Others can overtake you at any time.",
+    body: "Spend credits 1:1 into Score. Rankings move the moment the spend confirms. Others can overtake you.",
     cup: "/rank/cup-silver.webp?v=3d4",
   },
   {

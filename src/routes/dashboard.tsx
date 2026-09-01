@@ -12,7 +12,7 @@ import { PhotoCropper } from "@/components/rank/PhotoCropper";
 import { AvatarImg } from "@/components/rank/Avatar";
 import { RoutePending } from "@/components/rank/RoutePending";
 import { toast } from "sonner";
-import { formatUsd, NOTE_MAX_CHARS, publicErrorMessage } from "@/lib/utils";
+import { formatScore, formatUsd, NOTE_MAX_CHARS, publicErrorMessage } from "@/lib/utils";
 import { seoHead } from "@/lib/seo";
 import { FadeSwitch, Segmented } from "@/components/rank/motion";
 import { USERNAME_MAX } from "@/lib/username";
@@ -130,16 +130,26 @@ function Dashboard() {
         <h1 className="font-display text-2xl font-black text-fg">Welcome{display ? `, ${display}` : ""}</h1>
         <p className="mt-1 text-sm text-white/40">Manage your profile, security, and contribution history.</p>
 
-        <div className="glass-card mt-6 mb-6 rounded-2xl border border-gold/15 p-5 sm:p-6">
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gold/10 sm:h-16 sm:w-16">
-              <Crown className="h-7 w-7 text-gold sm:h-8 sm:w-8" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] tracking-wider text-white/40 uppercase">Your current rank</p>
-              <p className="text-3xl font-black text-fg">#{account.monthlyRank ?? "—"}</p>
-              <p className="text-sm font-bold text-gold">${formatUsd(account.monthlyPaid)} contributed</p>
-            </div>
+        <div className="mt-6 mb-6 grid gap-3 sm:grid-cols-3">
+          <div className="glass-card rounded-2xl border border-gold/15 p-4">
+            <p className="text-[10px] tracking-wider text-white/40 uppercase">Credits wallet</p>
+            <p className="mt-1 font-display text-2xl font-black text-gold-grad tabular-nums">{formatScore(account.credits)}</p>
+            <Link to="/" hash="buy" className="btn-gold tap mt-3 inline-flex min-h-10 items-center rounded-xl px-3 text-xs font-extrabold">
+              BUY CREDITS
+            </Link>
+          </div>
+          <div className="glass-card rounded-2xl p-4">
+            <p className="text-[10px] tracking-wider text-white/40 uppercase">Monthly score</p>
+            <p className="mt-1 text-2xl font-black text-fg tabular-nums">{formatScore(account.monthlyPaid)}</p>
+            <p className="mt-1 text-sm text-white/45">Rank #{account.monthlyRank ?? "—"}</p>
+          </div>
+          <div className="glass-card rounded-2xl p-4">
+            <p className="text-[10px] tracking-wider text-white/40 uppercase">Weekly score</p>
+            <p className="mt-1 text-2xl font-black text-fg tabular-nums">{formatScore(account.weeklyPaid ?? 0)}</p>
+            <p className="mt-1 text-sm text-white/45">Rank #{account.weeklyRank ?? "—"}</p>
+            <Link to="/spin" className="btn-outline tap mt-3 inline-flex min-h-10 items-center rounded-xl px-3 text-xs font-bold">
+              FREE SPIN
+            </Link>
           </div>
         </div>
 

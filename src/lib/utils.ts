@@ -14,6 +14,13 @@ export function formatUsd(amount: number) {
   });
 }
 
+export function formatScore(amount: number) {
+  const n = Math.round(Number(amount) || 0);
+  return n.toLocaleString("en-US");
+}
+
+export const CREDITS_PER_USD = 100;
+
 export function publicErrorMessage(err: unknown, fallback = "Something went wrong. Try again.") {
   const msg = err instanceof Error ? err.message : typeof err === "string" ? err : fallback;
   if (

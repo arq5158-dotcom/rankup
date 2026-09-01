@@ -2,7 +2,7 @@ import { ArrowDown, ArrowUp, ChevronRight } from "lucide-react";
 import { AvatarImg, Verified } from "./Avatar";
 import { NoteTrigger } from "./NoteIsland";
 import { SafeWebLink } from "./SafeWebLink";
-import { formatUsd } from "@/lib/utils";
+import { formatScore } from "@/lib/utils";
 import type { BoardEntry } from "@/lib/server/rank";
 
 function Move({ n }: { n: number }) {
@@ -99,7 +99,7 @@ export function LeaderboardTable({
                   <Verified />
                 </p>
                 <span className="shrink-0 pt-0.5 text-[13px] font-bold text-success tabular-nums">
-                  ${formatUsd(e.amountPaid)}
+                  {formatScore(e.amountPaid)} SCORE
                 </span>
               </div>
               {e.shortNote ? (
@@ -125,7 +125,7 @@ export function LeaderboardTable({
         <div className="grid grid-cols-12 gap-2 px-6 py-3 text-[11px] font-bold tracking-[0.14em] text-white/42 uppercase">
           <div className="col-span-1 text-center">Rank</div>
           <div className="col-span-3">Player</div>
-          <div className="col-span-2 text-right">Contribution</div>
+          <div className="col-span-2 text-right">Score</div>
           <div className="col-span-1 text-center">Movement</div>
           <div className="col-span-3">Message</div>
           <div className="col-span-2 text-right">Website</div>
@@ -146,7 +146,7 @@ export function LeaderboardTable({
                 </div>
               </div>
               <div className="col-span-2 text-right">
-                <span className="text-[14px] font-bold text-success tabular-nums">${formatUsd(e.amountPaid)}</span>
+                <span className="text-[14px] font-bold text-success tabular-nums">{formatScore(e.amountPaid)}</span>
               </div>
               <div className="col-span-1 flex justify-center">
                 <Move n={e.movement} />

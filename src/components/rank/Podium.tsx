@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { AvatarImg, Verified } from "./Avatar";
 import { NoteTrigger } from "./NoteIsland";
 import { SafeWebLink } from "./SafeWebLink";
-import { formatUsd, safeImageSrc } from "@/lib/utils";
+import { formatScore, safeImageSrc } from "@/lib/utils";
 import type { BoardEntry } from "@/lib/server/rank";
 
 const META = {
@@ -88,7 +88,7 @@ function Place({
             </span>
           </p>
           <p className="mt-0.5 text-[11px] leading-none font-extrabold text-gold-grad tabular-nums sm:text-[13px]">
-            ${formatUsd(entry.amountPaid)}
+            {formatScore(entry.amountPaid)} SCORE
           </p>
           {phrase ? (
             <NoteTrigger

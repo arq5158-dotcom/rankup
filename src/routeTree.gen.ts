@@ -24,6 +24,7 @@ import { Route as PrizesRouteImport } from './routes/prizes'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SpinRouteImport } from './routes/spin'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WeeklyRouteImport } from './routes/weekly'
 import { Route as PayIndexRouteImport } from './routes/pay.index'
@@ -107,6 +108,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SpinRoute = SpinRouteImport.update({
+  id: '/spin',
+  path: '/spin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -159,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtRoute
   '/rules': typeof RulesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/spin': typeof SpinRoute
   '/terms': typeof TermsRoute
   '/weekly': typeof WeeklyRoute
   '/pay/cancel': typeof PayCancelRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByTo {
   '/robots.txt': typeof RobotsDottxtRoute
   '/rules': typeof RulesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/spin': typeof SpinRoute
   '/terms': typeof TermsRoute
   '/weekly': typeof WeeklyRoute
   '/pay/cancel': typeof PayCancelRoute
@@ -208,6 +216,7 @@ export interface FileRoutesById {
   '/robots.txt': typeof RobotsDottxtRoute
   '/rules': typeof RulesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/spin': typeof SpinRoute
   '/terms': typeof TermsRoute
   '/weekly': typeof WeeklyRoute
   '/pay/cancel': typeof PayCancelRoute
@@ -234,6 +243,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/rules'
     | '/sitemap.xml'
+    | '/spin'
     | '/terms'
     | '/weekly'
     | '/pay/cancel'
@@ -258,6 +268,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/rules'
     | '/sitemap.xml'
+    | '/spin'
     | '/terms'
     | '/weekly'
     | '/pay/cancel'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/rules'
     | '/sitemap.xml'
+    | '/spin'
     | '/terms'
     | '/weekly'
     | '/pay/cancel'
@@ -307,6 +319,7 @@ export interface RootRouteChildren {
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   RulesRoute: typeof RulesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SpinRoute: typeof SpinRoute
   TermsRoute: typeof TermsRoute
   WeeklyRoute: typeof WeeklyRoute
   PayCancelRoute: typeof PayCancelRoute
@@ -423,6 +436,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/spin': {
+      id: '/spin'
+      path: '/spin'
+      fullPath: '/spin'
+      preLoaderRoute: typeof SpinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -491,6 +511,7 @@ const rootRouteChildren: RootRouteChildren = {
   RobotsDottxtRoute: RobotsDottxtRoute,
   RulesRoute: RulesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SpinRoute: SpinRoute,
   TermsRoute: TermsRoute,
   WeeklyRoute: WeeklyRoute,
   PayCancelRoute: PayCancelRoute,
