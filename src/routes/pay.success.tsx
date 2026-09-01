@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { Check, Loader2, X } from "lucide-react";
 import { completeCheckout } from "@/lib/server/rank";
+import { loadAccount } from "@/lib/account-cache";
 import { Navbar } from "@/components/rank/Navbar";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { RedirectToSignIn } from "@/lib/auth/gates";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { seoHead } from "@/lib/seo";
-import { publicErrorMessage } from "@/lib/utils";
+import { formatScore, publicErrorMessage } from "@/lib/utils";
 import { clearPayDraft } from "@/lib/pay-draft";
 
 export const Route = createFileRoute("/pay/success")({
@@ -28,7 +29,8 @@ function PaySuccess() {
   const { session_id: sessionId } = useSearch({ from: "/pay/success" });
   const { user, isPending } = useCurrentUserState();
   const [state, setState] = useState<"loading" | "ok" | "err">("loading");
-  const [rank, setRank] = useState<number | null>(null);
+  const [creditsAdded, setCreditsAdded] = useState(0);
+  const [balance, setBalance] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,7 +39,9 @@ function PaySuccess() {
     void (async () => {
       try {
         const res = await completeCheckout({ data: { sessionId } });
-        setRank(res.rank);
+        setCreditsAdded(res.creditsAdded ?? 0);
+        setBalance(res.credits ?? 0);
+        await loadAccount(true);
         setState("ok");
       } catch (e) {
         setError(publicErrorMessage(e, "Could not confirm payment."));
@@ -64,7 +68,7 @@ function PaySuccess() {
             <>
               <Loader2 className="mx-auto mb-4 h-10 w-10 animate-spin text-gold" />
               <h1 className="font-display text-xl font-black text-fg">Confirming payment…</h1>
-              <p className="mt-2 text-sm text-white/40">Stripe is verifying your ranking credits.</p>
+              <p className="mt-2 text-sm text-white/40">Stripe is adding credits to your wallet.</p>
             </>
           )}
           {state === "ok" && (
@@ -72,11 +76,19 @@ function PaySuccess() {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/15">
                 <Check className="h-8 w-8 text-success" />
               </div>
-              <h1 className="font-display text-2xl font-black text-fg">You're on the board</h1>
-              <p className="mt-3 font-display text-5xl font-black tabular-nums text-gold-grad">
-                #{rank ?? "—"}
+              <h1 className="font-display text-2xl font-black text-fg">Payment successful</h1>
+              <p className="mt-3 font-display text-4xl font-black tabular-nums text-gold-grad">
+                +{formatScore(creditsAdded)} CREDITS
               </p>
-              <p className="mt-2 text-sm text-white/45">Payment received. This is your live rank.</p>
+              <p className="mt-2 text-sm text-white/45">New balance: {formatScore(balance)} Credits</p>
+              <div className="mt-6 grid grid-cols-2 gap-2">
+                <Link to="/" hash="rank-up" className="btn-gold inline-flex min-h-12 items-center justify-center rounded-xl px-3 text-xs font-extrabold">
+                  RANK UP NOW
+                </Link>
+                <Link to="/wallet" className="btn-outline inline-flex min-h-12 items-center justify-center rounded-xl px-3 text-xs font-bold">
+                  VIEW WALLET
+                </Link>
+              </div>
             </>
           )}
           {state === "err" && (
@@ -86,9 +98,11 @@ function PaySuccess() {
               <p className="mt-2 text-sm text-white/45">{error}</p>
             </>
           )}
-          <Link to="/" className="btn-gold mt-6 inline-flex rounded-xl px-5 py-2.5 text-sm font-extrabold">
-            Back to leaderboard
-          </Link>
+          {state !== "ok" ? (
+            <Link to="/" className="btn-gold mt-6 inline-flex rounded-xl px-5 py-2.5 text-sm font-extrabold">
+              Back to leaderboard
+            </Link>
+          ) : null}
         </div>
       </main>
       <SiteFooter compact />

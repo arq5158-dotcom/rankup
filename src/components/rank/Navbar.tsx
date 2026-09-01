@@ -14,6 +14,7 @@ const LINKS = [
   { label: "How It Works", to: "/how-it-works" as const },
   { label: "Positions", to: "/prizes" as const },
   { label: "Free Spin", to: "/spin" as const },
+  { label: "Wallet", to: "/wallet" as const },
   { label: "Giveaways", to: "/giveaways" as const },
 ];
 

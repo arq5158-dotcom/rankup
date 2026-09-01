@@ -19,7 +19,7 @@ export function formatScore(amount: number) {
   return n.toLocaleString("en-US");
 }
 
-export const CREDITS_PER_USD = 100;
+export const CREDITS_PER_USD = 1000;
 
 export function publicErrorMessage(err: unknown, fallback = "Something went wrong. Try again.") {
   const msg = err instanceof Error ? err.message : typeof err === "string" ? err : fallback;

@@ -24,6 +24,8 @@ import { toast } from "sonner";
 import { formatUsd, publicErrorMessage } from "@/lib/utils";
 import { loadAccount } from "@/lib/account-cache";
 import { adminGetSpin, adminSaveSpin, type SpinSegment } from "@/lib/server/spin";
+import { adminGetEconomy, adminSaveEconomy, type CreditEconomy } from "@/lib/server/economy";
+import { DEFAULT_ECONOMY } from "@/lib/economy";
 import { matchesQuery } from "@/lib/username";
 import { seoHead } from "@/lib/seo";
 import { FadeSwitch, Segmented } from "@/components/rank/motion";
@@ -39,7 +41,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "users" | "prizes" | "spin" | "reset" | "stripe";
+type Tab = "overview" | "users" | "prizes" | "spin" | "economy" | "reset" | "stripe";
 
 function AdminPage() {
   const { user, isPending } = useCurrentUserState();
@@ -61,6 +63,8 @@ function AdminPage() {
   const [account, setAccount] = useState<Awaited<ReturnType<typeof getMyAccount>> | null>(null);
   const [query, setQuery] = useState("");
   const [spinSegs, setSpinSegs] = useState<SpinSegment[]>([]);
+  const [economy, setEconomy] = useState<CreditEconomy>(DEFAULT_ECONOMY);
+  const [ecoLog, setEcoLog] = useState<{ at: string; who: string; note: string }[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -91,6 +95,13 @@ function AdminPage() {
           setSpinSegs((await adminGetSpin()).segments);
         } catch {
           setSpinSegs([]);
+        }
+        try {
+          const e = await adminGetEconomy();
+          setEconomy(e.economy);
+          setEcoLog(e.log);
+        } catch {
+          /* ignore */
         }
       } catch {
         setIsAdmin(false);
@@ -129,8 +140,8 @@ function AdminPage() {
   );
 
   const tabs: Tab[] = isOwner
-    ? ["overview", "users", "prizes", "spin", "reset", "stripe"]
-    : ["overview", "users", "prizes", "spin", "reset"];
+    ? ["overview", "users", "prizes", "spin", "economy", "reset", "stripe"]
+    : ["overview", "users", "prizes", "spin", "economy", "reset"];
 
   return (
     <div className="relative min-h-screen">
@@ -441,6 +452,76 @@ function AdminPage() {
             >
               <Save className="h-4 w-4" /> Save wheel
             </button>
+          </div>
+        )}
+
+        {tab === "economy" && (
+          <div className="glass-card max-w-xl space-y-4 rounded-2xl p-6">
+            <h2 className="font-bold text-fg">Credit economy</h2>
+            <p className="text-sm text-white/40">Changes apply to future purchases only. Existing wallets stay the same.</p>
+            {[
+              { label: "Credits per $1 USD", v: economy.creditsPerUsd, k: "creditsPerUsd" as const },
+              { label: "Minimum purchase USD", v: economy.minUsd, k: "minUsd" as const },
+              { label: "Maximum purchase USD", v: economy.maxUsd, k: "maxUsd" as const },
+              { label: "Promo bonus %", v: economy.promoBonusPct, k: "promoBonusPct" as const },
+            ].map((f) => (
+              <div key={f.k} className="field">
+                <label className="mb-1 block text-[10px] font-semibold tracking-wider text-white/40 uppercase">{f.label}</label>
+                <input
+                  type="number"
+                  value={f.v}
+                  onChange={(e) => setEconomy((prev) => ({ ...prev, [f.k]: Number(e.target.value) }))}
+                  className="w-full rounded-xl border border-white/[0.06] bg-[#12121a] px-3 py-2.5 text-sm text-fg"
+                />
+              </div>
+            ))}
+            <div className="field">
+              <label className="mb-1 block text-[10px] font-semibold tracking-wider text-white/40 uppercase">Preset packages (USD, comma)</label>
+              <input
+                value={economy.packages.join(",")}
+                onChange={(e) =>
+                  setEconomy((prev) => ({
+                    ...prev,
+                    packages: e.target.value.split(",").map((n) => Number(n.trim())).filter((n) => n > 0),
+                  }))
+                }
+                className="w-full rounded-xl border border-white/[0.06] bg-[#12121a] px-3 py-2.5 text-sm text-fg"
+              />
+            </div>
+            <label className="flex items-center gap-2 text-sm text-white/50">
+              <input type="checkbox" checked={economy.customEnabled} onChange={(e) => setEconomy((p) => ({ ...p, customEnabled: e.target.checked }))} />
+              Custom amount enabled
+            </label>
+            <label className="flex items-center gap-2 text-sm text-white/50">
+              <input type="checkbox" checked={economy.purchaseEnabled} onChange={(e) => setEconomy((p) => ({ ...p, purchaseEnabled: e.target.checked }))} />
+              Credit purchases available
+            </label>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  const res = await adminSaveEconomy({ data: economy });
+                  setEconomy(res.economy);
+                  setEcoLog(res.log);
+                  toast.success("Economy saved — future purchases only");
+                } catch (err) {
+                  toast.error(publicErrorMessage(err, "Could not save economy"));
+                }
+              }}
+              className="btn-gold inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-extrabold"
+            >
+              <Save className="h-4 w-4" /> Save economy
+            </button>
+            <div>
+              <p className="mb-2 text-[10px] font-bold tracking-wider text-white/40 uppercase">Change log</p>
+              <ul className="space-y-1 text-[11px] text-white/40">
+                {ecoLog.slice(0, 12).map((row, i) => (
+                  <li key={i}>
+                    {row.at.slice(0, 16).replace("T", " ")} — {row.note}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
 

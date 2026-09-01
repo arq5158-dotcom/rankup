@@ -4,7 +4,7 @@ const STEPS = [
   {
     icon: Lock,
     title: "Pay",
-    body: "Buy credits with Stripe. Credits sit in your wallet until you spend them.",
+    body: "Buy credits with Stripe. $1 = 1,000 credits by default. Credits sit in your wallet until you spend them.",
     cup: "/rank/cup-gold.webp?v=3d4",
   },
   {

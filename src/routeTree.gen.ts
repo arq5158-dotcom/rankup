@@ -26,6 +26,7 @@ import { Route as RulesRouteImport } from './routes/rules'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SpinRouteImport } from './routes/spin'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as WeeklyRouteImport } from './routes/weekly'
 import { Route as PayIndexRouteImport } from './routes/pay.index'
 import { Route as PayCancelRouteImport } from './routes/pay.cancel'
@@ -118,6 +119,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WeeklyRoute = WeeklyRouteImport.update({
   id: '/weekly',
   path: '/weekly',
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/spin': typeof SpinRoute
   '/terms': typeof TermsRoute
+  '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/spin': typeof SpinRoute
   '/terms': typeof TermsRoute
+  '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
@@ -218,6 +226,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/spin': typeof SpinRoute
   '/terms': typeof TermsRoute
+  '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/spin'
     | '/terms'
+    | '/wallet'
     | '/weekly'
     | '/pay/cancel'
     | '/pay/success'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/spin'
     | '/terms'
+    | '/wallet'
     | '/weekly'
     | '/pay/cancel'
     | '/pay/success'
@@ -295,6 +306,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/spin'
     | '/terms'
+    | '/wallet'
     | '/weekly'
     | '/pay/cancel'
     | '/pay/success'
@@ -321,6 +333,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SpinRoute: typeof SpinRoute
   TermsRoute: typeof TermsRoute
+  WalletRoute: typeof WalletRoute
   WeeklyRoute: typeof WeeklyRoute
   PayCancelRoute: typeof PayCancelRoute
   PaySuccessRoute: typeof PaySuccessRoute
@@ -450,6 +463,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/weekly': {
       id: '/weekly'
       path: '/weekly'
@@ -513,6 +533,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SpinRoute: SpinRoute,
   TermsRoute: TermsRoute,
+  WalletRoute: WalletRoute,
   WeeklyRoute: WeeklyRoute,
   PayCancelRoute: PayCancelRoute,
   PaySuccessRoute: PaySuccessRoute,

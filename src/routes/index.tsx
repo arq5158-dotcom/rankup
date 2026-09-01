@@ -14,10 +14,9 @@ import { Navbar } from "@/components/rank/Navbar";
 import { Podium } from "@/components/rank/Podium";
 import { PrizePools } from "@/components/rank/PrizePools";
 import { LeaderboardTable } from "@/components/rank/LeaderboardTable";
-import { ParticipatePanel } from "@/components/rank/ParticipatePanel";
+import { BuyCreditsModal } from "@/components/rank/BuyCreditsModal";
 import { RankUpModal } from "@/components/rank/RankUpModal";
 import { SiteFooter } from "@/components/rank/SiteFooter";
-import { FluidFold } from "@/components/rank/motion";
 import { RoutePending } from "@/components/rank/RoutePending";
 import { seoHead, SITE_DESCRIPTION } from "@/lib/seo";
 
@@ -198,33 +197,19 @@ function Home() {
               </div>
             ) : null}
             <div id="rank-up" className="scroll-mt-24">
-              <FluidFold open={!payOpen}>
-                <button
-                  type="button"
-                  onClick={() => setPayOpen(true)}
-                  className="glass-card tap mb-0 flex w-full items-center justify-between gap-3 rounded-[22px] px-4 py-4 text-left"
-                >
-                  <span>
-                    <span className="block text-sm font-bold text-fg">Buy credits</span>
-                    <span className="mt-0.5 block text-[12px] text-white/40">
-                      Wallet credits convert 1:1 into Score when you Rank Up.
-                    </span>
+              <button
+                type="button"
+                onClick={() => setPayOpen(true)}
+                className="glass-card tap mb-0 flex w-full items-center justify-between gap-3 rounded-[22px] px-4 py-4 text-left"
+              >
+                <span>
+                  <span className="block text-sm font-bold text-fg">Buy credits</span>
+                  <span className="mt-0.5 block text-[12px] text-white/40">
+                    $1 = 1,000 credits. Spend credits 1:1 for Score.
                   </span>
-                  <span className="btn-gold shrink-0 rounded-[12px] px-4 py-2 text-[12px] font-extrabold">Enter</span>
-                </button>
-              </FluidFold>
-              <FluidFold open={payOpen}>
-                <ParticipatePanel
-                  open
-                  onClose={() => setPayOpen(false)}
-                  signedIn={signedIn}
-                  defaultName={displayName}
-                  defaultNote={account?.profile.shortNote || ""}
-                  defaultLink={account?.profile.webLink || ""}
-                  stripeReady={stripe.configured}
-                  isOwner={Boolean(account?.profile.isOwner)}
-                />
-              </FluidFold>
+                </span>
+                <span className="btn-gold shrink-0 rounded-[12px] px-4 py-2 text-[12px] font-extrabold">Buy</span>
+              </button>
             </div>
           </aside>
 
@@ -241,6 +226,10 @@ function Home() {
       <RankUpModal
         open={rankOpen}
         onClose={() => setRankOpen(false)}
+        onBuyCredits={() => {
+          setRankOpen(false);
+          setPayOpen(true);
+        }}
         credits={account?.credits ?? 0}
         monthlyScore={account?.monthlyPaid ?? 0}
         monthlyRank={monthlyRank}
@@ -250,6 +239,14 @@ function Home() {
         onDone={() => {
           void loadAccount(true).then(setAccount).catch(() => null);
         }}
+      />
+      <BuyCreditsModal
+        open={payOpen}
+        onClose={() => setPayOpen(false)}
+        signedIn={signedIn}
+        displayName={displayName}
+        stripeReady={stripe.configured}
+        isOwner={Boolean(account?.profile.isOwner)}
       />
     </div>
   );

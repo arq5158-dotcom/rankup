@@ -36,6 +36,7 @@ export const Route = createFileRoute("/api/stripe/webhook")({
               amount_total?: number | null;
               currency?: string | null;
               payment_intent?: string | { id: string } | null;
+              customer?: string | { id: string } | null;
               metadata?: Record<string, string> | null;
             };
             await fulfillPaidSession(session);

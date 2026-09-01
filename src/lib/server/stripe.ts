@@ -121,6 +121,8 @@ export type CheckoutMeta = {
   webLink: string;
   amount: string;
   paymentId: string;
+  credits?: string;
+  rate?: string;
 };
 
 export async function createRankCheckoutSession(
@@ -158,8 +160,8 @@ export async function createRankCheckoutSession(
         price_data: {
           currency: "usd",
           product_data: {
-            name: `Pay4Rank credits · ${Math.round(opts.amountCents)} credits`,
-            description: `USD ${dollars} adds ${Math.round(opts.amountCents).toLocaleString()} credits to your wallet`,
+            name: `Pay4Rank credits · ${Number(opts.meta.credits || Math.round(opts.amountCents * 10)).toLocaleString()} credits`,
+            description: `USD ${dollars} adds credits to your wallet. Spend credits 1:1 for Score.`,
           },
           unit_amount: opts.amountCents,
         },

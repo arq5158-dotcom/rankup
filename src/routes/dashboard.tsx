@@ -10,6 +10,8 @@ import { SiteFooter } from "@/components/rank/SiteFooter";
 import { SecurityPanel } from "@/components/rank/SecurityPanel";
 import { PhotoCropper } from "@/components/rank/PhotoCropper";
 import { AvatarImg } from "@/components/rank/Avatar";
+import { BuyCreditsModal } from "@/components/rank/BuyCreditsModal";
+import { RankUpModal } from "@/components/rank/RankUpModal";
 import { RoutePending } from "@/components/rank/RoutePending";
 import { toast } from "sonner";
 import { formatScore, formatUsd, NOTE_MAX_CHARS, publicErrorMessage } from "@/lib/utils";
@@ -55,6 +57,8 @@ function Dashboard() {
   const [image, setImage] = useState(loaded?.profile.profileImage ?? "");
   const [saving, setSaving] = useState(false);
   const [cropFile, setCropFile] = useState<File | null>(null);
+  const [buyOpen, setBuyOpen] = useState(false);
+  const [rankOpen, setRankOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -134,9 +138,14 @@ function Dashboard() {
           <div className="glass-card rounded-2xl border border-gold/15 p-4">
             <p className="text-[10px] tracking-wider text-white/40 uppercase">Credits wallet</p>
             <p className="mt-1 font-display text-2xl font-black text-gold-grad tabular-nums">{formatScore(account.credits)}</p>
-            <Link to="/" hash="buy" className="btn-gold tap mt-3 inline-flex min-h-10 items-center rounded-xl px-3 text-xs font-extrabold">
-              BUY CREDITS
-            </Link>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button type="button" onClick={() => setBuyOpen(true)} className="btn-gold tap min-h-10 rounded-xl px-3 text-xs font-extrabold">
+                BUY CREDITS
+              </button>
+              <button type="button" onClick={() => setRankOpen(true)} className="btn-outline tap min-h-10 rounded-xl px-3 text-xs font-bold">
+                RANK UP
+              </button>
+            </div>
           </div>
           <div className="glass-card rounded-2xl p-4">
             <p className="text-[10px] tracking-wider text-white/40 uppercase">Monthly score</p>
@@ -301,6 +310,27 @@ function Dashboard() {
           }}
         />
       ) : null}
+      <BuyCreditsModal
+        open={buyOpen}
+        onClose={() => setBuyOpen(false)}
+        signedIn
+        displayName={display}
+      />
+      <RankUpModal
+        open={rankOpen}
+        onClose={() => setRankOpen(false)}
+        onBuyCredits={() => {
+          setRankOpen(false);
+          setBuyOpen(true);
+        }}
+        credits={account.credits}
+        monthlyScore={account.monthlyPaid}
+        monthlyRank={account.monthlyRank}
+        weeklyScore={account.weeklyPaid ?? 0}
+        weeklyRank={account.weeklyRank}
+        board={[]}
+        onDone={() => void load()}
+      />
     </div>
   );
 }

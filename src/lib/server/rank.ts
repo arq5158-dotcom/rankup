@@ -391,6 +391,13 @@ async function ensureCreditsSchema(sql: Sql) {
       )
     `);
     await sql.query("create index if not exists spins_user_idx on spins (user_id, created_at desc)");
+    await sql.query("alter table payments add column if not exists credits_purchased double precision");
+    await sql.query("alter table payments add column if not exists exchange_rate double precision");
+    await sql.query("alter table payments add column if not exists resulting_credits double precision");
+    await sql.query("alter table payments add column if not exists stripe_customer_id text");
+    await sql.query("alter table credit_ledger add column if not exists resulting_credits double precision");
+    await sql.query("alter table credit_ledger add column if not exists usd_amount double precision");
+    await sql.query("alter table credit_ledger add column if not exists note text");
     await setCfg(sql, "creditsScore0009", "1");
   } catch (err) {
     console.error("[rank] credits schema skipped", err instanceof Error ? err.message : err);
@@ -993,6 +1000,7 @@ export async function fulfillPaidSession(session: {
   amount_total?: number | null;
   currency?: string | null;
   payment_intent?: string | { id: string } | null;
+  customer?: string | { id: string } | null;
   metadata?: Record<string, string> | null;
 }) {
   if (session.payment_status !== "paid") {
@@ -1021,10 +1029,12 @@ export async function fulfillPaidSession(session: {
     web_link: string | null;
     stripe_session_id: string | null;
     cycle_start: number | string | null;
+    credits_purchased: number | string | null;
+    exchange_rate: number | string | null;
   };
   const existing = await sql<PayRow>`
     select id, user_id, amount, cycle_type, status, display_name, short_note, web_link,
-           stripe_session_id, cycle_start
+           stripe_session_id, cycle_start, credits_purchased, exchange_rate
     from payments where stripe_session_id = ${session.id}
     limit 1
   `;
@@ -1036,7 +1046,7 @@ export async function fulfillPaidSession(session: {
     if (pid) {
       const byId = await sql<PayRow>`
         select id, user_id, amount, cycle_type, status, display_name, short_note, web_link,
-               stripe_session_id, cycle_start
+               stripe_session_id, cycle_start, credits_purchased, exchange_rate
         from payments where id = ${pid}
         limit 1
       `;
@@ -1083,25 +1093,47 @@ export async function fulfillPaidSession(session: {
   const already = row.status === "completed";
   if (already) {
     const bal = await sql<{ credits: number | string }>`select credits from profiles where user_id = ${row.user_id} limit 1`;
-    return { ok: true as const, rank: null, already: true, credits: num(bal[0]?.credits) };
+    return { ok: true as const, rank: null, already: true, credits: num(bal[0]?.credits), creditsAdded: 0 };
   }
 
-  const creditsDelta = Math.round(cents);
-  await sql.query(
-    "update profiles set credits = coalesce(credits, 0) + $1 where user_id = $2",
-    [creditsDelta, row.user_id],
-  );
+  const { loadEconomy, creditsFromUsd } = await import("./economy");
+  const eco = await loadEconomy(sql);
+  const rateAtBuy = num(row.exchange_rate) || Number(meta.rate) || eco.creditsPerUsd;
+  const storedCredits = num(row.credits_purchased);
+  const creditsDelta =
+    storedCredits > 0 ? Math.round(storedCredits) : creditsFromUsd(amount, { ...eco, creditsPerUsd: rateAtBuy });
+  const customer =
+    typeof session.customer === "string"
+      ? session.customer
+      : session.customer && typeof session.customer === "object" && "id" in session.customer
+        ? String((session.customer as { id: string }).id)
+        : null;
+
+  const updated = await sql<{ credits: number | string }>`
+    update profiles
+    set credits = coalesce(credits, 0) + ${creditsDelta}
+    where user_id = ${row.user_id}
+    returning credits
+  `;
+  const newBal = num(updated[0]?.credits);
+  await sql`
+    update payments set
+      credits_purchased = ${creditsDelta},
+      exchange_rate = ${rateAtBuy},
+      resulting_credits = ${newBal},
+      stripe_customer_id = coalesce(${customer}, stripe_customer_id)
+    where id = ${row.id}
+  `;
   try {
     await sql`
-      insert into credit_ledger (user_id, kind, credits_delta, score_delta, stripe_session_id)
-      values (${row.user_id}, ${"purchase"}, ${creditsDelta}, ${0}, ${session.id})
+      insert into credit_ledger (user_id, kind, credits_delta, score_delta, stripe_session_id, resulting_credits, usd_amount, note)
+      values (${row.user_id}, ${"purchase"}, ${creditsDelta}, ${0}, ${session.id}, ${newBal}, ${amount}, ${`$${amount.toFixed(2)} @ ${rateAtBuy}/USD`})
     `;
   } catch {
     /* unique stripe session — already ledgered */
   }
 
-  const profile = await loadProfile(sql, row.user_id);
-  return { ok: true as const, rank: null, already: false, credits: num(profile?.credits) };
+  return { ok: true as const, rank: null, already: false, credits: newBal, creditsAdded: creditsDelta };
 }
 
 export const startCheckout = createServerFn({ method: "POST" })
@@ -1123,8 +1155,8 @@ export const startCheckout = createServerFn({ method: "POST" })
     rateLimit(`pay:${context.userId}`, 8, 60_000);
     rateLimit(`payip:${clientIp()}`, 20, 60_000);
     const amount = Number(data.amount);
-    if (!Number.isFinite(amount) || amount < MIN_CONTRIBUTION || amount > MAX_CONTRIBUTION) {
-      throw new Error(`Enter an amount between $${MIN_CONTRIBUTION} and $${MAX_CONTRIBUTION.toLocaleString()}.`);
+    if (!Number.isFinite(amount) || amount < 1) {
+      throw new Error("Minimum purchase is $1.");
     }
     const parsedName = validateDisplayName(data.displayName);
     if (!parsedName.ok) throw new Error(parsedName.error);
@@ -1149,10 +1181,15 @@ export const startCheckout = createServerFn({ method: "POST" })
     if ((open[0]?.c ?? 0) >= 8) {
       throw new Error("You have too many open checkouts. Finish one or wait a minute.");
     }
-    const cents = Math.round(amount * 100);
-    if (cents < 100 || cents > MAX_CONTRIBUTION * 100) {
-      throw new Error(`Enter an amount between $${MIN_CONTRIBUTION} and $${MAX_CONTRIBUTION.toLocaleString()}.`);
+    const { loadEconomy, creditsFromUsd } = await import("./economy");
+    const eco = await loadEconomy(sql);
+    if (!eco.purchaseEnabled) throw new Error("Credit purchases are paused.");
+    if (!Number.isFinite(amount) || amount < eco.minUsd || amount > eco.maxUsd) {
+      throw new Error(`Enter an amount between $${eco.minUsd} and $${eco.maxUsd.toLocaleString()}.`);
     }
+    const cents = Math.round(amount * 100);
+    if (cents < 100) throw new Error("Minimum purchase is $1.");
+    const creditsBuy = creditsFromUsd(amount, eco);
     const start = await getCycleStart(sql, data.cycleType);
 
     await sql`
@@ -1164,8 +1201,8 @@ export const startCheckout = createServerFn({ method: "POST" })
     `;
 
     const inserted = await sql<{ id: number }>`
-      insert into payments (user_id, amount, cycle_type, status, display_name, short_note, web_link, cycle_start)
-      values (${userId}, ${amount}, ${data.cycleType}, 'pending', ${name}, ${note}, ${link}, ${start})
+      insert into payments (user_id, amount, cycle_type, status, display_name, short_note, web_link, cycle_start, credits_purchased, exchange_rate)
+      values (${userId}, ${amount}, ${data.cycleType}, 'pending', ${name}, ${note}, ${link}, ${start}, ${creditsBuy}, ${eco.creditsPerUsd})
       returning id
     `;
     const paymentId = inserted[0]?.id;
@@ -1189,6 +1226,8 @@ export const startCheckout = createServerFn({ method: "POST" })
             webLink: link || "",
             amount: String(amount),
             paymentId: String(paymentId),
+            credits: String(creditsBuy),
+            rate: String(eco.creditsPerUsd),
           },
         });
       } catch (embedErr) {
@@ -1205,6 +1244,8 @@ export const startCheckout = createServerFn({ method: "POST" })
             webLink: link || "",
             amount: String(amount),
             paymentId: String(paymentId),
+            credits: String(creditsBuy),
+            rate: String(eco.creditsPerUsd),
           },
         });
       }
@@ -1265,7 +1306,7 @@ export const completeCheckout = createServerFn({ method: "POST" })
             : "Payment not found.",
       );
     }
-    return { ok: true, rank: result.rank, already: result.already, credits: "credits" in result ? result.credits : null };
+    return { ok: true, rank: result.rank, already: result.already, credits: result.credits, creditsAdded: result.creditsAdded ?? 0 };
   });
 
 export const spendCredits = createServerFn({ method: "POST" })
@@ -1297,8 +1338,8 @@ export const spendCredits = createServerFn({ method: "POST" })
     if (!deducted[0]) throw new Error("Not enough credits. Buy credits first.");
 
     await sql`
-      insert into credit_ledger (user_id, kind, credits_delta, score_delta, cycle_type)
-      values (${context.userId}, ${"spend"}, ${-spend}, ${spend}, ${data.cycleType})
+      insert into credit_ledger (user_id, kind, credits_delta, score_delta, cycle_type, resulting_credits, note)
+      values (${context.userId}, ${"spend"}, ${-spend}, ${spend}, ${data.cycleType}, ${num(deducted[0].credits)}, ${`Rank up ${data.cycleType}`})
     `;
 
     const parsedName = validateDisplayName(profile.display_name || "Competitor");

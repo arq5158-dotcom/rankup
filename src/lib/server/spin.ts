@@ -167,8 +167,8 @@ export const claimSpin = createServerFn({ method: "POST" })
     `;
     if (!marked[0]) throw new Error("Already claimed.");
     await sql`
-      insert into credit_ledger (user_id, kind, credits_delta, score_delta, spin_id)
-      values (${context.userId}, ${"spin"}, ${0}, ${score}, ${spin.id})
+      insert into credit_ledger (user_id, kind, credits_delta, score_delta, spin_id, resulting_credits, note)
+      values (${context.userId}, ${"spin"}, ${0}, ${score}, ${spin.id}, ${null}, ${`Free spin +${score} score`})
     `;
     return {
       score,
