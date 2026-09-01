@@ -663,8 +663,10 @@ async function requireOwner(sql: Sql, userId: string, bearerToken?: string) {
 }
 
 export const getLeaderboard = createServerFn({ method: "GET" })
-  .validator((data: { cycleType?: CycleType } | null | undefined) => ({
+  .validator((data: { cycleType?: CycleType; offset?: number; limit?: number } | null | undefined) => ({
     cycleType: data?.cycleType === "weekly" ? ("weekly" as const) : ("monthly" as const),
+    offset: Math.max(0, Math.min(10_000, Math.trunc(Number(data?.offset) || 0))),
+    limit: Math.max(1, Math.min(300, Math.trunc(Number(data?.limit) || 300))),
   }))
   .handler(async ({ data }) => {
     try {
@@ -677,7 +679,8 @@ export const getLeaderboard = createServerFn({ method: "GET" })
         from leaderboard
         where cycle_type = ${data.cycleType} and cycle_start = ${start}
         order by rank asc
-        limit 120
+        offset ${data.offset}
+        limit ${data.limit}
       `;
       const seen = new Set<string>();
       return rows.map(publicEntry).filter((e) => {

@@ -18,6 +18,7 @@ export function PhotoCropper({
   const imgRef = useRef<HTMLImageElement | null>(null);
   const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
   const [url, setUrl] = useState<string | null>(null);
+  const [nat, setNat] = useState({ w: 0, h: 0 });
   const [zoom, setZoom] = useState(1);
   const [ox, setOx] = useState(0);
   const [oy, setOy] = useState(0);
@@ -27,12 +28,27 @@ export function PhotoCropper({
   useEffect(() => {
     const next = URL.createObjectURL(file);
     setUrl(next);
+    setZoom(1);
+    setOx(0);
+    setOy(0);
+    setNat({ w: 0, h: 0 });
     return () => URL.revokeObjectURL(next);
   }, [file]);
 
+  const contain = nat.w && nat.h ? Math.min(VIEW / nat.w, VIEW / nat.h) : 1;
+  const cover = nat.w && nat.h ? Math.max(VIEW / nat.w, VIEW / nat.h) : 1;
+  const maxZoom = Math.max(3, (cover / contain) * 2.4);
+  const scale = contain * zoom;
+  const dw = nat.w * scale;
+  const dh = nat.h * scale;
+  const maxOx = Math.max(0, (dw - VIEW) / 2);
+  const maxOy = Math.max(0, (dh - VIEW) / 2);
+  const cox = Math.min(maxOx, Math.max(-maxOx, ox));
+  const coy = Math.min(maxOy, Math.max(-maxOy, oy));
+
   const onPointerDown = (e: React.PointerEvent) => {
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    drag.current = { x: e.clientX, y: e.clientY, ox, oy };
+    drag.current = { x: e.clientX, y: e.clientY, ox: cox, oy: coy };
   };
   const onPointerMove = (e: React.PointerEvent) => {
     if (!drag.current) return;
@@ -59,20 +75,15 @@ export function PhotoCropper({
       if (!ctx) throw new Error("Canvas unavailable");
       ctx.fillStyle = "#12121a";
       ctx.fillRect(0, 0, OUT, OUT);
-      const iw = img.naturalWidth;
-      const ih = img.naturalHeight;
-      const cover = Math.max(VIEW / iw, VIEW / ih);
       const ratio = OUT / VIEW;
-      const dw = iw * cover * zoom * ratio;
-      const dh = ih * cover * zoom * ratio;
-      ctx.drawImage(img, OUT / 2 + ox * ratio - dw / 2, OUT / 2 + oy * ratio - dh / 2, dw, dh);
+      ctx.drawImage(img, OUT / 2 + cox * ratio - (dw * ratio) / 2, OUT / 2 + coy * ratio - (dh * ratio) / 2, dw * ratio, dh * ratio);
       let quality = 0.82;
       let data = canvas.toDataURL("image/jpeg", quality);
       while (data.length > 160_000 && quality > 0.45) {
         quality -= 0.08;
         data = canvas.toDataURL("image/jpeg", quality);
       }
-      if (data.length > 175_000) throw new Error("Photo is too large. Try a smaller crop.");
+      if (data.length > 175_000) throw new Error("Photo is too large. Try a tighter crop.");
       onConfirm(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not process photo.");
@@ -92,9 +103,9 @@ export function PhotoCropper({
             <X className="h-4 w-4" />
           </button>
         </div>
-        <p className="mb-3 text-[12px] text-white/40">Drag to position. Pinch-free zoom with the slider.</p>
+        <p className="mb-3 text-[12px] text-white/40">Full photo first. Zoom in, then drag to frame the crop.</p>
         <div
-          className="relative mx-auto overflow-hidden rounded-full border border-gold/30 bg-[#0a0a10] shadow-[0_0_24px_rgba(196,162,74,0.18)]"
+          className="relative mx-auto overflow-hidden rounded-2xl bg-[#0a0a10]"
           style={{ width: VIEW, height: VIEW, touchAction: "none" }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
@@ -107,27 +118,44 @@ export function PhotoCropper({
               src={url}
               alt=""
               draggable={false}
-              className="pointer-events-none h-full w-full object-cover"
-              style={{ transform: `translate(${ox}px, ${oy}px) scale(${zoom})`, transformOrigin: "center center" }}
+              className="pointer-events-none absolute max-w-none select-none"
+              style={{
+                width: nat.w ? dw : "auto",
+                height: nat.h ? dh : "auto",
+                maxWidth: nat.w ? "none" : VIEW,
+                maxHeight: nat.h ? "none" : VIEW,
+                left: "50%",
+                top: "50%",
+                transform: `translate(calc(-50% + ${cox}px), calc(-50% + ${coy}px))`,
+              }}
+              onLoad={(e) => {
+                const el = e.currentTarget;
+                setNat({ w: el.naturalWidth, h: el.naturalHeight });
+              }}
             />
           ) : null}
+          <div className="pointer-events-none absolute inset-0 rounded-full shadow-[0_0_0_80px_rgba(10,10,16,0.62)] ring-2 ring-gold/35" />
         </div>
         <label className="mt-4 block text-[10px] font-semibold tracking-wider text-white/40 uppercase">
           Zoom
           <input
             type="range"
             min={1}
-            max={3}
+            max={Number(maxZoom.toFixed(2))}
             step={0.02}
             value={zoom}
-            onChange={(e) => setZoom(Number(e.target.value))}
+            onChange={(e) => {
+              setZoom(Number(e.target.value));
+              setOx(cox);
+              setOy(coy);
+            }}
             className="mt-2 h-10 w-full accent-[#c4a24a]"
           />
         </label>
         {error ? <p className="mt-2 text-xs text-danger">{error}</p> : null}
         <button
           type="button"
-          disabled={busy}
+          disabled={busy || !nat.w}
           onClick={() => void confirm()}
           className="btn-gold tap mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-extrabold"
         >

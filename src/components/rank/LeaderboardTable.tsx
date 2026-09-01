@@ -1,12 +1,12 @@
-import { useMemo, useState } from "react";
-import { ArrowDown, ArrowUp, ChevronRight, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { AvatarImg, Verified } from "./Avatar";
 import { NoteTrigger } from "./NoteIsland";
 import { SafeWebLink } from "./SafeWebLink";
 import { Segmented } from "./motion";
 import { formatScore } from "@/lib/utils";
 import type { CycleType } from "@/lib/players";
-import type { BoardEntry } from "@/lib/server/rank";
+import { getLeaderboard, type BoardEntry } from "@/lib/server/rank";
 
 function Move({ n }: { n: number }) {
   if (n > 0) {
@@ -48,29 +48,63 @@ function RankMark({ rank, move }: { rank: number; move: number }) {
 
 export function LeaderboardTable({
   entries,
-  showAll,
-  onToggle,
   cycle = "monthly",
   onCycleChange,
 }: {
   entries: BoardEntry[];
-  showAll: boolean;
-  onToggle: () => void;
+  showAll?: boolean;
+  onToggle?: () => void;
   cycle?: CycleType;
   onCycleChange?: (v: CycleType) => void;
 }) {
   const [query, setQuery] = useState("");
+  const [span, setSpan] = useState<100 | 300>(100);
+  const [page, setPage] = useState(0);
+  const [pageRows, setPageRows] = useState<BoardEntry[]>(entries);
+  const [hasNext, setHasNext] = useState(entries.length >= 300);
+  const [loadingPage, setLoadingPage] = useState(false);
+
+  useEffect(() => {
+    setPageRows(entries);
+    setPage(0);
+    setHasNext(entries.length >= 300);
+    setSpan(100);
+    setQuery("");
+  }, [entries, cycle]);
+
+  const goPage = async (next: number) => {
+    if (next < 0 || loadingPage) return;
+    if (next === 0) {
+      setPageRows(entries);
+      setPage(0);
+      setHasNext(entries.length >= 300);
+      return;
+    }
+    setLoadingPage(true);
+    try {
+      const nextRows = await getLeaderboard({ data: { cycleType: cycle, offset: next * 300, limit: 300 } });
+      setPageRows(nextRows);
+      setPage(next);
+      setHasNext(nextRows.length >= 300);
+      setSpan(300);
+    } finally {
+      setLoadingPage(false);
+    }
+  };
+
   const needle = query.trim().toLowerCase().replace(/^@/, "");
   const filtered = useMemo(() => {
-    if (!needle) return entries;
-    return entries.filter((e) => {
+    if (!needle) return pageRows;
+    return pageRows.filter((e) => {
       const name = e.displayName.toLowerCase();
       const user = (e.username || "").toLowerCase();
       return name.includes(needle) || user.includes(needle);
     });
-  }, [entries, needle]);
-  const rows = needle ? filtered : showAll ? filtered : filtered.filter((e) => e.rank >= 4).slice(0, 10);
+  }, [pageRows, needle]);
+  const rows = needle ? filtered : filtered.slice(0, span);
   const title = cycle === "weekly" ? "Weekly leaderboard" : "Monthly leaderboard";
+  const rangeStart = page * 300 + 1;
+  const rangeEnd = page * 300 + rows.length;
 
   return (
     <div id="leaderboard" className="glass-card overflow-hidden rounded-[20px]">
@@ -85,19 +119,27 @@ export function LeaderboardTable({
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
               </span>
-              {needle ? `${filtered.length} found` : `Top ${Math.min(70, entries.length)} Players`}
+              {needle
+                ? `${filtered.length} found`
+                : page > 0
+                  ? `Ranks ${rangeStart}–${rangeEnd}`
+                  : `Top ${Math.min(span, pageRows.length)} Players`}
             </span>
           </div>
           <button
             type="button"
-            onClick={onToggle}
+            onClick={() => setSpan((s) => (s === 100 ? 300 : 100))}
             className="btn-outline tap hidden h-8 shrink-0 items-center gap-1 rounded-full px-3.5 text-[11px] font-semibold text-white/70 sm:inline-flex"
           >
-            {showAll ? "Show Top 10" : "View Full Leaderboard"}
-            <ChevronRight className={`h-3 w-3 chevron-rot ${showAll ? "is-turn" : ""}`} />
+            {span === 300 ? "Show Top 100" : "Top 300"}
+            <ChevronRight className={`h-3 w-3 chevron-rot ${span === 300 ? "is-turn" : ""}`} />
           </button>
-          <button type="button" onClick={onToggle} className="tap shrink-0 text-[12px] font-semibold text-gold sm:hidden">
-            {showAll ? "Top 10" : "See all"}
+          <button
+            type="button"
+            onClick={() => setSpan((s) => (s === 100 ? 300 : 100))}
+            className="tap shrink-0 text-[12px] font-semibold text-gold sm:hidden"
+          >
+            {span === 300 ? "Top 100" : "Top 300"}
           </button>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -223,6 +265,25 @@ export function LeaderboardTable({
             </div>
           ))}
         </div>
+      </div>
+      <div className="flex items-center justify-end gap-2 border-t border-white/[0.06] px-4 py-3 sm:px-6">
+        <button
+          type="button"
+          disabled={page === 0 || loadingPage}
+          onClick={() => void goPage(page - 1)}
+          className="btn-outline tap inline-flex h-9 items-center gap-1 rounded-full px-3 text-[11px] font-semibold disabled:opacity-35"
+        >
+          <ChevronLeft className="h-3.5 w-3.5" /> Prev
+        </button>
+        <span className="min-w-[4.5rem] text-center text-[11px] text-white/40">Page {page + 1}</span>
+        <button
+          type="button"
+          disabled={!hasNext || loadingPage}
+          onClick={() => void goPage(page + 1)}
+          className="btn-outline tap inline-flex h-9 items-center gap-1 rounded-full px-3 text-[11px] font-semibold disabled:opacity-35"
+        >
+          Next 300 <ChevronRight className="h-3.5 w-3.5" />
+        </button>
       </div>
     </div>
   );
