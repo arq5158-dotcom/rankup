@@ -141,7 +141,15 @@ function Login() {
                 <button
                   key={p.providerId}
                   type="button"
-                  onClick={() => void signIn(p.providerId, { callbackURL: "/" })}
+                  disabled={loading}
+                  onClick={() => {
+                    setError(null);
+                    setLoading(true);
+                    void signIn(p.providerId, { callbackURL: "/", errorCallbackURL: "/login" }).catch((err) => {
+                      setError(publicErrorMessage(err, "Sign-in failed. Try email or try again."));
+                      setLoading(false);
+                    });
+                  }}
                   className="btn-outline tap w-full rounded-xl px-4 text-sm font-semibold"
                 >
                   Continue with {p.label}

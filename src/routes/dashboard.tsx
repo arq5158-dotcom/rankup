@@ -60,7 +60,7 @@ function Dashboard() {
     if (!user) return;
     void load().catch(() => setAccount(null));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user?.id]);
 
   if (isPending) {
     return (

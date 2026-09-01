@@ -24,7 +24,7 @@ export function TwoFactorGate() {
     void getMyAccount()
       .then((a) => setNeeded(Boolean(a.profile.username && a.profile.twoFactorEnabled && !a.twoFactorUnlocked)))
       .catch(() => setNeeded(false));
-  }, [user, pathname]);
+  }, [user?.id, pathname]);
 
   if (!shown) return null;
 

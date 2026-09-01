@@ -24,7 +24,7 @@ export function UsernameGate() {
     void getMyAccount()
       .then((a) => setNeeded(!a.profile.username))
       .catch(() => setNeeded(false));
-  }, [user, pathname]);
+  }, [user?.id, pathname]);
 
   useEffect(() => {
     const parsed = validateUsername(value);

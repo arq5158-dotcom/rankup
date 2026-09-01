@@ -80,7 +80,7 @@ function Home() {
     void getMyAccount()
       .then(setAccount)
       .catch(() => setAccount(null));
-  }, [user]);
+  }, [user?.id]);
 
   const signedIn = Boolean(user);
   const isAdmin = Boolean(account?.profile.isAdmin);

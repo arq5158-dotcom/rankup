@@ -89,7 +89,7 @@ function AdminPage() {
         setIsAdmin(false);
       }
     })();
-  }, [user]);
+  }, [user?.id]);
 
   if (isPending || isAdmin === null) {
     return (

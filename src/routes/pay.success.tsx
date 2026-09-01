@@ -45,7 +45,7 @@ function PaySuccess() {
         setState("err");
       }
     })();
-  }, [user, isPending, sessionId]);
+  }, [user?.id, isPending, sessionId]);
 
   if (isPending) {
     return (

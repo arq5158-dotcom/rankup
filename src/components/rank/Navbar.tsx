@@ -67,7 +67,7 @@ export function Navbar({
         });
       })
       .catch(() => setFetched(null));
-  }, [user, accountProp]);
+  }, [user?.id, accountProp]);
 
   useEffect(() => {
     document.body.style.overflow = mobile ? "hidden" : "";
