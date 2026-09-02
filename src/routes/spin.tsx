@@ -3,7 +3,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Loader2, Sparkles } from "lucide-react";
 import { PageShell } from "@/components/rank/PageShell";
 import { RoutePending } from "@/components/rank/RoutePending";
-import { RedirectToSignIn } from "@/lib/auth/gates";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { claimSpin, getMySpinState, getSpinConfig, startFreeSpin, type SpinSegment } from "@/lib/server/spin";
 import { loadAccount } from "@/lib/account-cache";
@@ -102,10 +101,10 @@ function SpinPage() {
       .catch(() => null);
   }, [user?.id]);
 
-  if (isPending) return <RoutePending />;
-  if (!user) return <RedirectToSignIn />;
+  if (isPending && user) return <RoutePending />;
 
   const spin = async () => {
+    if (!user) return;
     if (spinning || busy) return;
     setBusy(true);
     try {
@@ -165,17 +164,30 @@ function SpinPage() {
           />
         </div>
         <Wheel segments={segments} rotation={rotation} spinning={spinning} />
-        <button
-          type="button"
-          disabled={busy || spinning || !canSpin || Boolean(pending)}
-          onClick={() => void spin()}
-          className="btn-gold tap mx-auto flex min-h-14 min-w-[220px] items-center justify-center gap-2 rounded-full px-8 text-sm font-extrabold"
-        >
-          {busy || spinning ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-          SPIN FREE
-        </button>
-        {!canSpin && !pending && !result ? (
+        {user ? (
+          <button
+            type="button"
+            disabled={busy || spinning || !canSpin || Boolean(pending)}
+            onClick={() => void spin()}
+            className="btn-gold tap mx-auto flex min-h-14 min-w-[220px] items-center justify-center gap-2 rounded-full px-8 text-sm font-extrabold"
+          >
+            {busy || spinning ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+            SPIN FREE
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            className="btn-gold tap mx-auto flex min-h-14 min-w-[220px] items-center justify-center gap-2 rounded-full px-8 text-sm font-extrabold"
+          >
+            <Sparkles className="h-4 w-4" />
+            SIGN IN TO SPIN
+          </Link>
+        )}
+        {user && !canSpin && !pending && !result ? (
           <p className="text-xs text-white/40">Next free spin unlocks in 24 hours.</p>
+        ) : null}
+        {!user ? (
+          <p className="text-xs text-white/40">Free for every signed-in player. One spin per day. Score only — never credits.</p>
         ) : null}
         <Link to="/" className="block text-xs text-gold">Back to leaderboard</Link>
       </div>
