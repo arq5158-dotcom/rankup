@@ -10,9 +10,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/weekly")({
   head: () =>
     seoHead({
-      title: "Weekly Ranking Leaderboard — Climb This Week | Pay4Rank",
+      title: "Weekly Leaderboard Promotion | This Week’s Featured Champion | Pay4Rank",
       description:
-        "Live weekly ranking leaderboard. Spend ranking credits or use Free Spin to climb this week. #1 is Weekly Champion with a badge and homepage spotlight. Resets Sunday.",
+        "Weekly leaderboard promotion site. Climb this week’s live ranking for websites. #1 is Weekly Champion with a homepage spotlight. Resets Sunday.",
       path: "/weekly",
     }),
   loader: async () => {

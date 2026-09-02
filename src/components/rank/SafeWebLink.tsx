@@ -16,7 +16,7 @@ export function SafeWebLink({
     <a
       href={href}
       target="_blank"
-      rel="noopener noreferrer nofollow ugc"
+      rel="sponsored nofollow noopener noreferrer"
       referrerPolicy="no-referrer"
       title={`Opens ${host} — third-party site, not affiliated with Pay4Rank`}
       aria-label={`Visit ${host} (opens in a new tab, third-party site)`}

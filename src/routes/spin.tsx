@@ -15,9 +15,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/spin")({
   head: () =>
     seoHead({
-      title: "Free Leaderboard Spin — Bonus Score Without Buying Credits | Pay4Rank",
+      title: "Free Daily Promotion Spin | Climb Without Buying Credits | Pay4Rank",
       description:
-        "Climb the ranking leaderboard for free. Spin for bonus Score on the weekly or monthly board. Sign in to spin. Credits stay in your wallet.",
+        "Free website promotion spin on Pay4Rank. Win bonus Score, pick weekly or monthly, and climb the live leaderboard. No ranking credits required. Sign in to spin.",
       path: "/spin",
     }),
   loader: async () => getSpinConfig(),
@@ -191,6 +191,20 @@ function SpinPage() {
           <p className="text-xs text-white/40">Free for every signed-in player. One spin per day. Score only — never credits.</p>
         ) : null}
         <Link to="/" className="block text-xs text-gold">Back to leaderboard</Link>
+        <article className="mx-auto max-w-xl rounded-2xl border border-white/[0.06] bg-black/20 p-5 text-left text-sm leading-relaxed text-white/55">
+          <h2 className="font-display text-base font-extrabold text-fg">Free spin to win a featured climb</h2>
+          <p className="mt-2">
+            The Pay4Rank wheel is a daily free website promotion spin. It awards Score, never
+            credits. Pick the weekly or monthly board before you claim. One spin per day. Claim once.
+            That Score can move you up the live leaderboard and toward a featured spot without a
+            purchase.
+          </p>
+          <p className="mt-2">
+            If you searched for a free way to get a featured listing, a daily free promotion, or how
+            to climb with no budget, this is it. Sign in, spin, claim. Buying ranking credits is
+            optional and separate.
+          </p>
+        </article>
       </div>
       {pending && !spinning ? (
         <div className="modal-layer is-open fixed inset-0 z-[96] grid place-items-center bg-black/75 p-4">
