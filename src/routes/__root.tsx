@@ -11,7 +11,7 @@ import { SceneBackground } from "@/components/rank/Background";
 import { NavProgress } from "@/components/rank/motion";
 import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
-import { SITE_NAME, SITE_URL } from "@/lib/seo";
+import { SITE_NAME, SITE_URL, absUrl } from "@/lib/seo";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -27,11 +27,10 @@ export const Route = createRootRoute({
       { property: "og:image", content: `${SITE_URL}/og.jpg` },
     ],
     links: [
-      { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
-      { rel: "icon", type: "image/png", sizes: "48x48", href: "/favicon-48.png" },
-      { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
-      { rel: "apple-touch-icon", sizes: "192x192", href: "/icon-192.png" },
+      { rel: "icon", href: absUrl("/favicon.ico"), sizes: "48x48" },
+      { rel: "icon", type: "image/png", sizes: "48x48", href: absUrl("/favicon-48.png") },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: absUrl("/icon-192.png") },
+      { rel: "apple-touch-icon", sizes: "192x192", href: absUrl("/icon-192.png") },
       { rel: "stylesheet", href: appCss },
       { rel: "preload", href: "/rank/mountains.webp", as: "image", type: "image/webp" },
       { rel: "manifest", href: "/__grok/manifest.webmanifest" },
