@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/rank/PageShell";
 import { AuthorByline } from "@/components/rank/AuthorByline";
+import { JsonLd } from "@/components/rank/JsonLd";
 import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/")({
@@ -8,7 +9,7 @@ export const Route = createFileRoute("/guides/")({
     seoHead({
       title: "Guides | How to Promote a New Website | Pay4Rank",
       description:
-        "Guides on how to get traffic to a new website, cheap featured listings, and live leaderboard promotion. Written for founders with no audience yet.",
+        "Pay4Rank guides on how to promote a new website: organic traffic, leaderboard promotion, ranking credits, and featured website placement. For founders with no audience yet.",
       path: "/guides",
     }),
   component: Page,
@@ -21,46 +22,121 @@ const POSTS = [
     dek: "Even if the site is brand new. Free traffic, getting people to view it, and what to skip.",
   },
   {
+    to: "/guides/website-traffic-simple-lasting-guide" as const,
+    title: "Website traffic: a simple, lasting guide",
+    dek: "How to increase website traffic without betting everything on ads.",
+  },
+  {
     to: "/guides/traffic-site-internet" as const,
     title: "Traffic site internet : guide simple et durable",
     dek: "Comment augmenter le trafic sans tout miser sur la pub. SEO, contenu, UX et suivi.",
   },
+];
+
+const QA = [
   {
-    to: "/guides/website-traffic-simple-lasting-guide" as const,
-    title: "Website traffic: a simple, lasting guide",
-    dek: "How to increase website traffic without betting everything on ads.",
+    q: "What are Pay4Rank guides for?",
+    a: "They explain how to promote a new website, how organic traffic actually starts, and when a live leaderboard promotion is a better fit than ads or fake Google ranks.",
+  },
+  {
+    q: "Do these guides sell Google rankings?",
+    a: "No. Pay4Rank sells ranking credits for on-site Score and featured website placement on weekly and monthly boards. That is visibility on pay4rank.com, not a search-engine slot.",
+  },
+  {
+    q: "Where should I start?",
+    a: "If nobody knows your URL, read how to get traffic to a new website. If you want a lasting SEO plan, read the simple lasting traffic guide. If you want a public climb this week, open ranking credits and Free Spin.",
   },
 ];
 
 function Page() {
   return (
     <PageShell>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: QA.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: { "@type": "Answer", text: item.a },
+          })),
+        }}
+      />
       <p className="page-kicker">Guides</p>
-      <h1 className="page-title mt-1">How to get seen</h1>
+      <h1 className="page-title mt-1 max-w-3xl">How to promote a new website</h1>
       <AuthorByline date="Updated 2 Sep 2026" />
-      <article className="mt-4 max-w-2xl space-y-4 text-sm leading-relaxed text-white/55">
-        <h2 className="font-display text-lg font-extrabold text-fg">Website promotion guides</h2>
+
+      <article className="mt-6 max-w-2xl space-y-5 text-sm leading-relaxed text-white/58">
         <p>
-          These guides are for people with a new website and almost no visitors. They cover how to
-          get traffic to your website, how to promote a side project, and when a live ranking
-          leaderboard is a better fit than Google Ads. They are not game-rank boosting and not a
-          promise of first-page Google results.
+          This hub collects Pay4Rank guides on website promotion, online brand promotion, and
+          leaderboard promotion. If you launched a site and nobody visits it, start here. The
+          articles are written for founders, side projects, and anyone who needs a public listing
+          without buying a fake Google rank.
+        </p>
+
+        <h2 className="font-display text-xl font-extrabold text-fg">What these guides cover</h2>
+        <p>
+          Promoting a new website is usually three jobs at once: get the first humans to open the
+          URL, give search engines crawlable text, and decide whether you also want a live public
+          board. We keep those jobs separate so the pages are not copies of each other.
+        </p>
+        <ul className="list-disc space-y-2 pl-5">
+          <li>First visits when the domain is unknown.</li>
+          <li>Lasting organic traffic: SEO, content, UX, tracking — without ads as the only lever.</li>
+          <li>Leaderboard promotion: ranking credits, Score, weekly/monthly boards, featured website placement.</li>
+          <li>French readers: the same lasting-traffic plan as traffic site internet.</li>
+        </ul>
+
+        <h2 className="font-display text-xl font-extrabold text-fg">How to promote a new website (short version)</h2>
+        <h3 className="font-display text-base font-bold text-fg">People first, Google second</h3>
+        <p>
+          A brand-new domain has no history. Search Console can sit on “processing” for days. Direct
+          messages, launch directories, and one useful page still work. That is website promotion
+          you can do this week.
+        </p>
+        <h3 className="font-display text-base font-bold text-fg">Leaderboard promotion is a different product</h3>
+        <p>
+          Pay4Rank is a competitive public board. You buy ranking credits from $1, spend them 1:1
+          for Score, and climb the weekly or monthly leaderboard you choose. Higher Score means a
+          more visible profile, brand, or website listing. Gold, Silver, and Bronze are featured
+          website placement on this site. Weekly Champion gets a homepage spotlight. Credits never
+          buy a Google search slot.
         </p>
         <p>
-          Start with the traffic article if nobody knows your URL yet. Then read{" "}
-          <Link to="/how-it-works" className="text-gold hover:underline">
-            how ranking credits work
+          No budget?{" "}
+          <Link to="/spin" className="text-gold hover:underline">
+            Free Spin
           </Link>{" "}
-          if you want a public featured placement on Pay4Rank’s weekly or monthly boards. Free Spin
-          is there if you want to climb without buying credits.
+          awards Score without a purchase.{" "}
+          <Link to="/how-it-works" className="text-gold hover:underline">
+            How ranking credits work
+          </Link>{" "}
+          is the product explainer. Member website links on the board are sponsored listings.
         </p>
-        <p>
-          We add a new guide only when the search intent is different — not fifty copies of “get
-          more traffic.” If you came from a launch list or a keyword tool, pick the piece that
-          matches the job you actually have.
-        </p>
+
+        <h2 className="font-display text-xl font-extrabold text-fg">Who should read which guide</h2>
+        <ul className="list-disc space-y-2 pl-5">
+          <li>
+            <strong className="text-fg">Nobody knows the URL yet</strong> — start with how to get
+            traffic to your website.
+          </li>
+          <li>
+            <strong className="text-fg">You want a monthly SEO routine</strong> — read website
+            traffic: a simple, lasting guide.
+          </li>
+          <li>
+            <strong className="text-fg">You search in French</strong> — traffic site internet.
+          </li>
+          <li>
+            <strong className="text-fg">You want a public climb this week</strong> — ranking credits,
+            Rank Up, or Free Spin — not another keyword article.
+          </li>
+        </ul>
+
+        <h2 className="font-display text-xl font-extrabold text-fg">All guides</h2>
       </article>
-      <ul className="mt-8 space-y-3">
+
+      <ul className="mt-4 max-w-2xl space-y-3">
         {POSTS.map((p) => (
           <li key={p.to}>
             <Link
@@ -73,6 +149,21 @@ function Page() {
           </li>
         ))}
       </ul>
+
+      <article className="mt-8 max-w-2xl space-y-4 text-sm leading-relaxed text-white/58">
+        <h2 className="font-display text-xl font-extrabold text-fg">Q&A</h2>
+        {QA.map((item) => (
+          <section key={item.q}>
+            <h3 className="font-display text-base font-bold text-fg">{item.q}</h3>
+            <p>{item.a}</p>
+          </section>
+        ))}
+        <p>
+          We add a guide only when the search intent is different — not fifty copies of “get more
+          traffic.” Online brand promotion on Pay4Rank means a live rank people can browse, plus
+          these articles for the slow path.
+        </p>
+      </article>
     </PageShell>
   );
 }
