@@ -1728,3 +1728,37 @@ export const adminSaveStripeKeys = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+function parseSupportEmail(raw: string | null | undefined) {
+  const v = clampText(raw, 254).trim().toLowerCase();
+  if (!v) return "";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || v.length > 254) {
+    throw new Error("Enter a valid support email, or leave it blank.");
+  }
+  return v;
+}
+
+export const getPublicSiteSettings = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    const sql = await getSql();
+    await ensureSeed(sql);
+    const raw = (await getCfg(sql, "supportEmail"))?.trim() || "";
+    return { supportEmail: raw && raw.includes("@") ? raw : null };
+  } catch {
+    return { supportEmail: null as string | null };
+  }
+});
+
+export const adminSaveSupportEmail = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((data: { email?: string } | null | undefined) => ({
+    email: clampText(data?.email, 254),
+  }))
+  .handler(async ({ context, data }) => {
+    rateLimit(`admin-support:${context.userId}`, 20, 60_000);
+    const sql = await getSql();
+    await requireAdmin(sql, context.userId, bearerOf(context));
+    const email = parseSupportEmail(data.email);
+    await setCfg(sql, "supportEmail", email);
+    return { ok: true as const, supportEmail: email || null };
+  });

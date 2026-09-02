@@ -10,12 +10,14 @@ import {
   adminRemoveEntry,
   adminResetCycle,
   adminSaveStripeKeys,
+  adminSaveSupportEmail,
   adminSetRole,
   adminStripeSettings,
   adminUpdatePrizes,
   getLeaderboard,
   getMyAccount,
   getPrizes,
+  getPublicSiteSettings,
   type BoardEntry,
 } from "@/lib/server/rank";
 import { Navbar } from "@/components/rank/Navbar";
@@ -41,7 +43,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "users" | "prizes" | "spin" | "economy" | "reset" | "stripe";
+type Tab = "overview" | "users" | "prizes" | "spin" | "economy" | "site" | "reset" | "stripe";
 
 function shrinkWheelImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -106,6 +108,7 @@ function AdminPage() {
   const [spinSegs, setSpinSegs] = useState<SpinSegment[]>([]);
   const [economy, setEconomy] = useState<CreditEconomy>(DEFAULT_ECONOMY);
   const [ecoLog, setEcoLog] = useState<{ at: string; who: string; note: string }[]>([]);
+  const [supportEmail, setSupportEmail] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -145,6 +148,12 @@ function AdminPage() {
           setEcoLog(e.log);
         } catch {
           /* ignore */
+        }
+        try {
+          const site = await getPublicSiteSettings();
+          setSupportEmail(site.supportEmail || "");
+        } catch {
+          setSupportEmail("");
         }
       } catch {
         setIsAdmin(false);
@@ -186,8 +195,8 @@ function AdminPage() {
   );
 
   const tabs: Tab[] = isOwner
-    ? ["overview", "users", "prizes", "spin", "economy", "reset", "stripe"]
-    : ["overview", "users", "prizes", "spin", "economy", "reset"];
+    ? ["overview", "users", "prizes", "spin", "economy", "site", "reset", "stripe"]
+    : ["overview", "users", "prizes", "spin", "economy", "site", "reset"];
 
   return (
     <div className="relative min-h-screen">
@@ -628,6 +637,44 @@ function AdminPage() {
                 ))}
               </ul>
             </div>
+          </div>
+        )}
+
+        {tab === "site" && (
+          <div className="glass-card max-w-lg space-y-4 rounded-2xl p-6">
+            <div>
+              <h2 className="font-bold text-fg">Support email</h2>
+              <p className="mt-1 text-[12px] leading-relaxed text-white/40">
+                Shown on Contact. Leave blank for “not listed.” Saves to the database — no redeploy.
+              </p>
+            </div>
+            <div className="field">
+              <label className="mb-1 block text-[10px] font-semibold tracking-wider text-white/40 uppercase">
+                Email
+              </label>
+              <input
+                type="email"
+                value={supportEmail}
+                onChange={(e) => setSupportEmail(e.target.value)}
+                placeholder="not listed"
+                className="w-full rounded-xl border border-white/[0.06] bg-[#12121a] px-3 py-2.5 text-sm text-fg outline-none focus:border-gold/40"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  const res = await adminSaveSupportEmail({ data: { email: supportEmail } });
+                  setSupportEmail(res.supportEmail || "");
+                  toast.success(res.supportEmail ? "Support email saved" : "Support email cleared");
+                } catch (err) {
+                  toast.error(publicErrorMessage(err, "Could not save"));
+                }
+              }}
+              className="btn-gold inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-extrabold"
+            >
+              <Save className="h-4 w-4" /> Save
+            </button>
           </div>
         )}
 

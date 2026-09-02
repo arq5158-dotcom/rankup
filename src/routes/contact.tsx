@@ -3,6 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Mail } from "lucide-react";
 import { PageShell } from "@/components/rank/PageShell";
 import { seoHead } from "@/lib/seo";
+import { getPublicSiteSettings } from "@/lib/server/rank";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/contact")({
   head: () =>
@@ -12,10 +14,19 @@ export const Route = createFileRoute("/contact")({
         "Contact Pay4Rank about rankings, credit purchases, listings, privacy, or your account. Report unsafe player links here.",
       path: "/contact",
     }),
+  loader: async () => {
+    try {
+      return await getPublicSiteSettings();
+    } catch {
+      return { supportEmail: null as string | null };
+    }
+  },
+  staleTime: 15_000,
   component: Page,
 });
 
 function Page() {
+  const { supportEmail } = Route.useLoaderData();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [topic, setTopic] = useState("General");
@@ -23,9 +34,13 @@ function Page() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supportEmail) {
+      toast.error("Support email is not listed yet.");
+      return;
+    }
     const subject = encodeURIComponent(`[Pay4Rank] ${topic} — ${name || "Player"}`);
     const body = encodeURIComponent(`${message}\n\nFrom: ${name}\nEmail: ${email}`);
-    window.location.href = `mailto:support@rankup.app?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${supportEmail}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -35,7 +50,7 @@ function Page() {
         <h1 className="page-title mt-1">Contact</h1>
         <p className="mt-3 text-sm leading-relaxed text-white/50">
           For ranking, payment, listing, or privacy questions. Use “Report a link” to flag an unsafe
-          player website. Include your display name and the Stripe receipt email if the issue is a
+          player website. Include your display name and the payment receipt email if the issue is a
           ranking-credit purchase.
         </p>
 
@@ -91,12 +106,13 @@ function Page() {
           </div>
           <button
             type="submit"
-            className="btn-gold inline-flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-extrabold"
+            disabled={!supportEmail}
+            className="btn-gold inline-flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-extrabold disabled:opacity-40"
           >
             <Mail className="h-4 w-4" /> Open email
           </button>
           <p className="text-center text-[11px] text-white/30">
-            Opens your mail app to support@rankup.app
+            {supportEmail ? `Opens your mail app to ${supportEmail}` : "Support email is not listed."}
           </p>
         </form>
 
