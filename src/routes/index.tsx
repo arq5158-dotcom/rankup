@@ -24,9 +24,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/")({
   head: () =>
     seoHead({
-      title: "Climb the Live Leaderboard & Get Your Brand Seen | Pay4Rank",
+      title: "Promote Your Website on a Live Ranking Leaderboard | Pay4Rank",
       description:
-        "Promote your profile, brand, or website on a live ranking leaderboard. Buy ranking credits, spend them for Score, climb weekly and monthly boards, and get featured.",
+        "Get your brand, project, or website seen. Climb a live weekly and monthly ranking leaderboard, get featured, or try Free Spin. Ranking credits from $1.",
       path: "/",
     }),
   loader: async () => {

@@ -41,7 +41,9 @@ function Weekly() {
         <div>
           <p className="page-kicker">Weekly</p>
           <h1 className="page-title text-gold-grad">Weekly ranking leaderboard</h1>
-          <p className="mt-1 text-sm text-white/40">Only #1 is featured this week. Rankings reset every Sunday.</p>
+          <p className="mt-1 text-sm text-white/40">
+            This week’s ranking competition. Climb the live weekly leaderboard — only #1 is featured. Resets Sunday.
+          </p>
         </div>
       </div>
       <div className="mt-6 space-y-4">

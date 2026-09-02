@@ -42,7 +42,9 @@ function Monthly() {
         <div>
           <p className="page-kicker">Monthly</p>
           <h1 className="page-title text-gold-grad">Monthly ranking leaderboard</h1>
-          <p className="mt-1 text-sm text-white/40">Top 3 get featured placement. New month, new climb.</p>
+          <p className="mt-1 text-sm text-white/40">
+            This month’s ranking competition. Climb the live monthly leaderboard for Gold, Silver, and Bronze featured placement.
+          </p>
         </div>
       </div>
       <div className="mt-6 space-y-4">

@@ -2,7 +2,7 @@ export const SITE_NAME = "Pay4Rank";
 export const SITE_TAGLINE = "Pay. Climb. Get Seen.";
 export const SITE_URL = "https://www.pay4rank.com";
 export const SITE_DESCRIPTION =
-  "Promote your profile, brand, or website on a live ranking leaderboard. Buy ranking credits, spend them for Score, climb weekly and monthly boards, and get featured. Pay4Rank — not a cash prize.";
+  "Promote your website, brand, or project on a live ranking leaderboard. Get seen, get featured, climb weekly and monthly rankings. Buy ranking credits or use Free Spin. Pay4Rank.";
 
 export function absUrl(path = "/") {
   if (path.startsWith("http")) return path;
@@ -28,44 +28,64 @@ export const PUBLIC_PATHS = [
 
 export const FAQ_ITEMS = [
   {
-    q: "How do I promote my website or brand on a leaderboard?",
-    a: "Create a Pay4Rank profile, add your display name, photo, short message, and website. Buy ranking credits, spend them for Score on the weekly or monthly board, and climb. Higher Score means a more visible listing.",
+    q: "How do I promote my website or brand online?",
+    a: "On Pay4Rank you create a public profile, add a photo, a short message, and your website. Then you climb a live ranking leaderboard so more people see that listing. Higher Score means a higher, more visible spot.",
+  },
+  {
+    q: "How do I get more visibility for my project?",
+    a: "Spend ranking credits for Score on the weekly or monthly board, or claim a Free Spin. Top listings get featured placement, badges, and a homepage spotlight. This is on-site visibility, not a Google Ads campaign.",
   },
   {
     q: "How do I climb a live leaderboard?",
-    a: "Spend ranking credits 1:1 for Score on the board you choose — weekly or monthly. Each credit spent adds 1 Score. You can also claim Free Spin Score. The live leaderboard reorders immediately.",
+    a: "1 credit spent = 1 Score on the board you choose. Weekly and monthly are separate. The live leaderboard reorders as soon as Score is added. Other players can overtake you at any time.",
   },
   {
-    q: "How do I get featured on the leaderboard?",
-    a: "Monthly top three get Gold, Silver, and Bronze featured placement, badges, and Hall of Fame history. The weekly #1 becomes Weekly Champion with a homepage spotlight. Featured spots are visibility, not cash prizes.",
+    q: "How do I get featured at the top?",
+    a: "Monthly #1–#3 get Gold, Silver, and Bronze featured placement. Weekly #1 is Weekly Champion with a homepage spotlight. Featured spots are listing perks, not cash prizes.",
   },
   {
-    q: "Can I rank up for free?",
-    a: "Yes. Free Spin awards bonus Score with no credits spent. You still need a signed-in profile. Buying credits is optional and does not affect giveaway odds.",
+    q: "Can I get on the ranking board for free?",
+    a: "Yes. Free Spin awards bonus Score without spending credits. You need a signed-in profile. Buying credits is optional.",
   },
   {
-    q: "What's the difference between weekly and monthly rankings?",
-    a: "They are separate leaderboards with separate Score. Weekly resets every Sunday. Monthly resets each month. Spend credits on the board you want to climb. Credits in your wallet never reset.",
+    q: "What is a weekly ranking competition?",
+    a: "A separate live leaderboard that resets every Sunday. Spend credits or Free Spin Score on the weekly board to compete for Weekly Champion this week.",
+  },
+  {
+    q: "What is a monthly ranking competition?",
+    a: "A separate live leaderboard that resets each month. Climb for Gold, Silver, and Bronze featured placement and Hall of Fame history.",
+  },
+  {
+    q: "Can I add my website link to a public profile?",
+    a: "Yes. Approved https website links can appear next to your listing so visitors can open your site from the leaderboard.",
+  },
+  {
+    q: "Is this the same as paying for Google ranking or SEO?",
+    a: "No. Pay4Rank does not sell Google search positions. You climb our public leaderboard. Search engines may later show Pay4Rank pages; that is separate from Score on the board.",
+  },
+  {
+    q: "Who is this for?",
+    a: "Creators, founders, personal brands, side projects, communities, and anyone who wants their profile or website seen on a competitive public ranking.",
+  },
+  {
+    q: "How fast does my rank update?",
+    a: "Score and rank update as soon as a credit spend or Free Spin claim succeeds. You do not wait until the week or month ends to move.",
   },
   {
     q: "What am I paying for?",
-    a: "Ranking credits for your wallet. Spending credits increases Score and visibility on the public leaderboard. This is not a prize drawing and not payment for a Google search rank.",
+    a: "Ranking credits in your wallet. Spending credits increases Score and visibility on the public leaderboard. Not a lottery and not payment for a Google rank.",
   },
   {
     q: "Are ranking credits refundable?",
-    a: "Completed credit purchases are generally non-refundable. If checkout is cancelled or payment fails, you are not charged and no credits are added.",
+    a: "Completed purchases are generally non-refundable. If checkout is cancelled or payment fails, you are not charged.",
   },
   {
     q: "Is this a lottery or cash contest?",
-    a: "No. Position is determined by Score, not a random draw. Featured titles are listing perks, not a prize purse. Optional community giveaways are separate and free to enter.",
+    a: "No. Position is determined by Score. Optional community giveaways are separate, free to enter, and buying credits does not improve odds.",
   },
   {
     q: "Who can join?",
-    a: "You must be at least 18 and able to enter a payment agreement. Pay4Rank is a ranking product, not an investment.",
-  },
-  {
-    q: "Are player website links safe?",
-    a: "Optional player websites are public. Pay4Rank only publishes https links that pass an automated review. Links are third-party pages we do not control.",
+    a: "Anyone 18 or older who can enter a payment agreement. You can browse the public boards without an account.",
   },
 ];
 
