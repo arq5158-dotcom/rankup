@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, Loader2, X } from "lucide-react";
+import { Check, Loader2, RotateCcw, X } from "lucide-react";
 import { usePresence } from "./motion";
 
 const VIEW = 280;
@@ -22,15 +22,18 @@ export function WheelSliceCropper({
   const [url, setUrl] = useState<string | null>(null);
   const [nat, setNat] = useState({ w: 0, h: 0 });
   const [zoom, setZoom] = useState(1);
+  const [rot, setRot] = useState(0);
   const [ox, setOx] = useState(0);
   const [oy, setOy] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const next = URL.createObjectURL(file);
     setUrl(next);
     setZoom(1);
+    setRot(0);
     setOx(0);
     setOy(0);
     setNat({ w: 0, h: 0 });
@@ -39,18 +42,21 @@ export function WheelSliceCropper({
 
   const contain = nat.w && nat.h ? Math.min(VIEW / nat.w, VIEW / nat.h) : 1;
   const cover = nat.w && nat.h ? Math.max(VIEW / nat.w, VIEW / nat.h) : 1;
-  const maxZoom = Math.max(3, (cover / contain) * 2.4);
-  const scale = contain * zoom;
+  const minZoom = cover ? Math.max(0.35, contain / cover) : 0.5;
+  const maxZoom = 4;
+  const scale = cover * zoom;
   const dw = nat.w * scale;
   const dh = nat.h * scale;
-  const maxOx = Math.max(0, (dw - VIEW) / 2);
-  const maxOy = Math.max(0, (dh - VIEW) / 2);
+  const slack = VIEW * 0.95;
+  const maxOx = dw / 2 + slack;
+  const maxOy = dh / 2 + slack;
   const cox = Math.min(maxOx, Math.max(-maxOx, ox));
   const coy = Math.min(maxOy, Math.max(-maxOy, oy));
 
   const onPointerDown = (e: React.PointerEvent) => {
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     drag.current = { x: e.clientX, y: e.clientY, ox: cox, oy: coy };
+    setDragging(true);
   };
   const onPointerMove = (e: React.PointerEvent) => {
     if (!drag.current) return;
@@ -59,6 +65,7 @@ export function WheelSliceCropper({
   };
   const onPointerUp = () => {
     drag.current = null;
+    setDragging(false);
   };
 
   const confirm = async () => {
@@ -78,13 +85,11 @@ export function WheelSliceCropper({
       ctx.fillStyle = "#12121a";
       ctx.fillRect(0, 0, OUT, OUT);
       const ratio = OUT / VIEW;
-      ctx.drawImage(
-        img,
-        OUT / 2 + cox * ratio - (dw * ratio) / 2,
-        OUT / 2 + coy * ratio - (dh * ratio) / 2,
-        dw * ratio,
-        dh * ratio,
-      );
+      ctx.save();
+      ctx.translate(OUT / 2 + cox * ratio, OUT / 2 + coy * ratio);
+      ctx.rotate((rot * Math.PI) / 180);
+      ctx.drawImage(img, -(dw * ratio) / 2, -(dh * ratio) / 2, dw * ratio, dh * ratio);
+      ctx.restore();
       let quality = 0.82;
       let data = canvas.toDataURL("image/jpeg", quality);
       while (data.length > 160_000 && quality > 0.45) {
@@ -112,10 +117,10 @@ export function WheelSliceCropper({
           </button>
         </div>
         <p className="mb-3 text-[12px] text-white/40">
-          Drag and zoom so the subject fills the highlighted triangle — that is how it appears on the wheel.
+          Drag to move. Zoom and rotate until the subject fills the gold triangle.
         </p>
         <div
-          className="relative mx-auto overflow-hidden rounded-full bg-[#0a0a10] ring-2 ring-gold/40"
+          className={`relative mx-auto overflow-hidden rounded-full bg-[#0a0a10] ring-2 ring-gold/40 ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
           style={{ width: VIEW, height: VIEW, touchAction: "none" }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
@@ -136,7 +141,7 @@ export function WheelSliceCropper({
                 maxHeight: nat.h ? "none" : VIEW,
                 left: "50%",
                 top: "50%",
-                transform: `translate(calc(-50% + ${cox}px), calc(-50% + ${coy}px))`,
+                transform: `translate(calc(-50% + ${cox}px), calc(-50% + ${coy}px)) rotate(${rot}deg)`,
               }}
               onLoad={(e) => {
                 const el = e.currentTarget;
@@ -162,18 +167,55 @@ export function WheelSliceCropper({
           Zoom
           <input
             type="range"
-            min={1}
-            max={Number(maxZoom.toFixed(2))}
+            min={Number(minZoom.toFixed(2))}
+            max={maxZoom}
             step={0.02}
             value={zoom}
-            onChange={(e) => {
-              setZoom(Number(e.target.value));
-              setOx(cox);
-              setOy(coy);
-            }}
+            onChange={(e) => setZoom(Number(e.target.value))}
             className="mt-2 h-10 w-full accent-[#c4a24a]"
           />
         </label>
+        <label className="mt-2 block text-[10px] font-semibold tracking-wider text-white/40 uppercase">
+          Rotate
+          <input
+            type="range"
+            min={-180}
+            max={180}
+            step={1}
+            value={rot}
+            onChange={(e) => setRot(Number(e.target.value))}
+            className="mt-2 h-10 w-full accent-[#c4a24a]"
+          />
+        </label>
+        <div className="mt-2 flex gap-2">
+          <button
+            type="button"
+            className="btn-outline tap min-h-10 flex-1 rounded-lg text-[11px] font-bold"
+            onClick={() => setRot((r) => r - 90)}
+          >
+            −90°
+          </button>
+          <button
+            type="button"
+            className="btn-outline tap min-h-10 flex-1 rounded-lg text-[11px] font-bold"
+            onClick={() => setRot((r) => r + 90)}
+          >
+            +90°
+          </button>
+          <button
+            type="button"
+            className="btn-outline tap min-h-10 flex-1 rounded-lg text-[11px] font-bold"
+            onClick={() => {
+              setZoom(1);
+              setRot(0);
+              setOx(0);
+              setOy(0);
+            }}
+          >
+            <RotateCcw className="mr-1 inline h-3 w-3" />
+            Reset
+          </button>
+        </div>
         {error ? <p className="mt-2 text-xs text-danger">{error}</p> : null}
         <button
           type="button"
