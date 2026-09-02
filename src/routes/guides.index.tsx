@@ -60,7 +60,7 @@ const QA = [
 
 function Page() {
   return (
-    <PageShell>
+    <PageShell crumbs={[{ name: "Guides", path: "/guides" }]}>
       <JsonLd
         data={{
           "@context": "https://schema.org",

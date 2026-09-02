@@ -146,7 +146,7 @@ function SpinPage() {
   };
 
   return (
-    <PageShell active="Free Spin">
+    <PageShell active="Free Spin" crumbs={[{ name: "Free Spin", path: "/spin" }]}>
       <div className="mx-auto max-w-xl space-y-6 text-center">
         <p className="text-[10px] font-bold tracking-[0.2em] text-gold uppercase">Free score spin</p>
         <h1 className="font-hero text-4xl tracking-[0.06em] text-fg sm:text-5xl">SPIN. SCORE. CLIMB.</h1>

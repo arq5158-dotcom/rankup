@@ -30,7 +30,7 @@ export const Route = createFileRoute("/weekly")({
 function Weekly() {
   const { weekly, prizes } = Route.useLoaderData();
   return (
-    <PageShell active="Weekly">
+    <PageShell active="Weekly" crumbs={[{ name: "Weekly leaderboard", path: "/weekly" }]}>
       <div className="flex items-end gap-3">
         <img
           src="/rank/cup-weekly.webp?v=3d4"

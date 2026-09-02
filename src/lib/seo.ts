@@ -147,6 +147,28 @@ export function faqJsonLd() {
   };
 }
 
+export const SITELINK_PAGES = [
+  { path: "/", name: "Live leaderboard", description: "Current weekly and monthly ranking board." },
+  { path: "/weekly", name: "Weekly leaderboard", description: "This week’s Score race and Weekly Champion." },
+  { path: "/monthly", name: "Monthly leaderboard", description: "This month’s Gold, Silver, and Bronze board." },
+  { path: "/how-it-works", name: "How it works", description: "Ranking credits, Score, and featured placement." },
+  { path: "/spin", name: "Free Spin", description: "Climb with bonus Score and no purchase." },
+  { path: "/guides", name: "Guides", description: "How to promote a new website and get seen." },
+] as const;
+
+export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: absUrl(item.path),
+    })),
+  };
+}
+
 export function siteJsonLd() {
   return {
     "@context": "https://schema.org",
@@ -160,6 +182,24 @@ export function siteJsonLd() {
         description: SITE_DESCRIPTION,
         inLanguage: "en",
         publisher: { "@id": `${SITE_URL}/#org` },
+        hasPart: SITELINK_PAGES.filter((p) => p.path !== "/").map((p) => ({
+          "@type": "WebPage",
+          name: p.name,
+          url: absUrl(p.path),
+          description: p.description,
+        })),
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${SITE_URL}/#sitelinks`,
+        name: "Pay4Rank",
+        itemListElement: SITELINK_PAGES.map((p, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: p.name,
+          url: absUrl(p.path),
+          description: p.description,
+        })),
       },
       {
         "@type": "Organization",

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/how-it-works")({
 
 function Page() {
   return (
-    <PageShell active="How It Works">
+    <PageShell active="How It Works" crumbs={[{ name: "How it works", path: "/how-it-works" }]}>
       <p className="page-kicker">Leaderboard promotion</p>
       <h1 className="page-title mt-1">How ranking credits work</h1>
       <AuthorByline date="Updated 2 Sep 2026" />
