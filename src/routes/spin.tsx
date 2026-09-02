@@ -204,6 +204,11 @@ function SpinPage() {
             to climb with no budget, this is it. Sign in, spin, claim. Buying ranking credits is
             optional and separate.
           </p>
+          <p className="mt-2">
+            Free Spin is the no-budget path on this weekly and monthly leaderboard promotion. It
+            never adds ranking credits, never enters you in a giveaway, and never sells a Google
+            rank. Sign in once per day, spin, claim onto one board.
+          </p>
         </article>
       </div>
       {pending && !spinning ? (

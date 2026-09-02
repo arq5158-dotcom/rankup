@@ -50,6 +50,20 @@ function Weekly() {
         <Podium entries={weekly.slice(0, 3)} />
         <PrizePools prizes={prizes} weeklyChampion={weekly[0] ?? null} />
         <LeaderboardTable entries={weekly} cycle="weekly" />
+        <article className="max-w-2xl space-y-3 pt-2 text-sm leading-relaxed text-white/55">
+          <h2 className="font-display text-lg font-extrabold text-fg">How this weekly leaderboard works</h2>
+          <p>
+            This is Pay4Rank’s weekly leaderboard promotion. Score on this board is separate from
+            monthly Score. Spend ranking credits here, or claim a Free Spin onto weekly. Rank #1
+            this week is Weekly Champion: a badge and a homepage spotlight. The board resets every
+            Sunday. Credits in your wallet do not reset.
+          </p>
+          <p>
+            Player website links on this table are paid promotional listings and are marked
+            sponsored. This page is a live ranking for websites and brands, not a Google search rank
+            and not a cash contest.
+          </p>
+        </article>
       </div>
     </PageShell>
   );

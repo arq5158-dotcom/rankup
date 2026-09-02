@@ -51,6 +51,20 @@ function Monthly() {
         <Podium entries={monthly.slice(0, 3)} />
         <PrizePools prizes={prizes} weeklyChampion={weekly[0] ?? null} />
         <LeaderboardTable entries={monthly} cycle="monthly" />
+        <article className="max-w-2xl space-y-3 pt-2 text-sm leading-relaxed text-white/55">
+          <h2 className="font-display text-lg font-extrabold text-fg">How this monthly leaderboard works</h2>
+          <p>
+            This is Pay4Rank’s monthly ranking leaderboard. Spend ranking credits for Score on this
+            board only, or claim Free Spin onto monthly. Gold, Silver, and Bronze are the top three
+            Score totals: featured placement, badges, and Hall of Fame history. A new month zeros
+            monthly Score. Weekly Score and credits stay.
+          </p>
+          <p>
+            Use this page if you want a longer climb than the weekly board. Listings show Score, not
+            dollars paid. Website links are sponsored promotional placements, not editorial
+            recommendations.
+          </p>
+        </article>
       </div>
     </PageShell>
   );

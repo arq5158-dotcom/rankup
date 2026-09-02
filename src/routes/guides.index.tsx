@@ -7,7 +7,7 @@ export const Route = createFileRoute("/guides/")({
     seoHead({
       title: "Guides | How to Promote a New Website | Pay4Rank",
       description:
-        "Short guides on getting traffic to a new website, cheap featured listings, and live leaderboard promotion. Written for founders with no audience yet.",
+        "Guides on how to get traffic to a new website, cheap featured listings, and live leaderboard promotion. Written for founders with no audience yet.",
       path: "/guides",
     }),
   component: Page,
@@ -26,9 +26,27 @@ function Page() {
     <PageShell>
       <p className="page-kicker">Guides</p>
       <h1 className="page-title mt-1">How to get seen</h1>
-      <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/50">
-        Practical notes for new sites. Not Google rank tricks. Not game boosting.
-      </p>
+      <article className="mt-4 max-w-2xl space-y-4 text-sm leading-relaxed text-white/55">
+        <p>
+          These guides are for people with a new website and almost no visitors. They cover how to
+          get traffic to your website, how to promote a side project, and when a live ranking
+          leaderboard is a better fit than Google Ads. They are not game-rank boosting and not a
+          promise of first-page Google results.
+        </p>
+        <p>
+          Start with the traffic article if nobody knows your URL yet. Then read{" "}
+          <Link to="/how-it-works" className="text-gold hover:underline">
+            how ranking credits work
+          </Link>{" "}
+          if you want a public featured placement on Pay4Rank’s weekly or monthly boards. Free Spin
+          is there if you want to climb without buying credits.
+        </p>
+        <p>
+          We add a new guide only when the search intent is different — not fifty copies of “get
+          more traffic.” If you came from a launch list or a keyword tool, pick the piece that
+          matches the job you actually have.
+        </p>
+      </article>
       <ul className="mt-8 space-y-3">
         {POSTS.map((p) => (
           <li key={p.to}>

@@ -67,6 +67,11 @@ function Page() {
           leaderboard benefits, this page is the map. Climb with ranking credits or Free Spin Score
           on the monthly or weekly board. Other players can pass you until the cycle archives.
         </p>
+        <p>
+          Featured placement is extra visibility on Pay4Rank only. It does not include a cash prize,
+          a Google Ads credit, or a guaranteed search-engine rank. Spend credits or use Free Spin
+          if you want to compete for those spots this week or this month.
+        </p>
       </article>
     </PageShell>
   );

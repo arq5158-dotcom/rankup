@@ -53,6 +53,19 @@ function Page() {
           player website. Include your display name and the payment receipt email if the issue is a
           ranking-credit purchase.
         </p>
+        <article className="mt-4 space-y-3 text-sm leading-relaxed text-white/50">
+          <p>
+            Pay4Rank support can help with ranking credits, Stripe checkout, weekly or monthly
+            Score, Free Spin claims, profile photos, usernames, and featured placement. We cannot
+            change Google search rankings or refund a completed credit purchase except as the terms
+            allow.
+          </p>
+          <p>
+            If you are reporting a player website, include the display name or @username and why
+            the link is unsafe. Adult, malware, and shortened URLs are already blocked on upload;
+            we still review reports.
+          </p>
+        </article>
 
         <form onSubmit={submit} className="glass-card mt-8 space-y-4 rounded-2xl p-6">
           <div>

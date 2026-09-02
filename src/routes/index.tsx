@@ -231,6 +231,20 @@ function Home() {
             />
           </div>
         </div>
+        <article className="mx-auto mt-8 max-w-2xl space-y-3 pb-4 text-sm leading-relaxed text-white/55">
+          <h2 className="font-display text-lg font-extrabold text-fg">A live leaderboard for websites</h2>
+          <p>
+            Pay4Rank is a paid promotion leaderboard. Buy ranking credits from $1, spend them 1:1
+            for Score, and climb the weekly or monthly board you choose. Higher Score means a more
+            visible public listing for your profile, brand, or website. Top three monthly get Gold,
+            Silver, and Bronze featured placement. Weekly #1 is Champion with a homepage spotlight.
+          </p>
+          <p>
+            This is not Google Ads and not a cash prize. Credits never reset. Weekly and monthly
+            Score are separate. Free Spin awards Score without a purchase. Player website links on
+            the board are sponsored listings.
+          </p>
+        </article>
       </main>
       <SiteFooter />
       <RankUpModal
