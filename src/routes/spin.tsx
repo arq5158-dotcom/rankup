@@ -177,6 +177,7 @@ function SpinPage() {
         ) : (
           <Link
             to="/login"
+            search={{ mode: "in" }}
             className="btn-gold tap mx-auto flex min-h-14 min-w-[220px] items-center justify-center gap-2 rounded-full px-8 text-sm font-extrabold"
           >
             <Sparkles className="h-4 w-4" />
