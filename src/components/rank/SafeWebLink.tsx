@@ -16,6 +16,10 @@ export function SafeWebLink({
     <a
       href={href}
       target="_blank"
+      // Paid / promotional member listings (leaderboard, podium, notes).
+      // Google paid-link policy: rel="sponsored". nofollow kept so we do not
+      // pass ranking signal. Do not drop nofollow for "profile" links — users
+      // pay for visibility. Internal Pay4Rank routes never use this component.
       rel="sponsored nofollow noopener noreferrer"
       referrerPolicy="no-referrer"
       title={`Opens ${host} — third-party site, not affiliated with Pay4Rank`}
