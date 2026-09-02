@@ -70,6 +70,16 @@ export default async function grokPwaMiddleware(
   const path = event.url.pathname;
   const urlWithQuery = path + event.url.search;
 
+  if (path === "/googlece89cc86aa7767dd.html") {
+    return new Response("google-site-verification: googlece89cc86aa7767dd.html\n", {
+      headers: {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "public, max-age=300",
+        "x-robots-tag": "noindex",
+      },
+    });
+  }
+
   if (path === "/__grok/manifest.webmanifest" || path === "/__grok/manifest.json") {
     return new Response(renderWebManifest(requestHost(event)), {
       headers: {
