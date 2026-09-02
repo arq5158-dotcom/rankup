@@ -10,9 +10,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/weekly")({
   head: () =>
     seoHead({
-      title: "Weekly Leaderboard & Champion",
+      title: "Pay4Rank Weekly Leaderboard",
       description:
-        "Live weekly Pay4Rank rankings. The #1 player becomes Weekly Champion with a badge and homepage spotlight. Score resets every Sunday. Climb with credits or Free Spin.",
+        "Live Pay4Rank weekly leaderboard. Climb with ranking credits or Free Spin Score. The #1 player is Weekly Champion with a badge and homepage spotlight. Resets every Sunday.",
       path: "/weekly",
     }),
   loader: async () => {
@@ -40,7 +40,7 @@ function Weekly() {
         />
         <div>
           <p className="page-kicker">Weekly</p>
-          <h1 className="page-title text-gold-grad">Weekly Challenge</h1>
+          <h1 className="page-title text-gold-grad">Weekly leaderboard</h1>
           <p className="mt-1 text-sm text-white/40">Only #1 is featured this week. Rankings reset every Sunday.</p>
         </div>
       </div>

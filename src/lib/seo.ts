@@ -2,7 +2,7 @@ export const SITE_NAME = "Pay4Rank";
 export const SITE_TAGLINE = "Pay. Climb. Get Seen.";
 export const SITE_URL = "https://www.pay4rank.com";
 export const SITE_DESCRIPTION =
-  "Pay4Rank is a live ranking SaaS. Buy credits, spend them 1:1 for Score, and climb weekly and monthly leaderboards. Featured Gold, Silver, Bronze, and Weekly Champion placements — not cash prizes.";
+  "Pay4Rank is a live ranking leaderboard. Buy ranking credits, spend them for Score, and climb the weekly and monthly Pay4Rank boards. Featured Gold, Silver, Bronze, and Weekly Champion — not cash prizes.";
 
 export function absUrl(path = "/") {
   if (path.startsWith("http")) return path;
@@ -27,6 +27,14 @@ export const PUBLIC_PATHS = [
 ] as const;
 
 export const FAQ_ITEMS = [
+  {
+    q: "What is Pay4Rank?",
+    a: "Pay4Rank is a live ranking leaderboard. You buy ranking credits, spend them 1:1 for Score, and climb separate weekly and monthly boards. Top players get featured placement, badges, and history — not cash prizes.",
+  },
+  {
+    q: "How do I climb the Pay4Rank leaderboard?",
+    a: "Sign in, buy ranking credits from $1, then spend credits on the weekly or monthly board. Each credit spent adds 1 Score on that board. Free Spin can also add Score. Higher Score means a higher rank.",
+  },
   {
     q: "How do Pay4Rank rankings work?",
     a: "Weekly and monthly are separate leaderboards. Buy credits, then spend them 1:1 into Score on the board you choose. Wallet credits do not affect rank until spent. Free Spin can award Score to one board. Tied scores keep the earlier climb.",

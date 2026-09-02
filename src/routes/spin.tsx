@@ -15,9 +15,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/spin")({
   head: () =>
     seoHead({
-      title: "Free Spin — Bonus Score on Weekly or Monthly Boards",
+      title: "Pay4Rank Free Spin | Bonus Score on the Leaderboard",
       description:
-        "Spin the Pay4Rank wheel for free bonus Score. Pick weekly or monthly, claim once, and climb without spending credits. Credits stay in your wallet.",
+        "Pay4Rank Free Spin: spin for free bonus Score on the weekly or monthly leaderboard. Sign in to spin. Credits stay in your wallet — the wheel only awards Score.",
       path: "/spin",
     }),
   loader: async () => getSpinConfig(),

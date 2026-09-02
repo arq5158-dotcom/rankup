@@ -10,9 +10,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/monthly")({
   head: () =>
     seoHead({
-      title: "Monthly Leaderboard — Gold, Silver & Bronze",
+      title: "Pay4Rank Monthly Leaderboard",
       description:
-        "Live monthly Pay4Rank board. Top three earn Gold, Silver, and Bronze featured placement, badges, and Hall of Fame history. Spend credits or claim Free Spin Score.",
+        "Live Pay4Rank monthly leaderboard. Spend ranking credits for Score. Top three earn Gold, Silver, and Bronze featured placement, badges, and Hall of Fame history.",
       path: "/monthly",
     }),
   loader: async () => {
@@ -41,7 +41,7 @@ function Monthly() {
         />
         <div>
           <p className="page-kicker">Monthly</p>
-          <h1 className="page-title text-gold-grad">Monthly board</h1>
+          <h1 className="page-title text-gold-grad">Monthly leaderboard</h1>
           <p className="mt-1 text-sm text-white/40">Top 3 get featured placement. New month, new climb.</p>
         </div>
       </div>
