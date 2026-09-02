@@ -30,6 +30,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as WeeklyRouteImport } from './routes/weekly'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
+import { Route as GuidesHiringALinkBuildingAgencyRouteImport } from './routes/guides.hiring-a-link-building-agency'
 import { Route as GuidesHowToGetTrafficToANewWebsiteRouteImport } from './routes/guides.how-to-get-traffic-to-a-new-website'
 import { Route as GuidesTrafficSiteInternetRouteImport } from './routes/guides.traffic-site-internet'
 import { Route as GuidesWebsiteTrafficSimpleLastingGuideRouteImport } from './routes/guides.website-traffic-simple-lasting-guide'
@@ -145,6 +146,12 @@ const GuidesIndexRoute = GuidesIndexRouteImport.update({
   path: '/guides/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesHiringALinkBuildingAgencyRoute =
+  GuidesHiringALinkBuildingAgencyRouteImport.update({
+    id: '/guides/hiring-a-link-building-agency',
+    path: '/guides/hiring-a-link-building-agency',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const GuidesHowToGetTrafficToANewWebsiteRoute =
   GuidesHowToGetTrafficToANewWebsiteRouteImport.update({
     id: '/guides/how-to-get-traffic-to-a-new-website',
@@ -210,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
+  '/guides/hiring-a-link-building-agency': typeof GuidesHiringALinkBuildingAgencyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
   '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
   '/guides/website-traffic-simple-lasting-guide': typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
@@ -241,6 +249,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
+  '/guides/hiring-a-link-building-agency': typeof GuidesHiringALinkBuildingAgencyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
   '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
   '/guides/website-traffic-simple-lasting-guide': typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
@@ -273,6 +282,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
+  '/guides/hiring-a-link-building-agency': typeof GuidesHiringALinkBuildingAgencyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
   '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
   '/guides/website-traffic-simple-lasting-guide': typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wallet'
     | '/weekly'
+    | '/guides/hiring-a-link-building-agency'
     | '/guides/how-to-get-traffic-to-a-new-website'
     | '/guides/traffic-site-internet'
     | '/guides/website-traffic-simple-lasting-guide'
@@ -337,6 +348,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wallet'
     | '/weekly'
+    | '/guides/hiring-a-link-building-agency'
     | '/guides/how-to-get-traffic-to-a-new-website'
     | '/guides/traffic-site-internet'
     | '/guides/website-traffic-simple-lasting-guide'
@@ -368,6 +380,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wallet'
     | '/weekly'
+    | '/guides/hiring-a-link-building-agency'
     | '/guides/how-to-get-traffic-to-a-new-website'
     | '/guides/traffic-site-internet'
     | '/guides/website-traffic-simple-lasting-guide'
@@ -400,6 +413,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   WalletRoute: typeof WalletRoute
   WeeklyRoute: typeof WeeklyRoute
+  GuidesHiringALinkBuildingAgencyRoute: typeof GuidesHiringALinkBuildingAgencyRoute
   GuidesHowToGetTrafficToANewWebsiteRoute: typeof GuidesHowToGetTrafficToANewWebsiteRoute
   GuidesTrafficSiteInternetRoute: typeof GuidesTrafficSiteInternetRoute
   GuidesWebsiteTrafficSimpleLastingGuideRoute: typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
@@ -560,6 +574,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/hiring-a-link-building-agency': {
+      id: '/guides/hiring-a-link-building-agency'
+      path: '/guides/hiring-a-link-building-agency'
+      fullPath: '/guides/hiring-a-link-building-agency'
+      preLoaderRoute: typeof GuidesHiringALinkBuildingAgencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guides/how-to-get-traffic-to-a-new-website': {
       id: '/guides/how-to-get-traffic-to-a-new-website'
       path: '/guides/how-to-get-traffic-to-a-new-website'
@@ -640,6 +661,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   WalletRoute: WalletRoute,
   WeeklyRoute: WeeklyRoute,
+  GuidesHiringALinkBuildingAgencyRoute: GuidesHiringALinkBuildingAgencyRoute,
   GuidesHowToGetTrafficToANewWebsiteRoute:
     GuidesHowToGetTrafficToANewWebsiteRoute,
   GuidesTrafficSiteInternetRoute: GuidesTrafficSiteInternetRoute,

@@ -21,6 +21,7 @@ export const PUBLIC_PATHS = [
   { path: "/guides/how-to-get-traffic-to-a-new-website", changefreq: "monthly", priority: "0.75" },
   { path: "/guides/traffic-site-internet", changefreq: "monthly", priority: "0.7" },
   { path: "/guides/website-traffic-simple-lasting-guide", changefreq: "monthly", priority: "0.7" },
+  { path: "/guides/hiring-a-link-building-agency", changefreq: "monthly", priority: "0.65" },
   { path: "/giveaways", changefreq: "weekly", priority: "0.6" },
   { path: "/archive", changefreq: "weekly", priority: "0.5" },
   { path: "/rules", changefreq: "monthly", priority: "0.6" },

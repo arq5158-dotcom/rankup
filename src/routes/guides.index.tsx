@@ -27,6 +27,11 @@ const POSTS = [
     dek: "How to increase website traffic without betting everything on ads.",
   },
   {
+    to: "/guides/hiring-a-link-building-agency" as const,
+    title: "Hiring a link building agency",
+    dek: "When professional SEO link building and backlink services make sense — and what to avoid.",
+  },
+  {
     to: "/guides/traffic-site-internet" as const,
     title: "Traffic site internet : guide simple et durable",
     dek: "Comment augmenter le trafic sans tout miser sur la pub. SEO, contenu, UX et suivi.",
