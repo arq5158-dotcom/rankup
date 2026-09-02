@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Loader2, Save, Search, Shield, Trash2 } from "lucide-react";
+import { Loader2, Minus, Plus, Save, Search, Shield, Trash2 } from "lucide-react";
 import { RedirectToSignIn } from "@/lib/auth/gates";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import {
@@ -8,6 +8,7 @@ import {
   adminListPayments,
   adminListUsers,
   adminRemoveEntry,
+  adminAdjustScore,
   adminResetCycle,
   adminSaveStripeKeys,
   adminSaveSupportEmail,
@@ -29,6 +30,7 @@ import { loadAccount } from "@/lib/account-cache";
 import { adminGetSpin, adminSaveSpin, type SpinSegment } from "@/lib/server/spin";
 import { adminGetEconomy, adminSaveEconomy, type CreditEconomy } from "@/lib/server/economy";
 import { DEFAULT_ECONOMY } from "@/lib/economy";
+import type { CycleType } from "@/lib/players";
 import { matchesQuery } from "@/lib/username";
 import { seoHead } from "@/lib/seo";
 import { FadeSwitch, Segmented } from "@/components/rank/motion";
@@ -160,6 +162,33 @@ function AdminPage() {
     matchesQuery(query, u.display_name, u.username, u.email, u.user_id),
   );
 
+  const adjustScore = async (e: BoardEntry, cycleType: CycleType, sign: 1 | -1) => {
+    const raw = window.prompt(
+      `How much Score do you want to ${sign > 0 ? "add to" : "remove from"} ${e.displayName} on the ${cycleType} board?`,
+    );
+    if (raw == null) return;
+    const amount = Math.round(Number(raw));
+    if (!Number.isFinite(amount) || amount <= 0) {
+      toast.error("Enter a positive Score amount.");
+      return;
+    }
+    if (
+      !window.confirm(
+        `${sign > 0 ? "Add" : "Remove"} ${formatScore(amount)} Score ${sign > 0 ? "to" : "from"} ${e.displayName} (${cycleType})?`,
+      )
+    ) {
+      return;
+    }
+    try {
+      const res = await adminAdjustScore({ data: { id: e.id, cycleType, delta: sign * amount } });
+      if (cycleType === "monthly") setBoard(await getLeaderboard({ data: { cycleType: "monthly" } }));
+      else setWeeklyBoard(await getLeaderboard({ data: { cycleType: "weekly" } }));
+      toast.success(`Now ${formatScore(res.score)} Score`);
+    } catch (err) {
+      toast.error(publicErrorMessage(err, "Could not update Score"));
+    }
+  };
+
   const tabs: Tab[] = isOwner
     ? ["overview", "users", "prizes", "spin", "economy", "site", "reset", "stripe"]
     : ["overview", "users", "prizes", "spin", "economy", "site", "reset"];
@@ -235,6 +264,22 @@ function AdminPage() {
                     <span className="text-sm font-bold text-gold">{formatScore(e.amountPaid)} SCORE</span>
                     <button
                       type="button"
+                      onClick={() => void adjustScore(e, "monthly", 1)}
+                      className="grid h-8 w-8 place-items-center rounded-md text-white/40 hover:bg-white/10 hover:text-gold"
+                      aria-label={`Add Score for ${e.displayName}`}
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void adjustScore(e, "monthly", -1)}
+                      className="grid h-8 w-8 place-items-center rounded-md text-white/40 hover:bg-white/10 hover:text-danger"
+                      aria-label={`Remove Score for ${e.displayName}`}
+                    >
+                      <Minus className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
                       onClick={async () => {
                         if (
                           !window.confirm(
@@ -281,6 +326,22 @@ function AdminPage() {
                       {e.username ? <p className="truncate text-[10px] text-white/35">@{e.username}</p> : null}
                     </div>
                     <span className="text-sm font-bold text-gold">{formatScore(e.amountPaid)} SCORE</span>
+                    <button
+                      type="button"
+                      onClick={() => void adjustScore(e, "weekly", 1)}
+                      className="grid h-8 w-8 place-items-center rounded-md text-white/40 hover:bg-white/10 hover:text-gold"
+                      aria-label={`Add Score for ${e.displayName}`}
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void adjustScore(e, "weekly", -1)}
+                      className="grid h-8 w-8 place-items-center rounded-md text-white/40 hover:bg-white/10 hover:text-danger"
+                      aria-label={`Remove Score for ${e.displayName}`}
+                    >
+                      <Minus className="h-3.5 w-3.5" />
+                    </button>
                     <button
                       type="button"
                       onClick={async () => {

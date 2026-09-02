@@ -1553,6 +1553,51 @@ export const adminRemoveEntry = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const adminAdjustScore = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((data: { id?: number; cycleType?: CycleType; delta?: number } | null | undefined) => ({
+    id: data?.id,
+    cycleType: asCycle(data?.cycleType),
+    delta: Math.trunc(Number(data?.delta) || 0),
+  }))
+  .handler(async ({ context, data }) => {
+    rateLimit(`admin-score:${context.userId}`, 40, 60_000);
+    const sql = await getSql();
+    await requireAdmin(sql, context.userId, bearerOf(context));
+    const id = parsePositiveInt(data.id);
+    if (!id) throw new Error("Invalid entry.");
+    const delta = data.delta;
+    if (!delta || Math.abs(delta) > 1_000_000) throw new Error("Enter a Score amount between 1 and 1,000,000.");
+    const cycleType = asCycle(data.cycleType);
+    const start = await getCycleStart(sql, cycleType);
+    const row = await sql<{
+      id: number;
+      user_id: string | null;
+      display_name: string | null;
+      amount_paid: number | string;
+    }>`
+      select id, user_id, display_name, amount_paid from leaderboard
+      where id = ${id} and cycle_type = ${cycleType} and cycle_start = ${start}
+      limit 1
+    `;
+    const entry = row[0];
+    if (!entry) throw new Error("Player not found on this board.");
+    const current = Math.max(0, num(entry.amount_paid));
+    const next = Math.max(0, Math.min(1_000_000_000, current + delta));
+    if (next === current) {
+      throw new Error(delta < 0 ? "Score is already 0." : "Score did not change.");
+    }
+    await sql`update leaderboard set amount_paid = ${next} where id = ${entry.id}`;
+    await rerank(sql, cycleType, start);
+    const actor = entry.user_id || context.userId;
+    const note = `Admin ${delta > 0 ? "granted" : "removed"} ${Math.abs(delta)} ${cycleType} score for ${entry.display_name || "player"} (${current} → ${next})`;
+    await sql`
+      insert into credit_ledger (user_id, kind, credits_delta, score_delta, cycle_type, resulting_credits, note)
+      values (${actor}, ${"admin_adjust"}, ${0}, ${next - current}, ${cycleType}, ${null}, ${note})
+    `;
+    return { ok: true as const, score: next, delta: next - current };
+  });
+
 export const adminResetCycle = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .validator((data: { cycleType?: CycleType } | null | undefined) => ({
