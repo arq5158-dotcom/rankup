@@ -20,6 +20,11 @@ const POSTS = [
     title: "How to get traffic to your website",
     dek: "Even if the site is brand new. Free traffic, getting people to view it, and what to skip.",
   },
+  {
+    to: "/guides/traffic-site-internet" as const,
+    title: "Traffic site internet : guide simple et durable",
+    dek: "Comment augmenter le trafic sans tout miser sur la pub. SEO, contenu, UX et suivi.",
+  },
 ];
 
 function Page() {

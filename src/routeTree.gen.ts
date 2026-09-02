@@ -31,6 +31,7 @@ import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as WeeklyRouteImport } from './routes/weekly'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as GuidesHowToGetTrafficToANewWebsiteRouteImport } from './routes/guides.how-to-get-traffic-to-a-new-website'
+import { Route as GuidesTrafficSiteInternetRouteImport } from './routes/guides.traffic-site-internet'
 import { Route as PayIndexRouteImport } from './routes/pay.index'
 import { Route as PayCancelRouteImport } from './routes/pay.cancel'
 import { Route as PaySuccessRouteImport } from './routes/pay.success'
@@ -149,6 +150,12 @@ const GuidesHowToGetTrafficToANewWebsiteRoute =
     path: '/guides/how-to-get-traffic-to-a-new-website',
     getParentRoute: () => rootRouteImport,
   } as any)
+const GuidesTrafficSiteInternetRoute =
+  GuidesTrafficSiteInternetRouteImport.update({
+    id: '/guides/traffic-site-internet',
+    path: '/guides/traffic-site-internet',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PayIndexRoute = PayIndexRouteImport.update({
   id: '/pay/',
   path: '/pay/',
@@ -197,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
+  '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
   '/guides/': typeof GuidesIndexRoute
@@ -226,6 +234,7 @@ export interface FileRoutesByTo {
   '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
+  '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
   '/guides': typeof GuidesIndexRoute
@@ -256,6 +265,7 @@ export interface FileRoutesById {
   '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
+  '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
   '/guides/': typeof GuidesIndexRoute
@@ -287,6 +297,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/weekly'
     | '/guides/how-to-get-traffic-to-a-new-website'
+    | '/guides/traffic-site-internet'
     | '/pay/cancel'
     | '/pay/success'
     | '/guides/'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/weekly'
     | '/guides/how-to-get-traffic-to-a-new-website'
+    | '/guides/traffic-site-internet'
     | '/pay/cancel'
     | '/pay/success'
     | '/guides'
@@ -345,6 +357,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/weekly'
     | '/guides/how-to-get-traffic-to-a-new-website'
+    | '/guides/traffic-site-internet'
     | '/pay/cancel'
     | '/pay/success'
     | '/guides/'
@@ -375,6 +388,7 @@ export interface RootRouteChildren {
   WalletRoute: typeof WalletRoute
   WeeklyRoute: typeof WeeklyRoute
   GuidesHowToGetTrafficToANewWebsiteRoute: typeof GuidesHowToGetTrafficToANewWebsiteRoute
+  GuidesTrafficSiteInternetRoute: typeof GuidesTrafficSiteInternetRoute
   PayCancelRoute: typeof PayCancelRoute
   PaySuccessRoute: typeof PaySuccessRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
@@ -539,6 +553,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesHowToGetTrafficToANewWebsiteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/traffic-site-internet': {
+      id: '/guides/traffic-site-internet'
+      path: '/guides/traffic-site-internet'
+      fullPath: '/guides/traffic-site-internet'
+      preLoaderRoute: typeof GuidesTrafficSiteInternetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pay/': {
       id: '/pay/'
       path: '/pay'
@@ -600,6 +621,7 @@ const rootRouteChildren: RootRouteChildren = {
   WeeklyRoute: WeeklyRoute,
   GuidesHowToGetTrafficToANewWebsiteRoute:
     GuidesHowToGetTrafficToANewWebsiteRoute,
+  GuidesTrafficSiteInternetRoute: GuidesTrafficSiteInternetRoute,
   PayCancelRoute: PayCancelRoute,
   PaySuccessRoute: PaySuccessRoute,
   GuidesIndexRoute: GuidesIndexRoute,
