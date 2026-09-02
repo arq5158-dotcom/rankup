@@ -77,6 +77,7 @@ export function RankWheel({
             );
           })}
           {filled.map((s, i) => {
+            if (s.scoreReward <= 0) return null;
             const mid = i * SLICE + SLICE / 2;
             const pos = polar(100, 100, 54, mid - 90);
             const flip = mid > 90 && mid < 270 ? 180 : 0;
@@ -93,9 +94,9 @@ export function RankWheel({
                 stroke="rgba(0,0,0,0.45)"
                 strokeWidth="0.8"
                 paintOrder="stroke"
-                style={{ fontSize: s.scoreReward === 0 ? 9 : 12, fontWeight: 800, letterSpacing: "0.02em" }}
+                style={{ fontSize: 12, fontWeight: 800, letterSpacing: "0.02em" }}
               >
-                {s.scoreReward === 0 ? "NO SCORE" : `+${formatScore(s.scoreReward)}`}
+                +{formatScore(s.scoreReward)}
               </text>
             );
           })}

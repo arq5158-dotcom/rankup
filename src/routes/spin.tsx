@@ -173,12 +173,14 @@ function SpinPage() {
       {pending && !spinning ? (
         <div className="modal-layer is-open fixed inset-0 z-[96] grid place-items-center bg-black/75 p-4">
           <div className="modal-card glass-card w-full max-w-sm rounded-2xl p-6 text-center">
-            <p className="text-[10px] font-bold tracking-[0.16em] text-gold uppercase">{pending.score > 0 ? "You won" : "No score"}</p>
+            <p className="text-[10px] font-bold tracking-[0.16em] text-gold uppercase">
+              {pending.score > 0 ? "You won" : "Spin complete"}
+            </p>
             <p className="mt-2 font-display text-4xl font-black text-gold-grad">
-              {pending.score > 0 ? `+${formatScore(pending.score)} SCORE` : "NO SCORE"}
+              {pending.score > 0 ? `+${formatScore(pending.score)} SCORE` : "COME BACK TOMORROW"}
             </p>
             <p className="mt-2 text-xs text-white/40">
-              {pending.score > 0 ? `Claim onto the ${cycle} board.` : "This slice awards nothing. Close and try again tomorrow."}
+              {pending.score > 0 ? `Claim onto the ${cycle} board.` : "Your next free spin unlocks in 24 hours."}
             </p>
             <div className="mx-auto mt-3 max-w-xs">
               <Segmented

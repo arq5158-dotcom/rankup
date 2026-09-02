@@ -21,8 +21,14 @@ function num(v: number | string | null | undefined) {
   return Number.isFinite(n) ? n : 0;
 }
 
-function publicSegments(rows: SpinSegment[]): Omit<SpinSegment, "weight">[] {
-  return rows.map(({ weight: _w, ...rest }) => rest);
+function publicSegments(rows: SpinSegment[]): SpinSegment[] {
+  return rows.map((s) => ({
+    slot: s.slot,
+    label: s.label,
+    scoreReward: s.scoreReward,
+    image: s.image,
+    enabled: true,
+  }));
 }
 
 function pickWeighted(live: SpinSegment[]): SpinSegment {
