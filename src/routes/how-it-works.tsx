@@ -71,6 +71,12 @@ function Page() {
         >
           View the live leaderboard
         </Link>
+        <p className="text-sm text-white/40">
+          New site with no visitors?{" "}
+          <Link to="/guides/how-to-get-traffic-to-a-new-website" className="text-gold hover:underline">
+            How to get traffic to a brand new website
+          </Link>
+        </p>
       </div>
     </PageShell>
   );

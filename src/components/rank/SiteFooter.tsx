@@ -10,6 +10,7 @@ const COMPETE = [
   { to: "/wallet", label: "Wallet" },
   { to: "/giveaways", label: "Giveaways" },
   { to: "/how-it-works", label: "How it works" },
+  { to: "/guides", label: "Guides" },
   { to: "/archive", label: "Past seasons" },
 ] as const;
 

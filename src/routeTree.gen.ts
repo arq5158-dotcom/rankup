@@ -29,6 +29,8 @@ import { Route as SpinRouteImport } from './routes/spin'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as WeeklyRouteImport } from './routes/weekly'
+import { Route as GuidesIndexRouteImport } from './routes/guides.index'
+import { Route as GuidesHowToGetTrafficToANewWebsiteRouteImport } from './routes/guides.how-to-get-traffic-to-a-new-website'
 import { Route as PayIndexRouteImport } from './routes/pay.index'
 import { Route as PayCancelRouteImport } from './routes/pay.cancel'
 import { Route as PaySuccessRouteImport } from './routes/pay.success'
@@ -136,6 +138,17 @@ const WeeklyRoute = WeeklyRouteImport.update({
   path: '/weekly',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesIndexRoute = GuidesIndexRouteImport.update({
+  id: '/guides/',
+  path: '/guides/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesHowToGetTrafficToANewWebsiteRoute =
+  GuidesHowToGetTrafficToANewWebsiteRouteImport.update({
+    id: '/guides/how-to-get-traffic-to-a-new-website',
+    path: '/guides/how-to-get-traffic-to-a-new-website',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PayIndexRoute = PayIndexRouteImport.update({
   id: '/pay/',
   path: '/pay/',
@@ -183,8 +196,10 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
+  '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
+  '/guides/': typeof GuidesIndexRoute
   '/pay/': typeof PayIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
@@ -210,8 +225,10 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
+  '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
+  '/guides': typeof GuidesIndexRoute
   '/pay': typeof PayIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
@@ -238,8 +255,10 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
   '/weekly': typeof WeeklyRoute
+  '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
+  '/guides/': typeof GuidesIndexRoute
   '/pay/': typeof PayIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
@@ -267,8 +286,10 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wallet'
     | '/weekly'
+    | '/guides/how-to-get-traffic-to-a-new-website'
     | '/pay/cancel'
     | '/pay/success'
+    | '/guides/'
     | '/pay/'
     | '/api/auth/$'
     | '/api/stripe/webhook'
@@ -294,8 +315,10 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wallet'
     | '/weekly'
+    | '/guides/how-to-get-traffic-to-a-new-website'
     | '/pay/cancel'
     | '/pay/success'
+    | '/guides'
     | '/pay'
     | '/api/auth/$'
     | '/api/stripe/webhook'
@@ -321,8 +344,10 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wallet'
     | '/weekly'
+    | '/guides/how-to-get-traffic-to-a-new-website'
     | '/pay/cancel'
     | '/pay/success'
+    | '/guides/'
     | '/pay/'
     | '/api/auth/$'
     | '/api/stripe/webhook'
@@ -349,8 +374,10 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   WalletRoute: typeof WalletRoute
   WeeklyRoute: typeof WeeklyRoute
+  GuidesHowToGetTrafficToANewWebsiteRoute: typeof GuidesHowToGetTrafficToANewWebsiteRoute
   PayCancelRoute: typeof PayCancelRoute
   PaySuccessRoute: typeof PaySuccessRoute
+  GuidesIndexRoute: typeof GuidesIndexRoute
   PayIndexRoute: typeof PayIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
@@ -498,6 +525,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WeeklyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/': {
+      id: '/guides/'
+      path: '/guides'
+      fullPath: '/guides/'
+      preLoaderRoute: typeof GuidesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/how-to-get-traffic-to-a-new-website': {
+      id: '/guides/how-to-get-traffic-to-a-new-website'
+      path: '/guides/how-to-get-traffic-to-a-new-website'
+      fullPath: '/guides/how-to-get-traffic-to-a-new-website'
+      preLoaderRoute: typeof GuidesHowToGetTrafficToANewWebsiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pay/': {
       id: '/pay/'
       path: '/pay'
@@ -557,8 +598,11 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   WalletRoute: WalletRoute,
   WeeklyRoute: WeeklyRoute,
+  GuidesHowToGetTrafficToANewWebsiteRoute:
+    GuidesHowToGetTrafficToANewWebsiteRoute,
   PayCancelRoute: PayCancelRoute,
   PaySuccessRoute: PaySuccessRoute,
+  GuidesIndexRoute: GuidesIndexRoute,
   PayIndexRoute: PayIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
