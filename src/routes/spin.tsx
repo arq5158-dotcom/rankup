@@ -4,11 +4,12 @@ import { Loader2, Sparkles } from "lucide-react";
 import { PageShell } from "@/components/rank/PageShell";
 import { RoutePending } from "@/components/rank/RoutePending";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { claimSpin, getMySpinState, getSpinConfig, startFreeSpin, type SpinSegment } from "@/lib/server/spin";
+import { claimSpin, getMySpinState, getSpinConfig, startFreeSpin } from "@/lib/server/spin";
 import { loadAccount } from "@/lib/account-cache";
-import { formatScore, publicErrorMessage, safeImageSrc } from "@/lib/utils";
+import { formatScore, publicErrorMessage } from "@/lib/utils";
 import type { CycleType } from "@/lib/players";
 import { Segmented } from "@/components/rank/motion";
+import { RankWheel, WHEEL_SLICE } from "@/components/rank/RankWheel";
 import { seoHead } from "@/lib/seo";
 import { toast } from "sonner";
 
@@ -26,51 +27,7 @@ export const Route = createFileRoute("/spin")({
   component: SpinPage,
 });
 
-const SLICE = 360 / 6;
-
-function Wheel({
-  segments,
-  rotation,
-  spinning,
-}: {
-  segments: SpinSegment[];
-  rotation: number;
-  spinning: boolean;
-}) {
-  const filled = Array.from({ length: 6 }, (_, i) => segments.find((s) => s.slot === i + 1) || {
-    slot: i + 1,
-    label: `+${100 * (i + 1)}`,
-    scoreReward: 100 * (i + 1),
-    image: null,
-    enabled: true,
-  });
-  return (
-    <div className="wheel-stage">
-      <div className="wheel-pointer" />
-      <div
-        className={`wheel-disk ${spinning ? "is-spinning" : ""}`}
-        style={{ transform: `rotate(${rotation}deg)` }}
-      >
-        <div className="wheel-conic" />
-        {filled.map((s, i) => {
-          const angle = i * SLICE + SLICE / 2;
-          const img = safeImageSrc(s.image);
-          return (
-            <div
-              key={s.slot}
-              className="wheel-label"
-              style={{ transform: `rotate(${angle}deg) translateY(-118px)` }}
-            >
-              {img ? <img src={img} alt="" className="wheel-art" /> : null}
-              <span>+{formatScore(s.scoreReward)}</span>
-            </div>
-          );
-        })}
-        <div className="wheel-hub" />
-      </div>
-    </div>
-  );
-}
+const SLICE = WHEEL_SLICE;
 
 function SpinPage() {
   const { segments: initial } = Route.useLoaderData();
@@ -163,7 +120,7 @@ function SpinPage() {
             ]}
           />
         </div>
-        <Wheel segments={segments} rotation={rotation} spinning={spinning} />
+        <RankWheel segments={segments} rotation={rotation} spinning={spinning} />
         {user ? (
           <button
             type="button"

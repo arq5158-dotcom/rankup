@@ -31,6 +31,8 @@ import { DEFAULT_ECONOMY } from "@/lib/economy";
 import { matchesQuery } from "@/lib/username";
 import { seoHead } from "@/lib/seo";
 import { FadeSwitch, Segmented } from "@/components/rank/motion";
+import { RankWheel } from "@/components/rank/RankWheel";
+import { WheelSliceCropper } from "@/components/rank/WheelSliceCropper";
 
 export const Route = createFileRoute("/admin")({
   head: () =>
@@ -44,46 +46,6 @@ export const Route = createFileRoute("/admin")({
 });
 
 type Tab = "overview" | "users" | "prizes" | "spin" | "economy" | "site" | "reset" | "stripe";
-
-function shrinkWheelImage(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    if (file.size > 8 * 1024 * 1024) {
-      reject(new Error("Image must be under 8MB."));
-      return;
-    }
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      const max = 256;
-      const scale = Math.min(1, max / Math.max(img.width || 1, img.height || 1));
-      const w = Math.max(1, Math.round((img.width || 1) * scale));
-      const h = Math.max(1, Math.round((img.height || 1) * scale));
-      const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        reject(new Error("Could not process image."));
-        return;
-      }
-      ctx.drawImage(img, 0, 0, w, h);
-      let q = 0.82;
-      let data = canvas.toDataURL("image/jpeg", q);
-      while (data.length > 140_000 && q > 0.4) {
-        q -= 0.1;
-        data = canvas.toDataURL("image/jpeg", q);
-      }
-      if (data.length > 175_000) reject(new Error("Image is still too large. Try a simpler graphic."));
-      else resolve(data);
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("Could not read that image."));
-    };
-    img.src = url;
-  });
-}
 
 function AdminPage() {
   const { user, isPending } = useCurrentUserState();
@@ -106,6 +68,7 @@ function AdminPage() {
   const [account, setAccount] = useState<Awaited<ReturnType<typeof getMyAccount>> | null>(null);
   const [query, setQuery] = useState("");
   const [spinSegs, setSpinSegs] = useState<SpinSegment[]>([]);
+  const [sliceCrop, setSliceCrop] = useState<{ file: File; slot: number } | null>(null);
   const [economy, setEconomy] = useState<CreditEconomy>(DEFAULT_ECONOMY);
   const [ecoLog, setEcoLog] = useState<{ at: string; who: string; note: string }[]>([]);
   const [supportEmail, setSupportEmail] = useState("");
@@ -486,7 +449,10 @@ function AdminPage() {
         {tab === "spin" && (
           <div className="glass-card space-y-4 rounded-2xl p-6">
             <h2 className="font-bold text-fg">Free Spin — 6 portions</h2>
-            <p className="text-sm text-white/40">Images and score rewards appear on the public wheel. Disabled slices are never drawn as winners.</p>
+            <p className="text-sm text-white/40">
+              Upload a photo per triangle, then drag/zoom like a profile crop. The image fills that slice. Disabled slices never win.
+            </p>
+            <RankWheel segments={spinSegs} size="sm" />
             <div className="grid gap-3 md:grid-cols-2">
               {spinSegs.map((s, i) => (
                 <div key={s.slot} className="rounded-xl border border-white/[0.06] bg-[#12121a] p-3">
@@ -510,7 +476,7 @@ function AdminPage() {
                     className="mt-2 h-10 w-full rounded-lg border border-white/[0.08] bg-[#0c0c12] px-2 text-sm text-fg"
                     placeholder="Score reward"
                   />
-                  <label className="mt-2 flex items-center gap-2 text-xs text-white/50">
+                  <label className="mt-2 flex min-h-10 items-center gap-2 text-xs text-white/50">
                     <input
                       type="checkbox"
                       checked={s.enabled}
@@ -520,26 +486,28 @@ function AdminPage() {
                     />
                     Enabled
                   </label>
-                  {s.image ? (
-                    <img src={s.image} alt="" className="mt-2 h-16 w-16 rounded-lg object-cover ring-1 ring-white/10" />
-                  ) : null}
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    className="mt-2 w-full text-xs text-white/40"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      e.target.value = "";
-                      if (!f) return;
-                      void shrinkWheelImage(f)
-                        .then((url) => setSpinSegs((rows) => rows.map((r, idx) => (idx === i ? { ...r, image: url } : r))))
-                        .catch((err) => toast.error(publicErrorMessage(err, "Could not use that image.")));
-                    }}
-                  />
+                  <label className="btn-outline tap mt-2 flex min-h-11 cursor-pointer items-center justify-center rounded-lg px-3 text-xs font-bold">
+                    {s.image ? "Adjust / replace image" : "Upload slice image"}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="sr-only"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        e.target.value = "";
+                        if (!f) return;
+                        if (f.size > 8 * 1024 * 1024) {
+                          toast.error("Image must be under 8MB.");
+                          return;
+                        }
+                        setSliceCrop({ file: f, slot: s.slot });
+                      }}
+                    />
+                  </label>
                   {s.image ? (
                     <button
                       type="button"
-                      className="mt-1 text-[11px] text-danger"
+                      className="mt-1 min-h-10 text-[11px] text-danger"
                       onClick={() => setSpinSegs((rows) => rows.map((r, idx) => (idx === i ? { ...r, image: null } : r)))}
                     >
                       Remove image
@@ -548,6 +516,17 @@ function AdminPage() {
                 </div>
               ))}
             </div>
+            {sliceCrop ? (
+              <WheelSliceCropper
+                file={sliceCrop.file}
+                slot={sliceCrop.slot}
+                onCancel={() => setSliceCrop(null)}
+                onConfirm={(dataUrl) => {
+                  setSpinSegs((rows) => rows.map((r) => (r.slot === sliceCrop.slot ? { ...r, image: dataUrl } : r)));
+                  setSliceCrop(null);
+                }}
+              />
+            ) : null}
             <button
               type="button"
               onClick={async () => {
