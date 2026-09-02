@@ -374,10 +374,10 @@ function Page() {
 
       <div className="mt-6 flex flex-wrap gap-3">
         <Link
-          to="/guides/how-to-get-traffic-to-a-new-website"
+          to="/guides/website-traffic-simple-lasting-guide"
           className="btn-outline tap inline-flex min-h-11 items-center rounded-xl px-5 text-sm font-bold"
         >
-          English traffic guide
+          English version
         </Link>
         <Link
           to="/"

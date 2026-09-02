@@ -25,6 +25,11 @@ const POSTS = [
     title: "Traffic site internet : guide simple et durable",
     dek: "Comment augmenter le trafic sans tout miser sur la pub. SEO, contenu, UX et suivi.",
   },
+  {
+    to: "/guides/website-traffic-simple-lasting-guide" as const,
+    title: "Website traffic: a simple, lasting guide",
+    dek: "How to increase website traffic without betting everything on ads.",
+  },
 ];
 
 function Page() {

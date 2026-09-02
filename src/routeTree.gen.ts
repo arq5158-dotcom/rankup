@@ -32,6 +32,7 @@ import { Route as WeeklyRouteImport } from './routes/weekly'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as GuidesHowToGetTrafficToANewWebsiteRouteImport } from './routes/guides.how-to-get-traffic-to-a-new-website'
 import { Route as GuidesTrafficSiteInternetRouteImport } from './routes/guides.traffic-site-internet'
+import { Route as GuidesWebsiteTrafficSimpleLastingGuideRouteImport } from './routes/guides.website-traffic-simple-lasting-guide'
 import { Route as PayIndexRouteImport } from './routes/pay.index'
 import { Route as PayCancelRouteImport } from './routes/pay.cancel'
 import { Route as PaySuccessRouteImport } from './routes/pay.success'
@@ -156,6 +157,12 @@ const GuidesTrafficSiteInternetRoute =
     path: '/guides/traffic-site-internet',
     getParentRoute: () => rootRouteImport,
   } as any)
+const GuidesWebsiteTrafficSimpleLastingGuideRoute =
+  GuidesWebsiteTrafficSimpleLastingGuideRouteImport.update({
+    id: '/guides/website-traffic-simple-lasting-guide',
+    path: '/guides/website-traffic-simple-lasting-guide',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PayIndexRoute = PayIndexRouteImport.update({
   id: '/pay/',
   path: '/pay/',
@@ -205,6 +212,7 @@ export interface FileRoutesByFullPath {
   '/weekly': typeof WeeklyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
   '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
+  '/guides/website-traffic-simple-lasting-guide': typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
   '/guides/': typeof GuidesIndexRoute
@@ -235,6 +243,7 @@ export interface FileRoutesByTo {
   '/weekly': typeof WeeklyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
   '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
+  '/guides/website-traffic-simple-lasting-guide': typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
   '/guides': typeof GuidesIndexRoute
@@ -266,6 +275,7 @@ export interface FileRoutesById {
   '/weekly': typeof WeeklyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
   '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
+  '/guides/website-traffic-simple-lasting-guide': typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
   '/pay/cancel': typeof PayCancelRoute
   '/pay/success': typeof PaySuccessRoute
   '/guides/': typeof GuidesIndexRoute
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/weekly'
     | '/guides/how-to-get-traffic-to-a-new-website'
     | '/guides/traffic-site-internet'
+    | '/guides/website-traffic-simple-lasting-guide'
     | '/pay/cancel'
     | '/pay/success'
     | '/guides/'
@@ -328,6 +339,7 @@ export interface FileRouteTypes {
     | '/weekly'
     | '/guides/how-to-get-traffic-to-a-new-website'
     | '/guides/traffic-site-internet'
+    | '/guides/website-traffic-simple-lasting-guide'
     | '/pay/cancel'
     | '/pay/success'
     | '/guides'
@@ -358,6 +370,7 @@ export interface FileRouteTypes {
     | '/weekly'
     | '/guides/how-to-get-traffic-to-a-new-website'
     | '/guides/traffic-site-internet'
+    | '/guides/website-traffic-simple-lasting-guide'
     | '/pay/cancel'
     | '/pay/success'
     | '/guides/'
@@ -389,6 +402,7 @@ export interface RootRouteChildren {
   WeeklyRoute: typeof WeeklyRoute
   GuidesHowToGetTrafficToANewWebsiteRoute: typeof GuidesHowToGetTrafficToANewWebsiteRoute
   GuidesTrafficSiteInternetRoute: typeof GuidesTrafficSiteInternetRoute
+  GuidesWebsiteTrafficSimpleLastingGuideRoute: typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
   PayCancelRoute: typeof PayCancelRoute
   PaySuccessRoute: typeof PaySuccessRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
@@ -560,6 +574,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesTrafficSiteInternetRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/website-traffic-simple-lasting-guide': {
+      id: '/guides/website-traffic-simple-lasting-guide'
+      path: '/guides/website-traffic-simple-lasting-guide'
+      fullPath: '/guides/website-traffic-simple-lasting-guide'
+      preLoaderRoute: typeof GuidesWebsiteTrafficSimpleLastingGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pay/': {
       id: '/pay/'
       path: '/pay'
@@ -622,6 +643,8 @@ const rootRouteChildren: RootRouteChildren = {
   GuidesHowToGetTrafficToANewWebsiteRoute:
     GuidesHowToGetTrafficToANewWebsiteRoute,
   GuidesTrafficSiteInternetRoute: GuidesTrafficSiteInternetRoute,
+  GuidesWebsiteTrafficSimpleLastingGuideRoute:
+    GuidesWebsiteTrafficSimpleLastingGuideRoute,
   PayCancelRoute: PayCancelRoute,
   PaySuccessRoute: PaySuccessRoute,
   GuidesIndexRoute: GuidesIndexRoute,
