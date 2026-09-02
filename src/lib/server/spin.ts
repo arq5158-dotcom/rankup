@@ -13,11 +13,28 @@ export type SpinSegment = {
   scoreReward: number;
   image: string | null;
   enabled: boolean;
+  weight?: number;
 };
 
 function num(v: number | string | null | undefined) {
   const n = typeof v === "number" ? v : Number(v ?? 0);
   return Number.isFinite(n) ? n : 0;
+}
+
+function publicSegments(rows: SpinSegment[]): Omit<SpinSegment, "weight">[] {
+  return rows.map(({ weight: _w, ...rest }) => rest);
+}
+
+function pickWeighted(live: SpinSegment[]): SpinSegment {
+  const pool = live.filter((s) => s.enabled && (s.weight ?? 0) > 0);
+  if (pool.length === 0) throw new Error("Free Spin is paused.");
+  const total = pool.reduce((sum, s) => sum + (s.weight ?? 0), 0);
+  let cursor = (randomBytes(4).readUInt32BE(0) / 0x100000000) * total;
+  for (const s of pool) {
+    cursor -= s.weight ?? 0;
+    if (cursor <= 0) return s;
+  }
+  return pool[pool.length - 1]!;
 }
 
 async function boot(sql: Sql) {
@@ -31,6 +48,7 @@ async function boot(sql: Sql) {
       enabled boolean not null default true
     )
   `);
+  await sql.query("alter table spin_segments add column if not exists weight double precision not null default 1");
   await sql.query(`
     insert into spin_segments (slot, label, score_reward, enabled) values
       (1, 'Boost', 100, true),
@@ -67,20 +85,22 @@ async function segments(sql: Sql): Promise<SpinSegment[]> {
     score_reward: number | string;
     image: string | null;
     enabled: boolean;
-  }>`select slot, label, score_reward, image, enabled from spin_segments order by slot asc`;
+    weight: number | string | null;
+  }>`select slot, label, score_reward, image, enabled, weight from spin_segments order by slot asc`;
   return rows.map((r) => ({
     slot: r.slot,
     label: r.label,
     scoreReward: Math.max(0, Math.round(num(r.score_reward))),
     image: r.image && isImageSafe(r.image) ? r.image : null,
     enabled: Boolean(r.enabled),
+    weight: Math.max(0, Math.min(1000, num(r.weight) || 0)),
   }));
 }
 
 export const getSpinConfig = createServerFn({ method: "GET" }).handler(async () => {
   const sql = await getSql();
   await boot(sql);
-  return { segments: await segments(sql) };
+  return { segments: publicSegments(await segments(sql)) };
 });
 
 export const getMySpinState = createServerFn({ method: "GET" })
@@ -104,7 +124,7 @@ export const getMySpinState = createServerFn({ method: "GET" })
       limit 1
     `;
     return {
-      segments: segs,
+      segments: publicSegments(segs),
       canSpin: waitMs <= 0 && !open[0],
       nextSpinAt: waitMs > 0 ? Date.now() + waitMs : null,
       pending: open[0]
@@ -134,9 +154,7 @@ export const startFreeSpin = createServerFn({ method: "POST" })
       throw new Error("Next free spin unlocks in 24 hours.");
     }
     const all = await segments(sql);
-    const live = all.filter((s) => s.enabled && s.scoreReward > 0);
-    if (live.length === 0) throw new Error("Free Spin is paused.");
-    const pick = live[Math.floor(Math.random() * live.length)]!;
+    const pick = pickWeighted(all);
     const id = randomBytes(16).toString("hex");
     await sql`
       insert into spins (id, user_id, segment_slot, score_reward, config_json, claimed)
@@ -199,7 +217,11 @@ export const claimSpin = createServerFn({ method: "POST" })
     if (!marked[0]) throw new Error("Already claimed.");
     let moved: { prevRank: number | null; rank: number | null; score: number };
     try {
-      moved = await addScore(sql, { ...base, cycleType });
+      if (score <= 0) {
+        moved = { prevRank: null, rank: null, score: 0 };
+      } else {
+        moved = await addScore(sql, { ...base, cycleType });
+      }
     } catch (err) {
       await sql`update spins set claimed = false, claimed_at = null where id = ${spin.id}`;
       throw err;
@@ -214,7 +236,7 @@ export const claimSpin = createServerFn({ method: "POST" })
     `;
     await sql`
       insert into credit_ledger (user_id, kind, credits_delta, score_delta, spin_id, resulting_credits, note)
-      values (${context.userId}, ${"spin"}, ${0}, ${score}, ${spin.id}, ${null}, ${`Free spin +${score} ${cycleType} score`})
+      values (${context.userId}, ${"spin"}, ${0}, ${score}, ${spin.id}, ${null}, ${score > 0 ? `Free spin +${score} ${cycleType} score` : "Free spin — no score"})
     `;
     return {
       score,
@@ -240,7 +262,7 @@ export const adminGetSpin = createServerFn({ method: "GET" })
 export const adminSaveSpin = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .validator((data: {
-    segments?: { slot: number; label: string; scoreReward: number; image?: string | null; enabled: boolean }[];
+    segments?: { slot: number; label: string; scoreReward: number; image?: string | null; enabled: boolean; weight?: number }[];
   } | null | undefined) => ({
     segments: Array.isArray(data?.segments) ? data!.segments.slice(0, 6) : [],
   }))
@@ -252,11 +274,14 @@ export const adminSaveSpin = createServerFn({ method: "POST" })
     `;
     if (!me[0]?.is_admin && !me[0]?.is_owner) throw new Error("Admin only.");
     if (data.segments.length !== 6) throw new Error("Need all 6 portions.");
+    const landable = data.segments.filter((s) => s.enabled && Number(s.weight) > 0);
+    if (landable.length === 0) throw new Error("At least one slice must be allowed to land.");
     for (const s of data.segments) {
       const slot = Math.trunc(s.slot);
       if (slot < 1 || slot > 6) throw new Error("Invalid portion.");
       const label = clampText(s.label, 24) || `Slot ${slot}`;
       const reward = Math.max(0, Math.min(1_000_000, Math.round(Number(s.scoreReward) || 0)));
+      const weight = Math.max(0, Math.min(1000, Math.round(Number(s.weight ?? 1))));
       let image: string | null = null;
       if (s.image) {
         if (!isImageSafe(s.image)) {
@@ -265,13 +290,14 @@ export const adminSaveSpin = createServerFn({ method: "POST" })
         image = s.image;
       }
       await sql`
-        insert into spin_segments (slot, label, score_reward, image, enabled)
-        values (${slot}, ${label}, ${reward}, ${image}, ${Boolean(s.enabled)})
+        insert into spin_segments (slot, label, score_reward, image, enabled, weight)
+        values (${slot}, ${label}, ${reward}, ${image}, ${Boolean(s.enabled)}, ${weight})
         on conflict (slot) do update set
           label = excluded.label,
           score_reward = excluded.score_reward,
           image = excluded.image,
-          enabled = excluded.enabled
+          enabled = excluded.enabled,
+          weight = excluded.weight
       `;
     }
     return { ok: true, segments: await segments(sql) };

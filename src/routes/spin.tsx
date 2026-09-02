@@ -173,9 +173,13 @@ function SpinPage() {
       {pending && !spinning ? (
         <div className="modal-layer is-open fixed inset-0 z-[96] grid place-items-center bg-black/75 p-4">
           <div className="modal-card glass-card w-full max-w-sm rounded-2xl p-6 text-center">
-            <p className="text-[10px] font-bold tracking-[0.16em] text-gold uppercase">You won</p>
-            <p className="mt-2 font-display text-4xl font-black text-gold-grad">+{formatScore(pending.score)} SCORE</p>
-            <p className="mt-2 text-xs text-white/40">Claim onto the {cycle} board.</p>
+            <p className="text-[10px] font-bold tracking-[0.16em] text-gold uppercase">{pending.score > 0 ? "You won" : "No score"}</p>
+            <p className="mt-2 font-display text-4xl font-black text-gold-grad">
+              {pending.score > 0 ? `+${formatScore(pending.score)} SCORE` : "NO SCORE"}
+            </p>
+            <p className="mt-2 text-xs text-white/40">
+              {pending.score > 0 ? `Claim onto the ${cycle} board.` : "This slice awards nothing. Close and try again tomorrow."}
+            </p>
             <div className="mx-auto mt-3 max-w-xs">
               <Segmented
                 value={cycle}
@@ -192,7 +196,7 @@ function SpinPage() {
               onClick={() => void claim()}
               className="btn-gold tap mt-5 min-h-12 w-full rounded-xl text-sm font-extrabold"
             >
-              CLAIM +{formatScore(pending.score)} SCORE
+              {pending.score > 0 ? `CLAIM +${formatScore(pending.score)} SCORE` : "CONTINUE"}
             </button>
           </div>
         </div>

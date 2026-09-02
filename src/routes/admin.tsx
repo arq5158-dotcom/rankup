@@ -450,11 +450,15 @@ function AdminPage() {
           <div className="glass-card space-y-4 rounded-2xl p-6">
             <h2 className="font-bold text-fg">Free Spin — 6 portions</h2>
             <p className="text-sm text-white/40">
-              Upload a photo per triangle, then drag/zoom like a profile crop. The image fills that slice. Disabled slices never win.
+              Players see the wheel only. Stop chance and Never land stay admin-only. Score 0 is a real landing (“No Score”).
             </p>
             <RankWheel segments={spinSegs} size="sm" />
             <div className="grid gap-3 md:grid-cols-2">
-              {spinSegs.map((s, i) => (
+              {spinSegs.map((s, i) => {
+                const pool = spinSegs.filter((r) => r.enabled && (r.weight ?? 0) > 0);
+                const sum = pool.reduce((n, r) => n + (r.weight ?? 0), 0);
+                const chance = !s.enabled || !sum ? 0 : ((s.weight ?? 0) / sum) * 100;
+                return (
                 <div key={s.slot} className="rounded-xl border border-white/[0.06] bg-[#12121a] p-3">
                   <p className="text-[10px] font-bold tracking-wider text-gold uppercase">Portion {s.slot}</p>
                   <input
@@ -465,27 +469,55 @@ function AdminPage() {
                     className="mt-2 h-10 w-full rounded-lg border border-white/[0.08] bg-[#0c0c12] px-2 text-sm text-fg"
                     placeholder="Label"
                   />
-                  <input
-                    type="number"
-                    value={s.scoreReward}
-                    onChange={(e) =>
-                      setSpinSegs((rows) =>
-                        rows.map((r, idx) => (idx === i ? { ...r, scoreReward: Number(e.target.value) || 0 } : r)),
-                      )
-                    }
-                    className="mt-2 h-10 w-full rounded-lg border border-white/[0.08] bg-[#0c0c12] px-2 text-sm text-fg"
-                    placeholder="Score reward"
-                  />
-                  <label className="mt-2 flex min-h-10 items-center gap-2 text-xs text-white/50">
+                  <div className="mt-2 flex gap-2">
                     <input
-                      type="checkbox"
-                      checked={s.enabled}
+                      type="number"
+                      min={0}
+                      value={s.scoreReward}
                       onChange={(e) =>
-                        setSpinSegs((rows) => rows.map((r, idx) => (idx === i ? { ...r, enabled: e.target.checked } : r)))
+                        setSpinSegs((rows) =>
+                          rows.map((r, idx) => (idx === i ? { ...r, scoreReward: Math.max(0, Number(e.target.value) || 0) } : r)),
+                        )
                       }
+                      className="h-10 min-w-0 flex-1 rounded-lg border border-white/[0.08] bg-[#0c0c12] px-2 text-sm text-fg"
+                      placeholder="Score"
                     />
-                    Enabled
+                    <button
+                      type="button"
+                      className={`tap h-10 shrink-0 rounded-lg px-3 text-[11px] font-bold ${s.scoreReward === 0 ? "btn-gold" : "btn-outline"}`}
+                      onClick={() =>
+                        setSpinSegs((rows) => rows.map((r, idx) => (idx === i ? { ...r, scoreReward: 0, label: r.label || "No Score" } : r)))
+                      }
+                    >
+                      No Score
+                    </button>
+                  </div>
+                  <label className="mt-2 block text-[10px] font-semibold tracking-wider text-white/40 uppercase">
+                    Stop chance {s.enabled ? `${chance.toFixed(0)}%` : "0%"}
+                    <input
+                      type="range"
+                      min={0}
+                      max={100}
+                      step={1}
+                      disabled={!s.enabled}
+                      value={s.weight ?? 1}
+                      onChange={(e) =>
+                        setSpinSegs((rows) =>
+                          rows.map((r, idx) => (idx === i ? { ...r, weight: Number(e.target.value) } : r)),
+                        )
+                      }
+                      className="mt-2 h-10 w-full accent-[#c4a24a]"
+                    />
                   </label>
+                  <button
+                    type="button"
+                    className={`tap mt-2 flex min-h-11 w-full items-center justify-center rounded-lg px-3 text-xs font-bold ${s.enabled ? "btn-outline" : "bg-danger/20 text-danger ring-1 ring-danger/40"}`}
+                    onClick={() =>
+                      setSpinSegs((rows) => rows.map((r, idx) => (idx === i ? { ...r, enabled: !r.enabled } : r)))
+                    }
+                  >
+                    {s.enabled ? "Never land — off" : "Never lands on this slice"}
+                  </button>
                   <label className="btn-outline tap mt-2 flex min-h-11 cursor-pointer items-center justify-center rounded-lg px-3 text-xs font-bold">
                     {s.image ? "Adjust / replace image" : "Upload slice image"}
                     <input
@@ -514,7 +546,8 @@ function AdminPage() {
                     </button>
                   ) : null}
                 </div>
-              ))}
+                );
+              })}
             </div>
             {sliceCrop ? (
               <WheelSliceCropper

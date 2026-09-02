@@ -36,6 +36,7 @@ export function RankWheel({
     scoreReward: 100 * (i + 1),
     image: null,
     enabled: true,
+    weight: 1,
   });
 
   return (
@@ -92,9 +93,9 @@ export function RankWheel({
                 stroke="rgba(0,0,0,0.45)"
                 strokeWidth="0.8"
                 paintOrder="stroke"
-                style={{ fontSize: 12, fontWeight: 800, letterSpacing: "0.02em" }}
+                style={{ fontSize: s.scoreReward === 0 ? 9 : 12, fontWeight: 800, letterSpacing: "0.02em" }}
               >
-                +{formatScore(s.scoreReward)}
+                {s.scoreReward === 0 ? "NO SCORE" : `+${formatScore(s.scoreReward)}`}
               </text>
             );
           })}
