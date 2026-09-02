@@ -6,9 +6,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/giveaways")({
   head: () =>
     seoHead({
-      title: "Community Giveaways — No Purchase Necessary",
+      title: "Free Online Giveaways — No Purchase Necessary | Pay4Rank",
       description:
-        "Pay4Rank giveaways are separate from the paid leaderboard. No purchase necessary. Buying ranking credits does not improve your odds. 18+ only.",
+        "Free community giveaways on Pay4Rank. No purchase necessary. Buying ranking credits does not improve your odds. Separate from the live leaderboard. 18+ only.",
       path: "/giveaways",
     }),
   component: Page,

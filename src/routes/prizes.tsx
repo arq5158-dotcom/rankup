@@ -8,9 +8,9 @@ import { RoutePending } from "@/components/rank/RoutePending";
 export const Route = createFileRoute("/prizes")({
   head: () =>
     seoHead({
-      title: "Pay4Rank Featured Positions | Gold, Silver, Bronze & Weekly Champion",
+      title: "Get Featured on the Leaderboard | Gold, Silver & Bronze | Pay4Rank",
       description:
-        "See what monthly Gold, Silver, Bronze and the Weekly Champion unlock on Pay4Rank: featured placement, badges, and history. Visibility perks — not cash prizes.",
+        "Get featured on the live ranking leaderboard. Monthly Gold, Silver, and Bronze plus Weekly Champion unlock extra visibility, badges, and history — not cash prizes.",
       path: "/prizes",
     }),
   loader: async () => {
@@ -38,7 +38,7 @@ function Page() {
         />
         <div>
           <p className="page-kicker">Visibility</p>
-          <h1 className="page-title">Featured positions</h1>
+          <h1 className="page-title">Get featured on the leaderboard</h1>
           <p className="mt-1 max-w-xl text-sm text-white/45">
             Top listings get extra visibility, exclusive badges, and a place in the Hall of Fame. There is no cash prize for rank.
           </p>

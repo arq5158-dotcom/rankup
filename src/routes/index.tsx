@@ -24,9 +24,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/")({
   head: () =>
     seoHead({
-      title: "Pay4Rank | Live Ranking Leaderboard",
+      title: "Climb the Live Leaderboard & Get Your Brand Seen | Pay4Rank",
       description:
-        "Pay4Rank is a live ranking leaderboard. Buy ranking credits, spend them for Score, and climb weekly and monthly boards. Gold, Silver, Bronze, and Weekly Champion featured placements.",
+        "Promote your profile, brand, or website on a live ranking leaderboard. Buy ranking credits, spend them for Score, climb weekly and monthly boards, and get featured.",
       path: "/",
     }),
   loader: async () => {
@@ -147,7 +147,7 @@ function Home() {
                   <span className="text-gold-grad">GET SEEN.</span>
                 </h1>
                 <p className="mt-3 hidden max-w-[34ch] text-[13px] leading-[1.55] text-pretty text-white/62 sm:mt-4 sm:block sm:text-[14px]">
-                  Buy credits, spend them for Score, and get your profile, brand, or site seen.
+                  Buy ranking credits, climb the live leaderboard, and get your profile, brand, or website seen.
                 </p>
                 <button
                   type="button"
@@ -163,7 +163,7 @@ function Home() {
             </div>
             <div className="mt-4 flex flex-col items-start gap-3 sm:hidden">
               <p className="max-w-[36ch] text-[13px] leading-[1.55] text-pretty text-white/62">
-                Buy credits, spend them for Score, and get your profile, brand, or site seen.
+                Buy ranking credits, climb the live leaderboard, and get your profile, brand, or website seen.
               </p>
               <button
                 type="button"
