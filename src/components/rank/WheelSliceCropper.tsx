@@ -40,10 +40,9 @@ export function WheelSliceCropper({
     return () => URL.revokeObjectURL(next);
   }, [file]);
 
-  const contain = nat.w && nat.h ? Math.min(VIEW / nat.w, VIEW / nat.h) : 1;
   const cover = nat.w && nat.h ? Math.max(VIEW / nat.w, VIEW / nat.h) : 1;
-  const minZoom = cover ? Math.max(0.35, contain / cover) : 0.5;
-  const maxZoom = 4;
+  const minZoom = 0.12;
+  const maxZoom = 5;
   const scale = cover * zoom;
   const dw = nat.w * scale;
   const dh = nat.h * scale;
