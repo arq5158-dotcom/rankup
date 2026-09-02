@@ -11,6 +11,7 @@ import {
   adminResetCycle,
   adminSaveStripeKeys,
   adminSaveSupportEmail,
+  adminSaveExamplePlayers,
   adminSetRole,
   adminStripeSettings,
   adminUpdatePrizes,
@@ -72,6 +73,7 @@ function AdminPage() {
   const [economy, setEconomy] = useState<CreditEconomy>(DEFAULT_ECONOMY);
   const [ecoLog, setEcoLog] = useState<{ at: string; who: string; note: string }[]>([]);
   const [supportEmail, setSupportEmail] = useState("");
+  const [showExamples, setShowExamples] = useState(true);
 
   useEffect(() => {
     if (!user) return;
@@ -115,6 +117,7 @@ function AdminPage() {
         try {
           const site = await getPublicSiteSettings();
           setSupportEmail(site.supportEmail || "");
+          setShowExamples(site.showExamplePlayers !== false);
         } catch {
           setSupportEmail("");
         }
@@ -687,6 +690,28 @@ function AdminPage() {
             >
               <Save className="h-4 w-4" /> Save
             </button>
+            <div className="border-t border-white/[0.06] pt-4">
+              <h2 className="font-bold text-fg">Example players</h2>
+              <p className="mt-1 text-[12px] leading-relaxed text-white/40">
+                Sample rows so the board isn’t empty. Turn this off when real players are ranking. It does not fake live Score buys.
+              </p>
+              <button
+                type="button"
+                className={`tap mt-3 flex min-h-11 w-full items-center justify-center rounded-xl px-3 text-xs font-bold ${showExamples ? "btn-gold" : "btn-outline"}`}
+                onClick={async () => {
+                  const next = !showExamples;
+                  try {
+                    const res = await adminSaveExamplePlayers({ data: { show: next } });
+                    setShowExamples(res.showExamplePlayers);
+                    toast.success(res.showExamplePlayers ? "Example players on" : "Example players hidden");
+                  } catch (err) {
+                    toast.error(publicErrorMessage(err, "Could not save"));
+                  }
+                }}
+              >
+                {showExamples ? "Example players — on" : "Example players — off"}
+              </button>
+            </div>
           </div>
         )}
 

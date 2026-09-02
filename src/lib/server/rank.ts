@@ -662,6 +662,11 @@ async function requireOwner(sql: Sql, userId: string, bearerToken?: string) {
   return profile;
 }
 
+async function showExamplePlayers(sql: Sql) {
+  const v = (await getCfg(sql, "showExamplePlayers"))?.trim();
+  return v !== "0";
+}
+
 export const getLeaderboard = createServerFn({ method: "GET" })
   .validator((data: { cycleType?: CycleType; offset?: number; limit?: number } | null | undefined) => ({
     cycleType: data?.cycleType === "weekly" ? ("weekly" as const) : ("monthly" as const),
@@ -673,21 +678,25 @@ export const getLeaderboard = createServerFn({ method: "GET" })
       const sql = await getSql();
       await ensureSeed(sql);
       const start = await getCycleStart(sql, data.cycleType);
+      const examples = await showExamplePlayers(sql);
       const rows = await sql<LbRow>`
         select id, user_id, display_name, username, short_note, web_link, profile_image,
                amount_paid, rank, cycle_type, movement
         from leaderboard
         where cycle_type = ${data.cycleType} and cycle_start = ${start}
-        order by rank asc
+          and (${examples} or is_seed = false)
+        order by amount_paid desc, id asc
         offset ${data.offset}
         limit ${data.limit}
       `;
       const seen = new Set<number>();
-      return rows.map(publicEntry).filter((e) => {
-        if (seen.has(e.id)) return false;
-        seen.add(e.id);
-        return true;
-      });
+      return rows
+        .map((r, i) => publicEntry({ ...r, rank: data.offset + i + 1 }))
+        .filter((e) => {
+          if (seen.has(e.id)) return false;
+          seen.add(e.id);
+          return true;
+        });
     } catch (err) {
       console.error("[leaderboard]", err instanceof Error ? err.message : err);
       return [];
@@ -1743,9 +1752,13 @@ export const getPublicSiteSettings = createServerFn({ method: "GET" }).handler(a
     const sql = await getSql();
     await ensureSeed(sql);
     const raw = (await getCfg(sql, "supportEmail"))?.trim() || "";
-    return { supportEmail: raw && raw.includes("@") ? raw : null };
+    const examples = (await getCfg(sql, "showExamplePlayers"))?.trim() !== "0";
+    return {
+      supportEmail: raw && raw.includes("@") ? raw : null,
+      showExamplePlayers: examples,
+    };
   } catch {
-    return { supportEmail: null as string | null };
+    return { supportEmail: null as string | null, showExamplePlayers: true };
   }
 });
 
@@ -1761,4 +1774,17 @@ export const adminSaveSupportEmail = createServerFn({ method: "POST" })
     const email = parseSupportEmail(data.email);
     await setCfg(sql, "supportEmail", email);
     return { ok: true as const, supportEmail: email || null };
+  });
+
+export const adminSaveExamplePlayers = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((data: { show?: boolean } | null | undefined) => ({
+    show: Boolean(data?.show),
+  }))
+  .handler(async ({ context, data }) => {
+    rateLimit(`admin-examples:${context.userId}`, 20, 60_000);
+    const sql = await getSql();
+    await requireAdmin(sql, context.userId, bearerOf(context));
+    await setCfg(sql, "showExamplePlayers", data.show ? "1" : "0");
+    return { ok: true as const, showExamplePlayers: data.show };
   });
