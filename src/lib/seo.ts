@@ -168,8 +168,11 @@ export function siteJsonLd() {
         url: SITE_URL,
         logo: {
           "@type": "ImageObject",
-          url: absUrl("/og.jpg"),
+          url: absUrl("/icon-512.png"),
+          width: 512,
+          height: 512,
         },
+        image: absUrl("/og.jpg"),
         description: SITE_DESCRIPTION,
         contactPoint: {
           "@type": "ContactPoint",
