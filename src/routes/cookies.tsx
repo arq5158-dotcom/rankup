@@ -7,7 +7,7 @@ export const Route = createFileRoute("/cookies")({
     seoHead({
       title: "Cookie Policy",
       description:
-        "Pay4Rank uses essential cookies for sign-in, security, and Stripe checkout. No advertising cookies. How to manage consent.",
+        "Pay4Rank uses essential cookies for sign-in, security, and checkout. No advertising cookies. How to manage consent.",
       path: "/cookies",
     }),
   component: Page,

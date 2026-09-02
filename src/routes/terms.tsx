@@ -7,7 +7,7 @@ export const Route = createFileRoute("/terms")({
     seoHead({
       title: "Terms of Service",
       description:
-        "Terms for using Pay4Rank: accounts, Stripe ranking credits, live promotional listings, and acceptable use.",
+        "Pay4Rank terms: accounts, ranking credits, Score, live weekly and monthly listings, refunds, and acceptable use. 18+ only.",
       path: "/terms",
     }),
   component: Page,

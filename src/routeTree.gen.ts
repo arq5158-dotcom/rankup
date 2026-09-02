@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as GiveawaysRouteImport } from './routes/giveaways'
+import { Route as Googlece89cc86aa7767ddDothtmlRouteImport } from './routes/googlece89cc86aa7767dd[.]html'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MonthlyRouteImport } from './routes/monthly'
@@ -69,6 +70,12 @@ const GiveawaysRoute = GiveawaysRouteImport.update({
   path: '/giveaways',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Googlece89cc86aa7767ddDothtmlRoute =
+  Googlece89cc86aa7767ddDothtmlRouteImport.update({
+    id: '/googlece89cc86aa7767dd.html',
+    path: '/googlece89cc86aa7767dd.html',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
   id: '/how-it-works',
   path: '/how-it-works',
@@ -163,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
   '/giveaways': typeof GiveawaysRoute
+  '/googlece89cc86aa7767dd.html': typeof Googlece89cc86aa7767ddDothtmlRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/monthly': typeof MonthlyRoute
@@ -189,6 +197,7 @@ export interface FileRoutesByTo {
   '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
   '/giveaways': typeof GiveawaysRoute
+  '/googlece89cc86aa7767dd.html': typeof Googlece89cc86aa7767ddDothtmlRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/monthly': typeof MonthlyRoute
@@ -216,6 +225,7 @@ export interface FileRoutesById {
   '/cookies': typeof CookiesRoute
   '/dashboard': typeof DashboardRoute
   '/giveaways': typeof GiveawaysRoute
+  '/googlece89cc86aa7767dd.html': typeof Googlece89cc86aa7767ddDothtmlRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/monthly': typeof MonthlyRoute
@@ -244,6 +254,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/dashboard'
     | '/giveaways'
+    | '/googlece89cc86aa7767dd.html'
     | '/how-it-works'
     | '/login'
     | '/monthly'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/dashboard'
     | '/giveaways'
+    | '/googlece89cc86aa7767dd.html'
     | '/how-it-works'
     | '/login'
     | '/monthly'
@@ -296,6 +308,7 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/dashboard'
     | '/giveaways'
+    | '/googlece89cc86aa7767dd.html'
     | '/how-it-works'
     | '/login'
     | '/monthly'
@@ -323,6 +336,7 @@ export interface RootRouteChildren {
   CookiesRoute: typeof CookiesRoute
   DashboardRoute: typeof DashboardRoute
   GiveawaysRoute: typeof GiveawaysRoute
+  Googlece89cc86aa7767ddDothtmlRoute: typeof Googlece89cc86aa7767ddDothtmlRoute
   HowItWorksRoute: typeof HowItWorksRoute
   LoginRoute: typeof LoginRoute
   MonthlyRoute: typeof MonthlyRoute
@@ -391,6 +405,13 @@ declare module '@tanstack/react-router' {
       path: '/giveaways'
       fullPath: '/giveaways'
       preLoaderRoute: typeof GiveawaysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/googlece89cc86aa7767dd.html': {
+      id: '/googlece89cc86aa7767dd.html'
+      path: '/googlece89cc86aa7767dd.html'
+      fullPath: '/googlece89cc86aa7767dd.html'
+      preLoaderRoute: typeof Googlece89cc86aa7767ddDothtmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -523,6 +544,7 @@ const rootRouteChildren: RootRouteChildren = {
   CookiesRoute: CookiesRoute,
   DashboardRoute: DashboardRoute,
   GiveawaysRoute: GiveawaysRoute,
+  Googlece89cc86aa7767ddDothtmlRoute: Googlece89cc86aa7767ddDothtmlRoute,
   HowItWorksRoute: HowItWorksRoute,
   LoginRoute: LoginRoute,
   MonthlyRoute: MonthlyRoute,

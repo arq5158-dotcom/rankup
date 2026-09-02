@@ -5,9 +5,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/rules")({
   head: () =>
     seoHead({
-      title: "Platform Rules",
+      title: "Platform Rules — Rankings, Credits & Eligibility",
       description:
-        "Rules for Pay4Rank ranking credits, promotional listings, eligibility, and featured placement. Not a prize contest.",
+        "Pay4Rank platform rules: 18+ eligibility, ranking credits, Score, weekly and monthly boards, featured placement, and acceptable use. Not a prize contest.",
       path: "/rules",
     }),
   component: Page,

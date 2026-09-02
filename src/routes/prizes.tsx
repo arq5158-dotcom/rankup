@@ -8,9 +8,9 @@ import { RoutePending } from "@/components/rank/RoutePending";
 export const Route = createFileRoute("/prizes")({
   head: () =>
     seoHead({
-      title: "Featured Positions",
+      title: "Featured Positions — Gold, Silver, Bronze & Weekly Champion",
       description:
-        "Monthly Gold, Silver, and Bronze plus the Weekly Champion get featured placement, badges, and history — not cash prizes.",
+        "See what monthly Gold, Silver, Bronze and the Weekly Champion unlock on Pay4Rank: featured placement, badges, and history. Visibility perks — not cash prizes.",
       path: "/prizes",
     }),
   loader: async () => {

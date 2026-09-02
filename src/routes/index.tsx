@@ -19,13 +19,14 @@ import { BuyCreditsModal } from "@/components/rank/BuyCreditsModal";
 import { RankUpModal } from "@/components/rank/RankUpModal";
 import { SiteFooter } from "@/components/rank/SiteFooter";
 import { RoutePending } from "@/components/rank/RoutePending";
-import { seoHead, SITE_DESCRIPTION } from "@/lib/seo";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () =>
     seoHead({
-      title: "Pay4Rank — Promotional Leaderboard",
-      description: SITE_DESCRIPTION,
+      title: "Pay4Rank | Live Ranking Leaderboard — Pay. Climb. Get Seen.",
+      description:
+        "Climb the live Pay4Rank leaderboard. Buy credits, spend them for Score, and compete for weekly champion and monthly Gold, Silver, and Bronze featured placements. Not a cash prize.",
       path: "/",
     }),
   loader: async () => {

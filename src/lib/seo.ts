@@ -1,56 +1,63 @@
 export const SITE_NAME = "Pay4Rank";
 export const SITE_TAGLINE = "Pay. Climb. Get Seen.";
+export const SITE_URL = "https://www.pay4rank.com";
 export const SITE_DESCRIPTION =
-  "Pay4Rank is a competitive promotional leaderboard. Buy credits, spend them for Score, climb live weekly and monthly boards, and get your profile, brand, or site seen.";
+  "Pay4Rank is a live ranking SaaS. Buy credits, spend them 1:1 for Score, and climb weekly and monthly leaderboards. Featured Gold, Silver, Bronze, and Weekly Champion placements — not cash prizes.";
+
+export function absUrl(path = "/") {
+  if (path.startsWith("http")) return path;
+  const p = path.startsWith("/") ? path : `/${path}`;
+  return `${SITE_URL}${p === "/" ? "/" : p}`;
+}
 
 export const PUBLIC_PATHS = [
   { path: "/", changefreq: "hourly", priority: "1.0" },
-  { path: "/weekly", changefreq: "daily", priority: "0.9" },
-  { path: "/monthly", changefreq: "daily", priority: "0.9" },
+  { path: "/weekly", changefreq: "hourly", priority: "0.9" },
+  { path: "/monthly", changefreq: "hourly", priority: "0.9" },
   { path: "/prizes", changefreq: "weekly", priority: "0.8" },
-  { path: "/giveaways", changefreq: "weekly", priority: "0.7" },
   { path: "/spin", changefreq: "daily", priority: "0.8" },
-  { path: "/how-it-works", changefreq: "monthly", priority: "0.8" },
+  { path: "/how-it-works", changefreq: "monthly", priority: "0.85" },
+  { path: "/giveaways", changefreq: "weekly", priority: "0.6" },
   { path: "/archive", changefreq: "weekly", priority: "0.5" },
   { path: "/rules", changefreq: "monthly", priority: "0.6" },
-  { path: "/privacy", changefreq: "yearly", priority: "0.4" },
-  { path: "/terms", changefreq: "yearly", priority: "0.4" },
-  { path: "/cookies", changefreq: "yearly", priority: "0.3" },
   { path: "/contact", changefreq: "yearly", priority: "0.5" },
+  { path: "/privacy", changefreq: "yearly", priority: "0.3" },
+  { path: "/terms", changefreq: "yearly", priority: "0.3" },
+  { path: "/cookies", changefreq: "yearly", priority: "0.3" },
 ] as const;
 
 export const FAQ_ITEMS = [
   {
-    q: "How do rankings work?",
-    a: "Weekly and monthly are separate leaderboards. You buy credits with Stripe, then spend credits 1:1 into Score on the board you choose. Credits in a wallet do not affect rank. Free Spin can also award Score to one board. If two profiles tie, the earlier Score gain holds the slot.",
+    q: "How do Pay4Rank rankings work?",
+    a: "Weekly and monthly are separate leaderboards. Buy credits, then spend them 1:1 into Score on the board you choose. Wallet credits do not affect rank until spent. Free Spin can award Score to one board. Tied scores keep the earlier climb.",
   },
   {
-    q: "What am I paying for?",
-    a: "You are buying credits for your wallet. Spending credits increases your Score and visibility on the public leaderboard. This is not a prize drawing and you are not paying for a chance to win cash.",
+    q: "What am I paying for on Pay4Rank?",
+    a: "You buy ranking credits for your wallet. Spending credits increases Score and visibility on the public leaderboard. This is not a prize drawing and you are not paying for a chance to win cash.",
   },
   {
-    q: "What do top positions get?",
-    a: "Gold, Silver, and Bronze (monthly) and the Weekly Rank Champion are featured placements: extra exposure, profile styling, platform badges, and a spot in the Hall of Fame. Credits and Score do not buy a cash prize. Separate community giveaways, when offered, are free to enter and are not part of the paid board.",
+    q: "What do Gold, Silver, and Bronze get?",
+    a: "Monthly top three and the Weekly Champion get featured placement: extra visibility, profile styling, badges, and Hall of Fame history. Score does not buy a cash prize. Community giveaways, when offered, are separate and free to enter.",
   },
   {
     q: "Are ranking credits refundable?",
-    a: "Completed credit purchases are generally non-refundable. If you cancel Stripe Checkout or the payment fails, you are not charged and no credits are added. Rank only changes after you spend credits or claim a Free Spin.",
+    a: "Completed credit purchases are generally non-refundable. If checkout is cancelled or payment fails, you are not charged and no credits are added. Rank only changes after you spend credits or claim a Free Spin.",
   },
   {
-    q: "Is this a lottery or contest for prizes?",
-    a: "No. Stripe sells promotional credits. Position is determined by Score — not by a random draw and not by dollars paid. Featured titles are part of the listing product, not a prize purse. Optional community giveaways are run separately: no purchase is required to enter, and buying credits does not improve your odds.",
+    q: "Is Pay4Rank a lottery or cash contest?",
+    a: "No. Credits are a digital in-app currency. Position is determined by Score, not a random draw and not by dollars paid. Featured titles are listing perks, not a prize purse.",
   },
   {
-    q: "Who can participate?",
-    a: "You must be at least 18 years old and able to enter a payment agreement. Pay4Rank is a promotional service, not an investment.",
+    q: "Who can join Pay4Rank?",
+    a: "You must be at least 18 and able to enter a payment agreement. Pay4Rank is a ranking product, not an investment.",
   },
   {
     q: "Do ranking credits enter me in giveaways?",
-    a: "No. Giveaways are optional promotions, separate from the paid leaderboard. Where a giveaway is offered, you can enter without buying anything. Purchasing ranking credits does not increase your chances of winning a giveaway.",
+    a: "No. Giveaways are optional and separate from the paid boards. When a giveaway is live you can enter without buying anything. Buying credits does not improve odds.",
   },
   {
     q: "Are player website links safe?",
-    a: "Optional player websites are public. Pay4Rank only publishes https links that pass an automated safety review (no adult sites, shorteners, or private/local addresses). Links are third-party pages we do not control — open them at your own judgment.",
+    a: "Optional player websites are public. Pay4Rank only publishes https links that pass an automated review. Links are third-party pages we do not control.",
   },
 ];
 
@@ -65,19 +72,32 @@ export function seoHead({
   path: string;
   noindex?: boolean;
 }) {
-  const full = title.includes(SITE_NAME) ? title : `${title} · ${SITE_NAME}`;
+  const full = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+  const url = absUrl(path);
+  const image = absUrl("/og.jpg");
+  const robots = noindex
+    ? "noindex, nofollow"
+    : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
   return {
     meta: [
       { title: full },
       { name: "description", content: description },
-      {
-        name: "robots",
-        content: noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large",
-      },
+      { name: "robots", content: robots },
       { name: "author", content: SITE_NAME },
       { name: "application-name", content: SITE_NAME },
+      { property: "og:type", content: path === "/" ? "website" : "article" },
+      { property: "og:site_name", content: SITE_NAME },
+      { property: "og:title", content: full },
+      { property: "og:description", content: description },
+      { property: "og:url", content: url },
+      { property: "og:image", content: image },
+      { property: "og:locale", content: "en_US" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: full },
+      { name: "twitter:description", content: description },
+      { name: "twitter:image", content: image },
     ],
-    links: [{ rel: "canonical", href: path }],
+    links: [{ rel: "canonical", href: url }],
   };
 }
 
@@ -90,5 +110,50 @@ export function faqJsonLd() {
       name: item.q,
       acceptedAnswer: { "@type": "Answer", text: item.a },
     })),
+  };
+}
+
+export function siteJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        name: SITE_NAME,
+        alternateName: ["Pay 4 Rank", SITE_TAGLINE],
+        url: SITE_URL,
+        description: SITE_DESCRIPTION,
+        inLanguage: "en",
+        publisher: { "@id": `${SITE_URL}/#org` },
+      },
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#org`,
+        name: SITE_NAME,
+        url: SITE_URL,
+        logo: absUrl("/favicon.svg"),
+        description: SITE_DESCRIPTION,
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "customer support",
+          url: absUrl("/contact"),
+        },
+      },
+      {
+        "@type": "SoftwareApplication",
+        name: SITE_NAME,
+        applicationCategory: "GameApplication",
+        operatingSystem: "Web",
+        url: SITE_URL,
+        description: SITE_DESCRIPTION,
+        offers: {
+          "@type": "Offer",
+          price: "1.00",
+          priceCurrency: "USD",
+          description: "Ranking credits from $1 USD",
+        },
+      },
+    ],
   };
 }

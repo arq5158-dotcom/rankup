@@ -7,9 +7,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/contact")({
   head: () =>
     seoHead({
-      title: "Contact",
+      title: "Contact Support",
       description:
-        "Contact Pay4Rank support about rankings, payments, listings, privacy, or your account.",
+        "Contact Pay4Rank about rankings, credit purchases, listings, privacy, or your account. Report unsafe player links here.",
       path: "/contact",
     }),
   component: Page,

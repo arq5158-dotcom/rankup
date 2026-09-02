@@ -10,9 +10,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/monthly")({
   head: () =>
     seoHead({
-      title: "Monthly Board",
+      title: "Monthly Leaderboard — Gold, Silver & Bronze",
       description:
-        "Pay4Rank monthly board — top three get Gold, Silver, and Bronze featured placement. Score from credit spends and Free Spin.",
+        "Live monthly Pay4Rank board. Top three earn Gold, Silver, and Bronze featured placement, badges, and Hall of Fame history. Spend credits or claim Free Spin Score.",
       path: "/monthly",
     }),
   loader: async () => {

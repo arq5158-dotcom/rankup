@@ -7,9 +7,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/how-it-works")({
   head: () =>
     seoHead({
-      title: "How Pay4Rank Works",
+      title: "How Pay4Rank Works — Credits, Score & Rankings",
       description:
-        "Buy credits with Stripe, spend them for Score, climb weekly and monthly boards. Visibility — not cash prizes.",
+        "How Pay4Rank works: buy ranking credits from $1, spend them 1:1 for Score, and climb separate weekly and monthly leaderboards. Free Spin awards Score. No cash prizes.",
       path: "/how-it-works",
     }),
   component: Page,

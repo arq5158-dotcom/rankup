@@ -7,7 +7,7 @@ export const Route = createFileRoute("/privacy")({
     seoHead({
       title: "Privacy Policy",
       description:
-        "How Pay4Rank collects, uses, and protects account, payment, and leaderboard data. Stripe processes cards. We do not sell personal information.",
+        "How Pay4Rank collects and protects account, payment, and leaderboard data. Cards are processed by the payment provider. We do not sell personal information.",
       path: "/privacy",
     }),
   component: Page,

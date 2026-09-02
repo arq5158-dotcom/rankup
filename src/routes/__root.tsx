@@ -11,7 +11,7 @@ import { SceneBackground } from "@/components/rank/Background";
 import { NavProgress } from "@/components/rank/motion";
 import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from "@/lib/seo";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/seo";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -22,6 +22,11 @@ export const Route = createRootRoute({
       { name: "theme-color", content: "#08080C" },
       { name: "description", content: SITE_DESCRIPTION },
       { name: "color-scheme", content: "dark" },
+      ...(process.env.GOOGLE_SITE_VERIFICATION
+        ? [{ name: "google-site-verification", content: process.env.GOOGLE_SITE_VERIFICATION }]
+        : []),
+      { property: "og:site_name", content: SITE_NAME },
+      { property: "og:image", content: `${SITE_URL}/og.jpg` },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },

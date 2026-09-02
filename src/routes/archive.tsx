@@ -7,8 +7,9 @@ import { seoHead } from "@/lib/seo";
 export const Route = createFileRoute("/archive")({
   head: () =>
     seoHead({
-      title: "Past Seasons",
-      description: "Archived Pay4Rank weekly and monthly cycles and Score totals.",
+      title: "Past Seasons & Hall of Fame",
+      description:
+        "Archived Pay4Rank weekly and monthly seasons, final Score totals, and past champion history.",
       path: "/archive",
     }),
   loader: async () => ({ archives: await getArchives() }),
