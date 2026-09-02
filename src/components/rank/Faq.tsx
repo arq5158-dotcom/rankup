@@ -9,7 +9,7 @@ export function Faq({ withSchema = false }: { withSchema?: boolean }) {
       {withSchema && <JsonLd data={faqJsonLd()} />}
       <p className="text-[10px] font-bold tracking-[0.18em] text-gold uppercase">FAQ</p>
       <h2 id="faq-heading" className="mt-1 font-display text-2xl font-extrabold tracking-tight text-fg">
-        Questions, answered
+        Q&A
       </h2>
       <div className="mt-4">
         {FAQ_ITEMS.map((item) => {
@@ -21,7 +21,7 @@ export function Faq({ withSchema = false }: { withSchema?: boolean }) {
                 aria-expanded={on}
                 onClick={() => setOpen(on ? null : item.q)}
               >
-                {item.q}
+                <h3 className="m-0 text-left text-[15px] font-bold text-fg">{item.q}</h3>
                 <span className={`faq-plus ${on ? "is-open" : ""}`} aria-hidden>
                   +
                 </span>

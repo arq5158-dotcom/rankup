@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/rank/PageShell";
+import { AuthorByline } from "@/components/rank/AuthorByline";
 import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/")({
@@ -26,7 +27,9 @@ function Page() {
     <PageShell>
       <p className="page-kicker">Guides</p>
       <h1 className="page-title mt-1">How to get seen</h1>
+      <AuthorByline date="Updated 2 Sep 2026" />
       <article className="mt-4 max-w-2xl space-y-4 text-sm leading-relaxed text-white/55">
+        <h2 className="font-display text-lg font-extrabold text-fg">Website promotion guides</h2>
         <p>
           These guides are for people with a new website and almost no visitors. They cover how to
           get traffic to your website, how to promote a side project, and when a live ranking

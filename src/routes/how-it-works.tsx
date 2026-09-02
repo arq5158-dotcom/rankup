@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/rank/PageShell";
 import { HowItWorks } from "@/components/rank/HowItWorks";
 import { Faq } from "@/components/rank/Faq";
+import { AuthorByline } from "@/components/rank/AuthorByline";
 import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/how-it-works")({
@@ -20,7 +21,8 @@ function Page() {
     <PageShell active="How It Works">
       <p className="page-kicker">Leaderboard promotion</p>
       <h1 className="page-title mt-1">How ranking credits work</h1>
-      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-pretty text-white/50">
+      <AuthorByline date="Updated 2 Sep 2026" />
+      <p className="mt-4 max-w-2xl text-sm leading-relaxed text-pretty text-white/50">
         Pay4Rank is a paid promotion leaderboard for websites, brands, and projects. You buy ranking
         credits, spend them to climb a live board, and get your listing seen. It is not a Google
         ranking service and not a cash prize.
@@ -30,6 +32,7 @@ function Page() {
 
         <article className="glass-card space-y-4 rounded-2xl p-5 text-sm leading-relaxed text-white/55 sm:p-6">
           <h2 className="font-display text-lg font-extrabold text-fg">A live leaderboard for websites</h2>
+          <h3 className="font-display text-base font-bold text-fg">What you are competing for</h3>
           <p>
             Most “promote my website” tools are ads, directories, or launch lists. Pay4Rank is a
             competitive public board. Your profile sits next to other listings. Rank is Score. Score
@@ -39,12 +42,17 @@ function Page() {
             weekly.
           </p>
           <h2 className="font-display text-lg font-extrabold text-fg">Credits, Score, and rank</h2>
+          <h3 className="font-display text-base font-bold text-fg">How ranking credits convert</h3>
           <p>
             Ranking credits are an in-app balance. Default conversion is $1 USD = 1,000 credits
             (admin can change future purchases). Credits sit in your wallet until you spend them.
             Spending 1 credit adds 1 Score on the weekly board or the monthly board — you choose.
-            Wallet credits never set rank. Only Score does. Weekly Score and monthly Score are
-            separate. A weekly reset zeros weekly Score only. Credits never reset.
+            Wallet credits never set rank. Only Score does.
+          </p>
+          <h3 className="font-display text-base font-bold text-fg">Weekly vs monthly</h3>
+          <p>
+            Weekly Score and monthly Score are separate. A weekly reset zeros weekly Score only.
+            Credits never reset. Climb the board that matches the window you care about.
           </p>
           <h2 className="font-display text-lg font-extrabold text-fg">Who this is for</h2>
           <p>

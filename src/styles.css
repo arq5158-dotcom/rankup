@@ -883,6 +883,13 @@
   font-size: 14px;
   font-weight: 700;
 }
+.faq-item > button h3 {
+  margin: 0;
+  flex: 1;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
 .faq-plus.is-open {
   transform: rotate(45deg);
 }

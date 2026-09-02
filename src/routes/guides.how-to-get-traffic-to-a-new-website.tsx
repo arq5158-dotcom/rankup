@@ -1,12 +1,32 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell } from "@/components/rank/PageShell";
 import { JsonLd } from "@/components/rank/JsonLd";
-import { seoHead, SITE_URL, absUrl } from "@/lib/seo";
+import { AuthorByline, authorJsonLd, EDITORIAL } from "@/components/rank/AuthorByline";
+import { seoHead, SITE_NAME, SITE_URL, absUrl } from "@/lib/seo";
 
 const PATH = "/guides/how-to-get-traffic-to-a-new-website";
 const TITLE = "How to get traffic to your website (even if it's brand new)";
 const DESC =
   "How to get traffic to your website when nobody knows it exists. Drive traffic for free, get people to view your site, and skip buying Google rankings. First 100 visits — not a fantasy #1.";
+
+const QA = [
+  {
+    q: "How do I get traffic to my website if it is new?",
+    a: "Tell people who already know you, list the site on launch directories, and publish one page that answers a real question. Google will not send traffic on day one. Free traffic is messages, listings, and useful pages — not a purchased search rank.",
+  },
+  {
+    q: "How can I get traffic to my website for free?",
+    a: "Post the link where your audience already is, submit to Product Hunt or Indie Hackers, write one useful guide, and use free listing tools. Pay4Rank also has a free daily promotion spin for Score on its leaderboard. None of that buys a Google first-page slot.",
+  },
+  {
+    q: "How do I get people to view my website?",
+    a: "Ask them directly, then put the URL in front of people already browsing launch lists or a live leaderboard. A featured placement is a public listing people can click. It is not the same as organic Google traffic.",
+  },
+  {
+    q: "How do I get traffic to my website fast?",
+    a: "Fast traffic is paid ads or a listing people already visit. SEO is slow for a new domain. If you need people this week, post it, list it, or buy a visible spot on a board. Do not buy fake Google rankings.",
+  },
+];
 
 export const Route = createFileRoute("/guides/how-to-get-traffic-to-a-new-website")({
   head: () =>
@@ -29,8 +49,13 @@ function Page() {
           description: DESC,
           datePublished: "2026-09-02",
           dateModified: "2026-09-02",
-          author: { "@type": "Organization", name: "Pay4Rank", url: SITE_URL },
-          publisher: { "@type": "Organization", name: "Pay4Rank", url: SITE_URL },
+          author: authorJsonLd(),
+          publisher: {
+            "@type": "Organization",
+            name: SITE_NAME,
+            url: SITE_URL,
+            logo: { "@type": "ImageObject", url: absUrl("/og.jpg") },
+          },
           mainEntityOfPage: absUrl(PATH),
         }}
       />
@@ -38,40 +63,11 @@ function Page() {
         data={{
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          mainEntity: [
-            {
-              "@type": "Question",
-              name: "How do I get traffic to my website if it is new?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Tell people who already know you, list the site on launch directories, and publish one page that answers a real question. Google will not send traffic on day one. Free traffic is messages, listings, and useful pages — not a purchased search rank.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "How can I get traffic to my website for free?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Post the link where your audience already is, submit to Product Hunt or Indie Hackers, write one useful guide, and use free listing tools. Pay4Rank also has a free daily promotion spin for Score on its leaderboard. None of that buys a Google first-page slot.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "How do I get people to view my website?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Ask them directly, then put the URL in front of people already browsing launch lists or a live leaderboard. A featured placement is a public listing people can click. It is not the same as organic Google traffic.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "How do I get traffic to my website fast?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Fast traffic is paid ads or a listing people already visit. SEO is slow for a new domain. If you need people this week, post it, list it, or buy a visible spot on a board. Do not buy fake Google rankings.",
-              },
-            },
-          ],
+          mainEntity: QA.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: { "@type": "Answer", text: item.a },
+          })),
         }}
       />
       <p className="page-kicker">
@@ -80,7 +76,7 @@ function Page() {
         </Link>
       </p>
       <h1 className="page-title mt-1 max-w-3xl">{TITLE}</h1>
-      <p className="mt-3 max-w-2xl text-sm text-white/40">Updated 2 Sep 2026 · 7 min read</p>
+      <AuthorByline date="Updated 2 Sep 2026 · 8 min read" />
 
       <article className="glass-card mt-8 max-w-2xl space-y-5 rounded-2xl p-5 text-[15px] leading-[1.7] text-white/62 sm:p-8">
         <p>
@@ -92,10 +88,11 @@ function Page() {
           This guide answers “how to get traffic to your website,” “how to drive traffic to your
           website,” and “how to get traffic to a brand new website.” Same problem: first visits,
           not a fantasy #1 ranking. Pay4Rank is one option at the end — a live leaderboard for
-          websites, not a Google Ads account.
+          websites, not a Google Ads account. Written by {EDITORIAL.name}.
         </p>
 
-        <h2 className="font-display text-xl font-extrabold text-fg">1. Tell humans who already know you</h2>
+        <h2 className="font-display text-xl font-extrabold text-fg">How to get your first visitors</h2>
+        <h3 className="font-display text-base font-bold text-fg">Tell humans who already know you</h3>
         <p>
           Your first visitors will not come from Google. They come from a message you send: X,
           a Discord, an email to ten people who said “send me the link,” Indie Hackers, a niche
@@ -106,7 +103,7 @@ function Page() {
           Ask two people to open it on their phone and tell you what is confusing.
         </p>
 
-        <h2 className="font-display text-xl font-extrabold text-fg">2. Get listed where founders already browse</h2>
+        <h3 className="font-display text-base font-bold text-fg">Get listed where founders already browse</h3>
         <p>
           Directories and launch sites are not magic, but they are indexed and they send humans.
           Product Hunt, BetaList, Indie Hackers, MicroLaunch, Launching Next, DEV “Show” posts.
@@ -118,11 +115,11 @@ function Page() {
           Google positions.
         </p>
 
-        <h2 className="font-display text-xl font-extrabold text-fg">3. Publish one page that answers a real question</h2>
+        <h3 className="font-display text-base font-bold text-fg">Publish one page that answers a real question</h3>
         <p>
           Google needs text it can crawl. A leaderboard that loads empty and fills in later is a
-          weak page. A guide like this one — a title, an H1, and a few hundred words in the HTML —
-          is something a crawler can match to a query.
+          weak page. A guide like this one — a title, an H1, H2s, H3s, and a few hundred words in
+          the HTML — is something a crawler can match to a query.
         </p>
         <p>
           Pick one question your customer already types. Answer it in plain language. Put a clear
@@ -130,7 +127,8 @@ function Page() {
           descriptions make Google treat pages as copies.
         </p>
 
-        <h2 className="font-display text-xl font-extrabold text-fg">4. Do not buy a Google rank</h2>
+        <h2 className="font-display text-xl font-extrabold text-fg">What not to buy</h2>
+        <h3 className="font-display text-base font-bold text-fg">Do not buy a Google rank</h3>
         <p>
           “Pay for rank” in games means boosting an account. “Pay for rank” in SEO spam means fake
           backlinks. Neither is this. Buying a guaranteed first-page slot is how sites get ignored
@@ -143,7 +141,8 @@ function Page() {
           selling you a story.
         </p>
 
-        <h2 className="font-display text-xl font-extrabold text-fg">5. If you want a live board, not an ad account</h2>
+        <h2 className="font-display text-xl font-extrabold text-fg">If you want a live board, not an ad account</h2>
+        <h3 className="font-display text-base font-bold text-fg">Ranking credits and featured placement</h3>
         <p>
           Some people want a Product Hunt alternative that stays up all month: a public profile, a
           link, a score, a chance to get featured. That is what{" "}
@@ -168,7 +167,8 @@ function Page() {
           for Score. Giveaways, when live, are separate and free to enter.
         </p>
 
-        <h2 className="font-display text-xl font-extrabold text-fg">How to get traffic to your website for free</h2>
+        <h2 className="font-display text-xl font-extrabold text-fg">Free, viewed, and fast traffic</h2>
+        <h3 className="font-display text-base font-bold text-fg">How to get traffic to your website for free</h3>
         <p>
           Free traffic is not a tool that “generates visitors.” It is work: messages, listings, and
           one useful page. How to increase website traffic for free on a new domain is the same
@@ -177,7 +177,7 @@ function Page() {
           not put you on Google’s first page overnight.
         </p>
 
-        <h2 className="font-display text-xl font-extrabold text-fg">How to get people to view your website</h2>
+        <h3 className="font-display text-base font-bold text-fg">How to get people to view your website</h3>
         <p>
           People view a site when a human or a listing puts the URL in front of them. Ask. Get
           listed. Put a public profile where others are already competing for attention. “Need
@@ -185,7 +185,7 @@ function Page() {
           missing keyword on the homepage.
         </p>
 
-        <h2 className="font-display text-xl font-extrabold text-fg">How to get traffic to your website fast</h2>
+        <h3 className="font-display text-base font-bold text-fg">How to get traffic to your website fast</h3>
         <p>
           Fast means paid or already-crowded rooms: ads, a launch post, a featured listing.
           “How to drive traffic to your website” in a week is not Search Console. If someone
@@ -201,31 +201,14 @@ function Page() {
           <li>Submit a sitemap. Wait. Do not refresh Google every hour.</li>
           <li>If you want a public climb, use a live leaderboard — including Pay4Rank if it fits.</li>
         </ol>
-        <h2 className="font-display text-xl font-extrabold text-fg">Questions people actually type</h2>
-        <dl className="space-y-4">
-          <div>
-            <dt className="font-bold text-fg">How do I get traffic to my website if it is new?</dt>
-            <dd className="mt-1">Tell people, get listed, publish one useful page. Google waits.</dd>
-          </div>
-          <div>
-            <dt className="font-bold text-fg">How can I get traffic to my website for free?</dt>
-            <dd className="mt-1">
-              Posts, directories, one guide. Optional:{" "}
-              <Link to="/spin" className="text-gold hover:underline">
-                Pay4Rank Free Spin
-              </Link>
-              . Not a purchased Google rank.
-            </dd>
-          </div>
-          <div>
-            <dt className="font-bold text-fg">How do I get people to view my website?</dt>
-            <dd className="mt-1">Put the URL where humans already look — chats, launch lists, a live leaderboard.</dd>
-          </div>
-          <div>
-            <dt className="font-bold text-fg">How do I get traffic to my website fast?</dt>
-            <dd className="mt-1">Ads or a public listing this week. SEO is not fast on a new domain.</dd>
-          </div>
-        </dl>
+
+        <h2 className="font-display text-xl font-extrabold text-fg">Q&A</h2>
+        {QA.map((item) => (
+          <section key={item.q}>
+            <h3 className="font-display text-base font-bold text-fg">{item.q}</h3>
+            <p>{item.a}</p>
+          </section>
+        ))}
       </article>
 
       <div className="mt-6 flex flex-wrap gap-3">
