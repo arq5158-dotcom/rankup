@@ -16,8 +16,8 @@ export const Route = createFileRoute("/guides/")({
 const POSTS = [
   {
     to: "/guides/how-to-get-traffic-to-a-new-website" as const,
-    title: "How to get traffic to a brand new website",
-    dek: "Nobody knows you exist yet. Here is what actually works in the first weeks — and what to skip.",
+    title: "How to get traffic to your website",
+    dek: "Even if the site is brand new. Free traffic, getting people to view it, and what to skip.",
   },
 ];
 
