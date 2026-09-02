@@ -22,6 +22,11 @@ const POSTS = [
     dek: "Even if the site is brand new. Free traffic, getting people to view it, and what to skip.",
   },
   {
+    to: "/guides/product-hunt-launch-guide" as const,
+    title: "Product Hunt launch guide",
+    dek: "Checklist, timing, is it worth it — and what to do after the 24 hours.",
+  },
+  {
     to: "/guides/website-traffic-simple-lasting-guide" as const,
     title: "Website traffic: a simple, lasting guide",
     dek: "How to increase website traffic without betting everything on ads.",

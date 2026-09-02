@@ -16,6 +16,7 @@ const COMPETE = [
 const GUIDES = [
   { to: "/guides", label: "All guides" },
   { to: "/guides/how-to-get-traffic-to-a-new-website", label: "New-site traffic" },
+  { to: "/guides/product-hunt-launch-guide", label: "Product Hunt launch" },
   { to: "/guides/website-traffic-simple-lasting-guide", label: "Lasting traffic" },
   { to: "/guides/traffic-site-internet", label: "Traffic site internet" },
   { to: "/guides/hiring-a-link-building-agency", label: "Link building agencies" },

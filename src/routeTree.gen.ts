@@ -32,6 +32,7 @@ import { Route as WeeklyRouteImport } from './routes/weekly'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as GuidesHiringALinkBuildingAgencyRouteImport } from './routes/guides.hiring-a-link-building-agency'
 import { Route as GuidesHowToGetTrafficToANewWebsiteRouteImport } from './routes/guides.how-to-get-traffic-to-a-new-website'
+import { Route as GuidesProductHuntLaunchGuideRouteImport } from './routes/guides.product-hunt-launch-guide'
 import { Route as GuidesTrafficSiteInternetRouteImport } from './routes/guides.traffic-site-internet'
 import { Route as GuidesWebsiteTrafficSimpleLastingGuideRouteImport } from './routes/guides.website-traffic-simple-lasting-guide'
 import { Route as PayIndexRouteImport } from './routes/pay.index'
@@ -158,6 +159,12 @@ const GuidesHowToGetTrafficToANewWebsiteRoute =
     path: '/guides/how-to-get-traffic-to-a-new-website',
     getParentRoute: () => rootRouteImport,
   } as any)
+const GuidesProductHuntLaunchGuideRoute =
+  GuidesProductHuntLaunchGuideRouteImport.update({
+    id: '/guides/product-hunt-launch-guide',
+    path: '/guides/product-hunt-launch-guide',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const GuidesTrafficSiteInternetRoute =
   GuidesTrafficSiteInternetRouteImport.update({
     id: '/guides/traffic-site-internet',
@@ -219,6 +226,7 @@ export interface FileRoutesByFullPath {
   '/weekly': typeof WeeklyRoute
   '/guides/hiring-a-link-building-agency': typeof GuidesHiringALinkBuildingAgencyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
+  '/guides/product-hunt-launch-guide': typeof GuidesProductHuntLaunchGuideRoute
   '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
   '/guides/website-traffic-simple-lasting-guide': typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
   '/pay/cancel': typeof PayCancelRoute
@@ -251,6 +259,7 @@ export interface FileRoutesByTo {
   '/weekly': typeof WeeklyRoute
   '/guides/hiring-a-link-building-agency': typeof GuidesHiringALinkBuildingAgencyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
+  '/guides/product-hunt-launch-guide': typeof GuidesProductHuntLaunchGuideRoute
   '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
   '/guides/website-traffic-simple-lasting-guide': typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
   '/pay/cancel': typeof PayCancelRoute
@@ -284,6 +293,7 @@ export interface FileRoutesById {
   '/weekly': typeof WeeklyRoute
   '/guides/hiring-a-link-building-agency': typeof GuidesHiringALinkBuildingAgencyRoute
   '/guides/how-to-get-traffic-to-a-new-website': typeof GuidesHowToGetTrafficToANewWebsiteRoute
+  '/guides/product-hunt-launch-guide': typeof GuidesProductHuntLaunchGuideRoute
   '/guides/traffic-site-internet': typeof GuidesTrafficSiteInternetRoute
   '/guides/website-traffic-simple-lasting-guide': typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
   '/pay/cancel': typeof PayCancelRoute
@@ -318,6 +328,7 @@ export interface FileRouteTypes {
     | '/weekly'
     | '/guides/hiring-a-link-building-agency'
     | '/guides/how-to-get-traffic-to-a-new-website'
+    | '/guides/product-hunt-launch-guide'
     | '/guides/traffic-site-internet'
     | '/guides/website-traffic-simple-lasting-guide'
     | '/pay/cancel'
@@ -350,6 +361,7 @@ export interface FileRouteTypes {
     | '/weekly'
     | '/guides/hiring-a-link-building-agency'
     | '/guides/how-to-get-traffic-to-a-new-website'
+    | '/guides/product-hunt-launch-guide'
     | '/guides/traffic-site-internet'
     | '/guides/website-traffic-simple-lasting-guide'
     | '/pay/cancel'
@@ -382,6 +394,7 @@ export interface FileRouteTypes {
     | '/weekly'
     | '/guides/hiring-a-link-building-agency'
     | '/guides/how-to-get-traffic-to-a-new-website'
+    | '/guides/product-hunt-launch-guide'
     | '/guides/traffic-site-internet'
     | '/guides/website-traffic-simple-lasting-guide'
     | '/pay/cancel'
@@ -415,6 +428,7 @@ export interface RootRouteChildren {
   WeeklyRoute: typeof WeeklyRoute
   GuidesHiringALinkBuildingAgencyRoute: typeof GuidesHiringALinkBuildingAgencyRoute
   GuidesHowToGetTrafficToANewWebsiteRoute: typeof GuidesHowToGetTrafficToANewWebsiteRoute
+  GuidesProductHuntLaunchGuideRoute: typeof GuidesProductHuntLaunchGuideRoute
   GuidesTrafficSiteInternetRoute: typeof GuidesTrafficSiteInternetRoute
   GuidesWebsiteTrafficSimpleLastingGuideRoute: typeof GuidesWebsiteTrafficSimpleLastingGuideRoute
   PayCancelRoute: typeof PayCancelRoute
@@ -588,6 +602,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesHowToGetTrafficToANewWebsiteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/product-hunt-launch-guide': {
+      id: '/guides/product-hunt-launch-guide'
+      path: '/guides/product-hunt-launch-guide'
+      fullPath: '/guides/product-hunt-launch-guide'
+      preLoaderRoute: typeof GuidesProductHuntLaunchGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guides/traffic-site-internet': {
       id: '/guides/traffic-site-internet'
       path: '/guides/traffic-site-internet'
@@ -664,6 +685,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuidesHiringALinkBuildingAgencyRoute: GuidesHiringALinkBuildingAgencyRoute,
   GuidesHowToGetTrafficToANewWebsiteRoute:
     GuidesHowToGetTrafficToANewWebsiteRoute,
+  GuidesProductHuntLaunchGuideRoute: GuidesProductHuntLaunchGuideRoute,
   GuidesTrafficSiteInternetRoute: GuidesTrafficSiteInternetRoute,
   GuidesWebsiteTrafficSimpleLastingGuideRoute:
     GuidesWebsiteTrafficSimpleLastingGuideRoute,
