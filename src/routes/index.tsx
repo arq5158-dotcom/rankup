@@ -242,7 +242,15 @@ function Home() {
           <p>
             This is not Google Ads and not a cash prize. Credits never reset. Weekly and monthly
             Score are separate. Free Spin awards Score without a purchase. Player website links on
-            the board are sponsored listings.
+            the board are sponsored listings. Read the{" "}
+            <Link to="/guides" className="text-gold hover:underline">
+              website promotion guides
+            </Link>{" "}
+            or{" "}
+            <Link to="/how-it-works" className="text-gold hover:underline">
+              how ranking credits work
+            </Link>
+            .
           </p>
         </article>
       </main>

@@ -10,8 +10,15 @@ const COMPETE = [
   { to: "/wallet", label: "Wallet" },
   { to: "/giveaways", label: "Giveaways" },
   { to: "/how-it-works", label: "How it works" },
-  { to: "/guides", label: "Guides" },
   { to: "/archive", label: "Past seasons" },
+] as const;
+
+const GUIDES = [
+  { to: "/guides", label: "All guides" },
+  { to: "/guides/how-to-get-traffic-to-a-new-website", label: "New-site traffic" },
+  { to: "/guides/website-traffic-simple-lasting-guide", label: "Lasting traffic" },
+  { to: "/guides/traffic-site-internet", label: "Traffic site internet" },
+  { to: "/guides/hiring-a-link-building-agency", label: "Link building agencies" },
 ] as const;
 
 const LEGAL = [
@@ -64,19 +71,31 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
               </Link>
             ))}
           </nav>
-
-          <nav aria-label="Legal" className="flex flex-wrap items-center gap-x-4 gap-y-1.5 lg:justify-end">
-            {LEGAL.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                className="text-[12px] text-white/48 transition-colors hover:text-fg"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </nav>
         </div>
+
+        <nav aria-label="Guides" className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+          {GUIDES.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className="text-[12px] text-white/48 transition-colors hover:text-fg"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+
+        <nav aria-label="Legal" className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+          {LEGAL.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className="text-[12px] text-white/48 transition-colors hover:text-fg"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
 
         <div className="flex flex-col gap-2 border-t border-white/[0.05] pt-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[10px] font-semibold tracking-[0.12em] text-white/28 uppercase">
