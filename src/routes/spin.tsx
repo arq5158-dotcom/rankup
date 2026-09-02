@@ -11,6 +11,7 @@ import type { CycleType } from "@/lib/players";
 import { Segmented } from "@/components/rank/motion";
 import { RankWheel, WHEEL_SLICE } from "@/components/rank/RankWheel";
 import { seoHead } from "@/lib/seo";
+import { playSpinSound } from "@/lib/spin-sound";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/spin")({
@@ -67,6 +68,7 @@ function SpinPage() {
     try {
       const res = await startFreeSpin();
       setSpinning(true);
+      playSpinSound(4200);
       const land = 360 * 6 + (360 - ((res.slot - 1) * SLICE + SLICE / 2));
       setRotation((r) => r + land);
       window.setTimeout(() => {
